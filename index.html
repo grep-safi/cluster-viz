@@ -1401,7 +1401,7 @@
         layout(root);
         treemap(root);
         display(root);
-    };
+    }
 
     function initialize(root) {
         root.x = root.y = 0;
@@ -1429,13 +1429,7 @@
     // coordinates. This lets us use a viewport to zoom.
     function layout(d) {
         if (d._children) {
-//    treemap.nodes({_children: d._children});
-//	  treemap(d);
             d._children.forEach(function(c) {
-                //c.x0 = d.x0 + c.x0 * (d.x1 - d.x0);
-                //c.y0 = d.y0 + c.y0 * (d.y1 - d.y0);
-                //c.x1 *= d.x1;
-                //c.y1 *= d.y1;
                 c.x0 = d.x0 + c.x0 * d.x1;
                 c.y0 = d.y0 + c.y0 * d.y1;
                 c.x1 *= (d.x1 - d.x0);
