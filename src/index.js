@@ -1,4 +1,5 @@
-import { data, data2 } from "./data";
+import { data } from "./data";
+import { scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap, treemapResquarify, hierarchy } from "d3/dist/d3";
 
 //https://bl.ocks.org/JacquesJahnichen/42afd0cde7cbf72ecb81
 //https://bl.ocks.org/ganeshv/6a8e9ada3ab7f2d88022
@@ -6,82 +7,73 @@ import { data, data2 } from "./data";
 var margin = {top: 24, right: 0, bottom: 0, left: 0},
     width = 1200, //640
     height = 530,
-    formatNumber = d3.format(",d"),
+    formatNumber = format(",d"),
     transitioning;
 
-var x = d3.scaleLinear()
+var x = scaleLinear()
     .domain([0, width])
     .range([0, width]);
 
-var y = d3.scaleLinear()
+var y = scaleLinear()
     .domain([0, height - margin.top - margin.bottom])
     .range([0, height - margin.top - margin.bottom]);
 
-var color = d3.scaleOrdinal()
-    .range(d3.schemeCategory10
-        .map(function(c) { c = d3.rgb(c); c.opacity = 0.6; return c; }));
-//var color = d3.scaleOrdinal(d3.schemeCategory20.map(fader));
+var color = scaleOrdinal()
+    .range(schemeCategory10
+        .map(function(c) { c = rgb(c); c.opacity = 0.9;  return c; }));
 
-var fader = function(color) { return d3.interpolateRgb(color, "#fff")(0.2); };
-var format = d3.format(",d");
-var treemap;
+var tree;
 var svg, grandparent;
 
 updateDrillDown();
 
 function updateDrillDown() {
-    if (svg) {
-        svg.selectAll("*").remove();
-    } else {
-//		 var treemap = d3.layout.treemap()
-//	      .children(function(d, depth) { return depth ? null : d._children; })
-//	      .sort(function(a, b) { return a.value - b.value; })
-//	      .ratio(height / width * 0.5 * (1 + Math.sqrt(5)))
-//	      .round(false);
+    svg = select("#domainDrillDown").append("svg")
+        .attr("width", width - margin.left - margin.right)
+        .attr("height", height - margin.bottom - margin.top)
+        .style("margin-left", -margin.left + "px")
+        .style("margin.right", -margin.right + "px")
+        // .style("margin.right", -margin.right + "px");
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
+        .style("shape-rendering", "crispEdges");
 
-        svg = d3.select("#domainDrillDown").append("svg")
-            .attr("width", width - margin.left - margin.right)
-            .attr("height", height - margin.bottom - margin.top)
-            .style("margin-left", -margin.left + "px")
-            .style("margin.right", -margin.right + "px")
-            .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")")
-            .style("shape-rendering", "crispEdges");
+    // Root object
+    grandparent = svg.append("g")
+        .attr("class", "grandparent");
 
-        grandparent = svg.append("g")
-            .attr("class", "grandparent");
+    // Orange rectangle on top
+    grandparent.append("rect")
+        .attr("y", -margin.top)
+        .attr("width", width)
+        .attr("height", margin.top);
 
-        grandparent.append("rect")
-            .attr("y", -margin.top)
-            .attr("width", width)
-            .attr("height", margin.top);
+    // Text inside the orange rectangle
+    grandparent.append("text")
+        .attr("x", 6)
+        .attr("y", 6 - margin.top)
+        .attr("dy", ".75em");
 
-        grandparent.append("text")
-            .attr("x", 6)
-            .attr("y", 6 - margin.top)
-            .attr("dy", ".75em");
+    // Actual treemap function
+    tree = treemap()
+        .tile(treemapResquarify.ratio(height / width * 0.5 * (1 + Math.sqrt(5))))
+        .size([width, height])
+        .round(false)
+        .paddingInner(1); // gap between adjacent squares
 
-        treemap = d3.treemap()
-            .tile(d3.treemapResquarify.ratio(height / width * 0.5 * (1 + Math.sqrt(5))))
-            .size([width, height])
-            .round(false)
-            .paddingInner(1);
-    }
-
-    var root = d3.hierarchy(data2)
+    var root = hierarchy(data)
         .eachBefore(function(d) { d.id = (d.parent ? d.parent.id + "." : "") + d.data.shortName; })
         .sum((d) => d.size)
         .sort(function(a, b) {
-            console.log('initial root sort a ' + a.value + ' b ' + b.value);
             return b.height - a.height || b.value - a.value;
         });
 
     initialize(root);
     accumulate(root);
     layout(root);
-    treemap(root);
+    tree(root);
     display(root);
-};
+}
 
 function initialize(root) {
     root.x = root.y = 0;
@@ -95,7 +87,7 @@ function initialize(root) {
 // We also take a snapshot of the original children (_children) to avoid
 // the children being overwritten when when layout is computed.
 function accumulate(d) {
-    console.log('accumulate called ' + d.data.name);
+    // console.log('accumulate called ' + d.data.name);
     return (d._children = d.children)
         ? d.value = d.children.reduce(function(p, v) { return p + accumulate(v); }, 0) : d.value;
 }
@@ -109,13 +101,7 @@ function accumulate(d) {
 // coordinates. This lets us use a viewport to zoom.
 function layout(d) {
     if (d._children) {
-//    treemap.nodes({_children: d._children});
-//	  treemap(d);
         d._children.forEach(function(c) {
-            //c.x0 = d.x0 + c.x0 * (d.x1 - d.x0);
-            //c.y0 = d.y0 + c.y0 * (d.y1 - d.y0);
-            //c.x1 *= d.x1;
-            //c.y1 *= d.y1;
             c.x0 = d.x0 + c.x0 * d.x1;
             c.y0 = d.y0 + c.y0 * d.y1;
             c.x1 *= (d.x1 - d.x0);
@@ -198,7 +184,7 @@ function display(d) {
 
         // Draw child nodes on top of parent nodes.
         svg.selectAll(".depth").sort(function(a, b) {
-            console.log('.depth sort a ' + a.depth + ' b ' + b.depth);
+            // console.log('.depth sort a ' + a.depth + ' b ' + b.depth);
             return a.depth - b.depth; });
 
         // Fade-in entering text.
@@ -228,7 +214,7 @@ function text(text) {
         .attr("y", function(d) { return y(d.y0) + 3; })
         .style("opacity", function(d) {
             var w = x(d.x1) - x(d.x0);
-            console.log("text opacity setting textlength " + this.getComputedTextLength() + " d size " + w);
+            // console.log("text opacity setting textlength " + this.getComputedTextLength() + " d size " + w);
             return this.getComputedTextLength() < w - 6 ? 1 : 0; });
 }
 
@@ -239,7 +225,7 @@ function text2(text) {
         .attr("y", function(d) { return y(d.y1) - 6; })
         .style("opacity", function(d) {
             var w = x(d.x1) - x(d.x0);
-            console.log("text2 opacity setting textlength " + this.getComputedTextLength() + " d size " + w);
+            // console.log("text2 opacity setting textlength " + this.getComputedTextLength() + " d size " + w);
             return this.getComputedTextLength() < w - 6 ? 1 : 0;
         });
 }
@@ -249,12 +235,12 @@ function rect(rect) {
         .attr("y", function(d) { return y(d.y0); })
         .attr("width", function(d) {
             var w = x(d.x1) - x(d.x0);
-            console.log('id ' + d.id +' rect width ' + w);
+            // console.log('id ' + d.id +' rect width ' + w);
             return w;
         })
         .attr("height", function(d) {
             var h = y(d.y1) - y(d.y0);
-            console.log('id ' + d.id +' rect height ' + h);
+            // console.log('id ' + d.id +' rect height ' + h);
             return h;
         });
 }
