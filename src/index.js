@@ -33,7 +33,7 @@ const tree = data => treemap()
     .tile(tile)
     (hierarchy(data)
         .sum(d => d.value)
-        .sort((a, b) => b.value - a.value))
+        .sort((a, b) => b.height - a.height))
 
 const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
 
@@ -66,7 +66,7 @@ function render(group, root) {
     //     .attr("xlink:href", d => d.leafUid.href);
 
     node.append("text")
-        .attr("clip-path", d => d.clipUid)
+        // .attr("clip-path", d => d.clipUid)
         .attr("font-weight", d => d === root ? "bold" : null)
         .selectAll("tspan")
         .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(formatNum(d.value)))
@@ -82,7 +82,7 @@ function render(group, root) {
 
 function position(group, root) {
     group.selectAll("g")
-        .attr("transform", d => d === root ? `translate(0,-30)` : `translate(${x(d.x0)},${y(d.y0)})`)
+        .attr("transform", d => d === root ? `translate(0,0)` : `translate(${x(d.x0)},${y(d.y0)})`)
         .select("rect")
         .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
         .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0));
