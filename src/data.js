@@ -1,8 +1,8 @@
 function createRandomActiveNodes(cabinets) {
-    const numCabinets = 4;
-    const numChassis = 3;
-    const numBlades = 4;
-    const numNodes = 4;
+    const numCabinets = 68;// actual = 68
+    const numChassis = 3; // actual = 3
+    const numBlades = 16;  // actual = 16
+    const numNodes = 4;   // actual = 4
 
     for (let i = 0; i < numCabinets; i++) {                         // First for loop creates cabinets with cabinet vals
         const chassis = [];
@@ -17,7 +17,9 @@ function createRandomActiveNodes(cabinets) {
                 let bladeVal = 0;
 
                 for (let l = 0; l < numNodes; l++) {                // Fourth for loop creates nodes with node vals (random)
-                    let nodeActive = Math.random() > 0.5 ? 1 : 0;
+
+                    let probabilityOfActiveNode = 0.50; // 50% chance a given node will be active
+                    let nodeActive = Math.random() > probabilityOfActiveNode ? 1 : 0;
 
                     nodes.push({
                         "name": `n${l}`,
