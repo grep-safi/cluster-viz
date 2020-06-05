@@ -1,60 +1,75 @@
-import { info } from "./data";
-import { create, interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap, treemapResquarify, hierarchy } from "d3/dist/d3";
+import { DOM, treemapBinary, interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap, treemapResquarify, hierarchy } from "d3/dist/d3";
 import './flare-2.json';
+import { info } from './data';
 
-//https://bl.ocks.org/JacquesJahnichen/42afd0cde7cbf72ecb81
-//https://bl.ocks.org/ganeshv/6a8e9ada3ab7f2d88022
-//https://gist.github.com/tkafka/6d00c44d5ae52182f548a18e8db44811
-
-const width = 954;
-const height = 924;
+const width = 900;
+const height = 600;
 
 const x = scaleLinear().rangeRound([0, width]);
 const y = scaleLinear().rangeRound([0, height]);
-// const data = JSON.stringify(info);
-const data = info;
-console.log(`datazzzzzzz: ${data.children.concat(data)}`);
 
-const divContainer = document.getElementById('domainDrillDown');
+const svg = select("#dataViz")
+    .append("svg")
+    .attr("width", width)
+    .attr("height", height);
 
-const svg = create("svg")
-    .attr("viewBox", [0.5, -30.5, width, height + 30])
-    .style("font", "10px sans-serif");
+// svg.append("circle")
+//     .attr("cx", 20)
+//     .attr("cy", 20)
+//     .attr("r", 20)
+//     .attr("fill", "red");
 
-divContainer.append(svg);
+function tile(node, x0, y0, x1, y1) {
+    treemapBinary(node, 0, 0, width, height);
+    for (const child of node.children) {
+        child.x0 = x0 + child.x0 / width * (x1 - x0);
+        child.x1 = x0 + child.x1 / width * (x1 - x0);
+        child.y0 = y0 + child.y0 / height * (y1 - y0);
+        child.y1 = y0 + child.y1 / height * (y1 - y0);
+    }
+}
+
+const tree = data => treemap()
+    .tile(tile)
+    (hierarchy(data)
+        .sum(d => d.value)
+        .sort((a, b) => b.value - a.value))
+
+const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
+
+const formatNum = format(",d")
 
 let group = svg.append("g")
-    .call(render, treemap(data));
+    .call(render, tree(info));
 
 function render(group, root) {
-    // console.log(`root: ${root.children}`);
     const node = group
         .selectAll("g")
-        .data(data.children.concat(data))
+        .data(root.children.concat(root))
         .join("g");
 
     node.filter(d => d === root ? d.parent : d.children)
         .attr("cursor", "pointer")
         .on("click", d => d === root ? zoomout(root) : zoomin(d));
 
-    // node.append("title")
-    //     .text(d => `${d}\n${format(d.value)}`);
+    node.append("title")
+        .text(d => `${name(d)}\n${formatNum(d.value)}`);
 
     node.append("rect")
         // .attr("id", d => (d.leafUid = DOM.uid("leaf")).id)
         .attr("fill", d => d === root ? "#fff" : d.children ? "#ccc" : "#ddd")
         .attr("stroke", "#fff");
 
-    node.append("clipPath")
-        // .attr("id", d => (d.clipUid = DOM.uid("clip")).id)
-        .append("use")
-        // .attr("xlink:href", d => d.leafUid.href);
+    // node.append("clipPath")
+    //     .attr("id", d => (d.clipUid = DOM.uid("clip")).id)
+    //     .append("use")
+    //     .attr("xlink:href", d => d.leafUid.href);
 
     node.append("text")
-        // .attr("clip-path", d => d.clipUid)
+        .attr("clip-path", d => d.clipUid)
         .attr("font-weight", d => d === root ? "bold" : null)
         .selectAll("tspan")
-        // .data(d => (d === root ? d : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(format(d.value)))
+        .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(formatNum(d.value)))
         .join("tspan")
         .attr("x", 3)
         .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.3 + 1.1 + i * 0.9}em`)
@@ -67,10 +82,7 @@ function render(group, root) {
 
 function position(group, root) {
     group.selectAll("g")
-        .attr("transform", d => {
-            console.log(`this is ddd: ${JSON.stringify(d)}`);
-            d === root ? `translate(0,-30)` : `translate(${x(d.x0)},${y(d.y0)})`
-        })
+        .attr("transform", d => d === root ? `translate(0,-30)` : `translate(${x(d.x0)},${y(d.y0)})`)
         .select("rect")
         .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
         .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0));
@@ -109,5 +121,3 @@ function zoomout(d) {
         .call(t => group1.transition(t)
             .call(position, d.parent));
 }
-
-// return svg.node();
