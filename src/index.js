@@ -2,8 +2,8 @@ import { treemapBinary, interpolate, scaleLinear, scaleOrdinal, format, schemeCa
     treemapResquarify, hierarchy, treemapDice, treemapSliceDice, treemapSlice, treemapSquarify } from "d3/dist/d3";
 import { info } from './data';
 
-const width = 600;
-const height = 600;
+const width = 800;
+const height = 800;
 
 const padding = 20;
 
@@ -12,15 +12,13 @@ const transitionSpeed = 400;
 const x = scaleLinear().rangeRound([0, width]);
 const y = scaleLinear().rangeRound([0, height]);
 
-const svg = select("#dataViz")
+const svg = select("#data-viz")
     .append("svg")
     .attr("width", width)
     .attr("height", height);
 
-
-
 function tile(node, x0, y0, x1, y1) {
-    treemapBinary(node, 0, 0, width, height);
+    treemapResquarify(node, 0, 0, width, height);
     for (const child of node.children) {
         child.x0 = x0 + child.x0 / width * (x1 - x0);
         child.x1 = x0 + child.x1 / width * (x1 - x0);
@@ -32,10 +30,9 @@ function tile(node, x0, y0, x1, y1) {
 const tree = data => treemap()
     .tile(tile)
     (hierarchy(data)
-            .sum(d => d.value)
-            // .sum(d => 5)
-            .sort((a, b) => b.height - a.height)
-        // .sort((a, b) => 0)
+        // .sum(d => 5)
+        .sum(d => d.value)
+        .sort((a, b) => b.height - a.height)
     );
 
 const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
@@ -45,14 +42,22 @@ const formatNum = format(",d")
 let group = svg.append("g")
     .call(render, tree(info));
 
-let id = 0;
+/**
+ *
+ * @param {Object} group The <g> (group) tag SVG elements
+ * @param {Object} root  The d3.treemap object with data and tile methods set
+ */
 function render(group, root) {
     const node = group
         .selectAll("g")
-        .data(root.children.concat(root))
+        // .data(root.children.concat(root))
+        .data(root.children)
         .join("g");
 
-    node.filter(d => d === root ? d.parent : d.children)
+    node.filter(d => {
+        console.log(`this is the D: ${d.children}`);
+        return d === root ? d.parent : d.children;
+    })
         .attr("cursor", "pointer")
         .on("click", d => d === root ? zoomout(root) : zoomin(d));
 
@@ -60,8 +65,6 @@ function render(group, root) {
         .text(d => `${name(d)}\n${formatNum(d.value)}`);
 
     node.append("rect")
-        // .attr("id", d => (d.leafUid = DOM.uid("leaf")).id)
-        // .attr("id", d => (d.leafUid = id++)
         .attr("fill", d => {
             let arr = [13056, 192, 48, 4]
             let maxVal = arr[d.depth];
@@ -73,14 +76,8 @@ function render(group, root) {
         })
         .attr("stroke", "#fff");
 
-    // node.append("clipPath")
-    //     .attr("id", d => (d.clipUid = DOM.uid("clip")).id)
-        // .attr("id", d => (d.clipUid = id++))
-        // .append("use")
-        // .attr("xlink:href", d => d.leafUid.href);
 
     node.append("text")
-        // .attr("clip-path", d => d.clipUid)
         .attr("font-weight", d => d === root ? "bold" : null)
         .selectAll("tspan")
         .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(formatNum(d.value)))
@@ -112,7 +109,8 @@ function zoomin(d) {
 
     svg.transition()
         .duration(transitionSpeed)
-        .call(t => group0.transition(t).remove()
+        .call(t => group0.transition(t)
+            .remove()
             .call(position, d.parent))
         .call(t => group1.transition(t)
             .attrTween("opacity", () => interpolate(0, 1))
