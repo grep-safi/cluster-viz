@@ -17,13 +17,57 @@ const svg = select("#data-viz")
     .attr("width", width)
     .attr("height", height);
 
+function binary(parent) {
+    let rows = 6;
+    let columns = 12;
+
+    if (parent.children.length === 3) {
+        rows = 1;
+        columns = 3;
+    } else if (parent.children.length === 16) {
+        rows = 4;
+        columns = 4;
+    } else if (parent.children.length === 4) {
+        rows = 2;
+        columns = 2;
+    }
+
+    let rowWidth = height / rows;
+    let columnWidth = width / columns;
+
+    let rowIndex = 0;
+    let columnIndex = 0;
+
+    for (const child of parent.children) {
+
+        child.x0 = columnIndex * columnWidth;
+        child.x1 = (columnIndex + 1) * columnWidth;
+
+        child.y0 = (rows - rowIndex - 1) * rowWidth;
+        child.y1 = (rows - rowIndex) * rowWidth;
+
+        columnIndex += 1;
+        if (columnIndex >= columns) {
+            columnIndex = 0;
+            rowIndex += 1;
+        }
+        if (rows === 0) {
+            console.log(`row and col: ${rows} and ${columns} x0: ${child.x0} x1: ${child.x1} y0: ${child.y0} y1: ${child.y1}`);
+        }
+    }
+}
+
 function tile(node, x0, y0, x1, y1) {
-    treemapResquarify(node, 0, 0, width, height);
+    // if (node.children.length === 68) binary(node);
+    binary(node);
+    // treemapResquarify(node, 0, 0, width, height);
+    // console.log(`x0: ${x0} x1: ${x1} y0: ${y0} y1: ${y1}`);
     for (const child of node.children) {
         child.x0 = x0 + child.x0 / width * (x1 - x0);
         child.x1 = x0 + child.x1 / width * (x1 - x0);
         child.y0 = y0 + child.y0 / height * (y1 - y0);
         child.y1 = y0 + child.y1 / height * (y1 - y0);
+
     }
 }
 
@@ -45,24 +89,25 @@ let group = svg.append("g")
 /**
  *
  * @param {Object} group The <g> (group) tag SVG elements
- * @param {Object} root  The d3.treemap object with data and tile methods set
+ * @param {Object} root  The d3.treemap object
  */
 function render(group, root) {
+    // Select all the <g> tags and bind the root's
+    // children as the data and join all the <g> paths
     const node = group
         .selectAll("g")
         // .data(root.children.concat(root))
         .data(root.children)
         .join("g");
 
-    node.filter(d => {
-        console.log(`this is the D: ${d.children}`);
-        return d === root ? d.parent : d.children;
-    })
+    // This returns the root nodes and child nodes and adds
+    // a click event so that the user can zoom in and zoom out
+    node.filter(d => d === root ? d.parent : d.children)
         .attr("cursor", "pointer")
         .on("click", d => d === root ? zoomout(root) : zoomin(d));
 
-    node.append("title")
-        .text(d => `${name(d)}\n${formatNum(d.value)}`);
+    // node.append("title")
+    //     .text(d => `${name(d)}\n${formatNum(d.value)}`);
 
     node.append("rect")
         .attr("fill", d => {

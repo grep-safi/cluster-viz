@@ -22,14 +22,14 @@ function createRandomActiveNodes(cabinets) {
                     let nodeActive = Math.random() > probabilityOfActiveNode ? 1 : 0;
 
                     nodes.push({
-                        "name": `n${l}`,
+                        "name": `Node ${l}`,
                         "value": nodeActive
                     });
                     bladeVal += nodeActive;
                 }
 
                 blades.push({
-                    "name": `b${k}`,
+                    "name": `Blade ${k}`,
                     "children": nodes,
                     // "value": bladeVal
                 });
@@ -37,7 +37,7 @@ function createRandomActiveNodes(cabinets) {
             }
 
             chassis.push({
-                "name": `ch${j}`,
+                "name": `Chassis ${j}`,
                 "children": blades,
                 // "value": chassisVal
             });
@@ -45,7 +45,7 @@ function createRandomActiveNodes(cabinets) {
         }
 
         cabinets.push({
-            "name": `ca${i}`,
+            "name": `cab ${i}`,
             "children": chassis,
             // "value": cabinetVal
         });
