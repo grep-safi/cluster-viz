@@ -1,6 +1,7 @@
 import { treemapBinary, interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap,
     treemapResquarify, hierarchy, treemapDice, treemapSliceDice, treemapSlice, treemapSquarify } from "d3/dist/d3";
 import { info } from './data';
+import { equallySpacedTiling } from "./tiling";
 
 const width = 800;
 const height = 800;
@@ -13,47 +14,8 @@ const y = scaleLinear().rangeRound([0, height]);
 const svg = select("#data-viz")
     .append("svg")
     .attr("width", width)
-    .attr("height", height);
+    .attr("height", height + 20);
 
-function equallySpacedTiling(parent) {
-    let rows = 6;
-    let columns = 12;
-
-    if (parent.children.length === 3) {
-        rows = 1;
-        columns = 3;
-    } else if (parent.children.length === 16) {
-        rows = 4;
-        columns = 4;
-    } else if (parent.children.length === 4) {
-        rows = 2;
-        columns = 2;
-    }
-
-    let rowWidth = height / rows;
-    let columnWidth = width / columns;
-
-    let rowIndex = 0;
-    let columnIndex = 0;
-
-    for (const child of parent.children) {
-
-        child.x0 = columnIndex * columnWidth;
-        child.x1 = (columnIndex + 1) * columnWidth;
-
-        child.y0 = (rows - rowIndex - 1) * rowWidth;
-        child.y1 = (rows - rowIndex) * rowWidth;
-
-        columnIndex += 1;
-        if (columnIndex >= columns) {
-            columnIndex = 0;
-            rowIndex += 1;
-        }
-        if (rows === 0) {
-            console.log(`row and col: ${rows} and ${columns} x0: ${child.x0} x1: ${child.x1} y0: ${child.y0} y1: ${child.y1}`);
-        }
-    }
-}
 
 function tile(node, x0, y0, x1, y1) {
     equallySpacedTiling(node);
@@ -77,9 +39,16 @@ const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
 
 const formatNum = format(",d")
 
+
+
+let currentPosition = svg.append("text")
+    .text("super califragilistic expialodocious")
+    .attr("fill", "gold")
+    .attr("x", 0)
+    .attr("y", height + 15);
+
 let group = svg.append("g")
     .call(render, tree(info));
-
 /**
  *
  * @param {Object} group The <g> (group) tag SVG elements
@@ -100,20 +69,26 @@ function render(group, root) {
         .attr("cursor", "pointer")
         .on("click", d => d === root ? zoomout(root) : zoomin(d));
 
+    currentPosition
+        .text("")
+        .attr("cursor", "pointer")
+        .on("click", function() { zoomout(root) });
+
     // node.append("title")
     //     .text(d => `${name(d)}\n${formatNum(d.value)}`);
 
     node.append("rect")
         .attr("fill", d => {
-            let arr = [13056, 192, 48, 4]
+            let arr = [13056, 192, 48, 4, 1];
             let maxVal = arr[d.depth];
             const colorScale = scaleLinear()
                 .domain([0, maxVal])
-                .range(['white', 'red']);
+                .range(['white', 'hotpink']);
 
-            return d === root ? "#fff" : d.children ? `${colorScale(d.value)}` : "#ddd"
+            // return d === root ? "#fff" : d.children ? `${colorScale(d.value)}` : "#ddd"
+            return d === root ? "#fff" : `${colorScale(d.value)}`;
         })
-        .attr("stroke", "#fff");
+        .attr("stroke", "rgb(0,0,0)");
 
 
     node.append("text")
