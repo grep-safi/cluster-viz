@@ -45,7 +45,7 @@ function createRandomActiveNodes(cabinets) {
         }
 
         cabinets.push({
-            "name": `cab ${i}`,
+            "name": `cabinet ${i}`,
             "children": chassis,
             // "value": cabinetVal
         });

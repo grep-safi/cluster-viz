@@ -5,8 +5,6 @@ import { info } from './data';
 const width = 800;
 const height = 800;
 
-const padding = 20;
-
 const transitionSpeed = 400;
 
 const x = scaleLinear().rangeRound([0, width]);
@@ -17,7 +15,7 @@ const svg = select("#data-viz")
     .attr("width", width)
     .attr("height", height);
 
-function binary(parent) {
+function equallySpacedTiling(parent) {
     let rows = 6;
     let columns = 12;
 
@@ -58,10 +56,7 @@ function binary(parent) {
 }
 
 function tile(node, x0, y0, x1, y1) {
-    // if (node.children.length === 68) binary(node);
-    binary(node);
-    // treemapResquarify(node, 0, 0, width, height);
-    // console.log(`x0: ${x0} x1: ${x1} y0: ${y0} y1: ${y1}`);
+    equallySpacedTiling(node);
     for (const child of node.children) {
         child.x0 = x0 + child.x0 / width * (x1 - x0);
         child.x1 = x0 + child.x1 / width * (x1 - x0);
@@ -74,7 +69,6 @@ function tile(node, x0, y0, x1, y1) {
 const tree = data => treemap()
     .tile(tile)
     (hierarchy(data)
-        // .sum(d => 5)
         .sum(d => d.value)
         .sort((a, b) => b.height - a.height)
     );
@@ -123,12 +117,27 @@ function render(group, root) {
 
 
     node.append("text")
-        .attr("font-weight", d => d === root ? "bold" : null)
+        .attr("font-weight", "bold")
+        .attr("font-size", `13px`)
         .selectAll("tspan")
-        .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(formatNum(d.value)))
+        // .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(``).concat(`Active`).concat(`Nodes: `).concat(`Nodes: ${formatNum(d.value)}`))
+        // .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(``).concat(`Active`).concat(`Nodes: ${formatNum(d.value)}`))
+        .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g))
         .join("tspan")
         .attr("x", 3)
         .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.9 + 1.1 + i * 0.9}em`)
+        .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
+        .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
+        .text(d => d);
+
+    node.append("text")
+        .attr("font-size", `13px`)
+        .selectAll("tspan")
+        .data(d => (`nodes: ${formatNum(d.value)}`).split(/(?=[A-Z][^A-Z])/g))
+        .join("tspan")
+        .attr("x", 3)
+        // .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.9 + 8.5 + i * 0.9}em`)
+        .attr("y", (d, i, nodes) => `5em`)
         .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
         .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
         .text(d => d);
