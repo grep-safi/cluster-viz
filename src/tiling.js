@@ -28,8 +28,8 @@ export function equallySpacedTiling(parent) {
         child.x0 = columnIndex * columnWidth;
         child.x1 = (columnIndex + 1) * columnWidth;
 
-        child.y0 = (rows - rowIndex - 1) * rowWidth + paddingTop;
-        child.y1 = (rows - rowIndex) * rowWidth + paddingTop;
+        child.y0 = (rows - rowIndex - 1) * rowWidth - paddingTop;
+        child.y1 = (rows - rowIndex) * rowWidth - paddingTop;
 
         columnIndex += 1;
         if (columnIndex >= columns) {

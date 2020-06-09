@@ -14,10 +14,7 @@ const y = scaleLinear().rangeRound([0, height]);
 
 const svg = select("#data-viz")
     .append("svg")
-    .attr("viewBox", `0 ${-paddingTop} ${width} ${height}`);
-    // .attr("width", width)
-    // .attr("height", height + paddingTop);
-
+    .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
 
 function tile(node, x0, y0, x1, y1) {
     equallySpacedTiling(node);
@@ -41,11 +38,9 @@ const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
 
 const formatNum = format(",d")
 
-let currentPosition = svg.append("text")
+let currentPosition = select("p")
     .text("super califragilistic expialodocious")
-    .attr("fill", "gold")
-    .attr("x", 2)
-    .attr("y", 15);
+    .attr("style", "color: gold");
 
 let group = svg.append("g")
     .call(render, tree(info));
