@@ -38,7 +38,7 @@ const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
 
 const formatNum = format(",d")
 
-let currentPosition = select("p")
+let currentPosition = select("#currentPosition")
     .text("super califragilistic expialodocious")
     .attr("style", "color: gold");
 
@@ -66,7 +66,6 @@ function render(group, root) {
 
     currentPosition
         .text(name(root))
-        .attr("cursor", "pointer")
         .on("click", function() { name(root) !== 'Cori' ? zoomout(root) : null });
 
     // node.append("title")
@@ -78,7 +77,7 @@ function render(group, root) {
             let maxVal = arr[d.depth];
             const colorScale = scaleLinear()
                 .domain([0, maxVal])
-                .range(['white', 'hotpink']);
+                .range(['white', 'darkred']);
 
             // return d === root ? "#fff" : d.children ? `${colorScale(d.value)}` : "#ddd"
             return d === root ? "#fff" : `${colorScale(d.value)}`;
