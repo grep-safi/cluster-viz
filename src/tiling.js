@@ -1,5 +1,6 @@
 const width = 800;
 const height = 800;
+const paddingTop = 0;
 
 export function equallySpacedTiling(parent) {
     let rows = 6;
@@ -27,8 +28,8 @@ export function equallySpacedTiling(parent) {
         child.x0 = columnIndex * columnWidth;
         child.x1 = (columnIndex + 1) * columnWidth;
 
-        child.y0 = (rows - rowIndex - 1) * rowWidth;
-        child.y1 = (rows - rowIndex) * rowWidth;
+        child.y0 = (rows - rowIndex - 1) * rowWidth + paddingTop;
+        child.y1 = (rows - rowIndex) * rowWidth + paddingTop;
 
         columnIndex += 1;
         if (columnIndex >= columns) {

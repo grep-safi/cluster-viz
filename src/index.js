@@ -5,6 +5,7 @@ import { equallySpacedTiling } from "./tiling";
 
 const width = 800;
 const height = 800;
+const paddingTop = 0;
 
 const transitionSpeed = 400;
 
@@ -13,8 +14,9 @@ const y = scaleLinear().rangeRound([0, height]);
 
 const svg = select("#data-viz")
     .append("svg")
-    .attr("width", width)
-    .attr("height", height + 20);
+    .attr("viewBox", `0 ${-paddingTop} ${width} ${height}`);
+    // .attr("width", width)
+    // .attr("height", height + paddingTop);
 
 
 function tile(node, x0, y0, x1, y1) {
@@ -39,13 +41,11 @@ const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
 
 const formatNum = format(",d")
 
-
-
 let currentPosition = svg.append("text")
     .text("super califragilistic expialodocious")
     .attr("fill", "gold")
-    .attr("x", 0)
-    .attr("y", height + 15);
+    .attr("x", 2)
+    .attr("y", 15);
 
 let group = svg.append("g")
     .call(render, tree(info));
@@ -70,9 +70,9 @@ function render(group, root) {
         .on("click", d => d === root ? zoomout(root) : zoomin(d));
 
     currentPosition
-        .text("")
+        .text(name(root))
         .attr("cursor", "pointer")
-        .on("click", function() { zoomout(root) });
+        .on("click", function() { name(root) !== 'Cori' ? zoomout(root) : null });
 
     // node.append("title")
     //     .text(d => `${name(d)}\n${formatNum(d.value)}`);
@@ -95,8 +95,6 @@ function render(group, root) {
         .attr("font-weight", "bold")
         .attr("font-size", `13px`)
         .selectAll("tspan")
-        // .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(``).concat(`Active`).concat(`Nodes: `).concat(`Nodes: ${formatNum(d.value)}`))
-        // .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g).concat(``).concat(`Active`).concat(`Nodes: ${formatNum(d.value)}`))
         .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g))
         .join("tspan")
         .attr("x", 3)
