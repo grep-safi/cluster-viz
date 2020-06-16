@@ -1,7 +1,36 @@
-const str = "NodeName=nid00009 Arch=x86_64 CoresPerSocket=16  CPUAlloc=0 CPUTot=64 CPULoad=0.59 AvailableFeatures=haswell ActiveFeatures=haswell Gres=craynetwork:4,preemptable:1 NodeAddr=nid00009 NodeHostName=nid00009 Version=19.05.6 OS=Linux 4.12.14-150.17_5.0.90-cray_ari_c #1 SMP Tue Apr 28 21:17:03 UTC 2020 (3e6e478)  RealMemory=120832 AllocMem=0 FreeMem=125914 Sockets=2 Boards=1 State=IDLE ThreadsPerCore=2 TmpDisk=0 Weight=1000 Owner=N/A MCS_label=N/A Partitions=system,resv,resv_shared,interactive  BootTime=2020-05-31T21:02:20 SlurmdStartTime=2020-05-31T21:22:37 CfgTRES=cpu=64,mem=118G,billing=64 AllocTRES= CapWatts=n/a CurrentWatts=128 AveWatts=0 ExtSensorsJoules=n/s ExtSensorsWatts=0 ExtSensorsTemp=n/s ";
-formatData(str);
+const fs = require('fs')
 
-function formatData(string) {
+fs.readFile('data-files/cluster-data.txt', (err, data) => {
+    if (err) throw err;
+
+    const dataStr = data.toString();
+    const dataArr = dataStr.split('\n');
+    const formattedDataArr = [];
+    formattedDataArr.push('[\n')
+
+    for (let i = 0; i < dataArr.length - 1; i++) {
+        const str = dataArr[i];
+        const comma = i === dataArr.length - 2 ? '' : ',';
+
+        const dataLine = formatData(str, comma);
+        formattedDataArr.push(`\t${dataLine}\n`);
+    }
+
+    formattedDataArr.push(']');
+    const formattedDataStr = formattedDataArr.join(' ');
+
+    // let jsonStr = JSON.parse(formattedDataStr);
+
+    fs.writeFile('formattedSControl.txt', formattedDataStr, function(err) {
+        if (err) {
+            return console.error(err);
+        }
+
+        console.log(`Data formatted successfully and stored in formattedSControl.txt file!`);
+    })
+});
+
+function formatData(string, comma) {
     let modifiedStr = string.replace(/  /g, ' ');
     const originalStrArr = modifiedStr.split(' ');
 
@@ -32,11 +61,13 @@ function formatData(string) {
     }
 
     // Add ending curly brace
-    modifiedStringFields.push(' }');
+    modifiedStringFields.push(` }${comma}`);
     // Join with space between each key-value pair
     modifiedStr = modifiedStringFields.join(' ');
     // Parse with json
-    let jsonStr = JSON.parse(modifiedStr);
+    // let jsonStr = JSON.parse(modifiedStr);
+
+    return modifiedStr;
 }
 
 function indexOfKey(arr, targetStr) {
