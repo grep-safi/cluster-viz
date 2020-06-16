@@ -95,8 +95,8 @@ function handleRepairField(arr) {
         let reasonMessage = "";
         let len = arr.length;
         for (let i = index; i < len - 1; i++) {
-            let str = arr.pop();
-            reasonMessage = reasonMessage.concat(` ${str}`);
+            let str = ` ${arr.pop()}`;
+            reasonMessage = str.concat(`${reasonMessage}`);
         }
 
         arr[index] = arr[index].concat(`${reasonMessage}`);
