@@ -3,7 +3,6 @@ formatData(str);
 
 function formatData(string) {
     let modifiedStr = string.replace(/  /g, ' ');
-    // Index 12-22 are not needed
     const originalStrArr = modifiedStr.split(' ');
 
     // Find the indices of the array which correspond to the undesirable field
