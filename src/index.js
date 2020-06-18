@@ -88,11 +88,16 @@ function render(group, root) {
             .style("opacity", 1)
     }
     let mousemove = function(d) {
+        let txt = d.value;
+        if (d.data.nodeData) {
+            txt = d.data.nodeData['NodeName'];
+        }
         Tooltip
-            .html("The exact value of<br>this cell is: " + d.value)
+            .html("The exact value of<br>this cell is: " + txt)
             // .style("left", (mouse(this)[0]+70) + "px")
             // .style("top", (mouse(this)[1]) + "px")
     }
+
     let mouseleave = function(d) {
         Tooltip
             .style("opacity", 0)

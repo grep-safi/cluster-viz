@@ -1,5 +1,9 @@
+import { data } from './jsonData';
+
 // Three node states: down, allocated, idle
 
+let jsonParseIndex = 0;
+console.log(`heloooooooo ${data[0]}`);
 
 function createRandomActiveNodes(cabinets) {
     const numCabinets = 68;// actual = 68
@@ -26,8 +30,10 @@ function createRandomActiveNodes(cabinets) {
 
                     nodes.push({
                         "name": `Node ${l}`,
-                        "value": nodeActive
+                        "value": nodeActive,
+                        "nodeData": data[jsonParseIndex]
                     });
+                    jsonParseIndex += 1;
                     bladeVal += nodeActive;
                 }
 
