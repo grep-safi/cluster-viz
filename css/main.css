@@ -20,3 +20,58 @@ body {
     text-align: center;
     cursor: pointer;
 }
+
+/*.tooltip {*/
+/*    !*visibility: hidden;*!*/
+/*    fill: red;*/
+/*}*/
+
+/*.tooltip:hover {*/
+/*    visibility: visible;*/
+/*    fill: green;*/
+/*}*/
+
+/*.tooltip {*/
+/*    !*visibility: hidden;*!*/
+/*    width: 120px;*/
+/*    background-color: black;*/
+/*    color: #fff;*/
+/*    text-align: center;*/
+/*    border-radius: 6px;*/
+/*    padding: 5px 0;*/
+
+/*    !* Position the tooltip *!*/
+/*    position: absolute;*/
+/*    z-index: 1;*/
+/*}*/
+
+/*.tooltip:hover {*/
+/*    visibility: visible;*/
+/*}*/
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+}
+
+
+.tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+    top: 100%;
+    left: 50%;
+    margin-left: -60px;
+}
+
+.tooltip:hover .tooltiptext {
+    visibility: visible;
+}

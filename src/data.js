@@ -1,3 +1,6 @@
+// Three node states: down, allocated, idle
+
+
 function createRandomActiveNodes(cabinets) {
     const numCabinets = 68;// actual = 68
     const numChassis = 3; // actual = 3

@@ -1,5 +1,5 @@
 import { treemapBinary, interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap,
-    treemapResquarify, hierarchy, treemapDice, treemapSliceDice, treemapSlice, treemapSquarify } from "d3/dist/d3";
+    treemapResquarify, hierarchy, treemapDice, treemapSliceDice, treemapSlice, treemapSquarify, mouse} from "d3/dist/d3";
 import { info } from './data';
 import { equallySpacedTiling } from "./tiling";
 
@@ -68,8 +68,38 @@ function render(group, root) {
         .text(name(root))
         .on("click", function() { name(root) !== 'Cori' ? zoomout(root) : null });
 
-    // node.append("title")
-    //     .text(d => `${name(d)}\n${formatNum(d.value)}`);
+    // create a tooltip
+    let Tooltip = select("#div_template")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px");
+
+    // Three function that change the tooltip when user hover / move / leave a cell
+    let mouseover = function(d) {
+        Tooltip
+            .style("opacity", 1)
+        select(this)
+            .style("stroke", "black")
+            .style("opacity", 1)
+    }
+    let mousemove = function(d) {
+        Tooltip
+            .html("The exact value of<br>this cell is: " + d.value)
+            // .style("left", (mouse(this)[0]+70) + "px")
+            // .style("top", (mouse(this)[1]) + "px")
+    }
+    let mouseleave = function(d) {
+        Tooltip
+            .style("opacity", 0)
+        select(this)
+            .style("stroke", "none")
+            .style("opacity", 1.0)
+    }
 
     node.append("rect")
         .attr("fill", d => {
@@ -79,11 +109,12 @@ function render(group, root) {
                 .domain([0, maxVal])
                 .range(['white', 'darkred']);
 
-            // return d === root ? "#fff" : d.children ? `${colorScale(d.value)}` : "#ddd"
             return d === root ? "#fff" : `${colorScale(d.value)}`;
         })
-        .attr("stroke", "rgb(0,0,0)");
-
+        .attr("stroke", "rgb(0,0,0)")
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
 
     node.append("text")
         .attr("font-weight", "bold")
@@ -99,6 +130,7 @@ function render(group, root) {
 
     node.append("text")
         .attr("font-size", `13px`)
+        // .attr("class", "tooltip")
         .selectAll("tspan")
         .data(d => (`nodes: ${formatNum(d.value)}`).split(/(?=[A-Z][^A-Z])/g))
         .join("tspan")
@@ -107,7 +139,9 @@ function render(group, root) {
         .attr("y", (d, i, nodes) => `5em`)
         .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
         .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
+        // .attr("class", "tooltiptext")
         .text(d => d);
+
 
     group.call(position, root);
 }
