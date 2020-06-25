@@ -6,6 +6,8 @@ import { squeue } from './squeue-data';
 
 function hierarchyData(data) {
     let jsonParseIndex = 0;
+    let count = 9;
+    let jumpCounter = 0;
 
     function createRandomActiveNodes(cabinets) {
         const numCabinets = 68;// actual = 68
@@ -31,16 +33,33 @@ function hierarchyData(data) {
                         let nodeActive = 0;
 
                         let txtVal = getStr(data[jsonParseIndex]);
-                        if (data[jsonParseIndex]) {
-                            nodeActive = data[jsonParseIndex]['State'] === 'ALLOCATED' ? 1 : 0;
+                        let node = data[jsonParseIndex];
+                        if (node) {
+                            nodeActive = node['State'] === 'ALLOCATED' ? 1 : 0;
                         }
 
                         nodes.push({
                             "name": `Node ${l}`,
                             "value": nodeActive,
+                            "NodeName": node ? node['NodeName'] : '',
                             "nodeData": txtVal
                         });
                         jsonParseIndex += 1;
+
+
+
+                        if (node) {
+                            let id = parseInt(node['NodeName'].substring(node['NodeName'].indexOf('d') + 1, node['NodeName'].length));
+                            if(count !== id) {
+                                jumpCounter += 1;
+                                console.log(`jumps: ${count - 1}-${id} jumps: ${jumpCounter}`);
+                                count = id;
+
+                            }
+
+                            count += 1;
+                        }
+
                         bladeVal += nodeActive;
                     }
 
@@ -76,19 +95,9 @@ function hierarchyData(data) {
 
         let txt = '';
 
-        // let txt = `NodeName: ${dataLine['NodeName']}<br />`;
-        // txt = txt.concat(`State: ${dataLine['State']}<br />`);
-        // txt = txt.concat(`CPULoad: ${dataLine['CPULoad']}<br />`);
-        // txt = txt.concat(`FreeMem: ${dataLine['FreeMem']}<br />`);
-        // if (dataLine['Reason']) txt = txt.concat(`Reason: ${dataLine['Reason']}<br />`);
-
         for (const property in dataLine) {
             txt = txt.concat(`${property}: ${dataLine[property]}<br />`);
         }
-
-        // txt.concat(`${'NodeName'}: ${dataLine['NodeName']}<br />`);
-        // txt.concat(`${'State'}: ${dataLine['State']}<br />`);
-        // txt.concat(`${'Arch'}: ${dataLine['Arch']}<br />`);
 
         return txt;
     }
@@ -103,5 +112,43 @@ function hierarchyData(data) {
 
 let info = hierarchyData(data);
 
+let arr = getNodeAddr('nid00064');
+// getNodeAddr('nid00597');
+
+let i = arr[0];
+let j = arr[1];
+let k = arr[2];
+let l = arr[3];
+
+// let i = 0
+// let j = 0
+// let k = 0
+// let l = 0
+
+console.log(`indices: i: ${i} j: ${j} k: ${k} l: ${l}`);
+console.log(`nodename: ${info.children[i].children[j].children[k].children[l].NodeName}`);
+
+// 68 cabinets, 3 chassis, 16 blades, 4 nodes
+function getNodeAddr(nid) {
+    let firstNum = 9;
+    const numCabinets = 68;// actual = 68
+    const numChassis = 3; // actual = 3
+    const numBlades = 16;  // actual = 16
+    const numNodes = 4;   // actual = 4
+
+    let id = parseInt(nid.substring(nid.indexOf('d') + 1, nid.length));
+    id -= firstNum;
+
+    let node = id % numNodes;
+    let blade = Math.floor(id / numNodes);
+    let chassis = Math.floor(blade / numBlades);
+    let cabinet = Math.floor(chassis / numChassis);
+
+    blade = blade % numBlades;
+    chassis = chassis % numChassis;
+    cabinet = cabinet % numCabinets;
+
+    return [cabinet,chassis,blade,node];
+}
 // export { info };
 export { hierarchyData };
