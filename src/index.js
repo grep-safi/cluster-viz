@@ -47,8 +47,10 @@ let currentPosition = select("#currentPosition")
     .text("super califragilistic expialodocious")
     .attr("style", "color: gold");
 
+let hData = hierarchyData(scontrol);
+
 let group = svg.append("g")
-    .call(render, tree(hierarchyData(scontrol)));
+    .call(render, tree(hData));
 /**
  *
  * @param {Object} group The <g> (group) tag SVG elements
@@ -108,14 +110,15 @@ function render(group, root) {
             .style("opacity", 0)
             // .remove();
         select(this)
-            .style("stroke", "none")
+            // .style("stroke", "none")
             .style("opacity", 1.0)
             // .remove();
     }
 
     node.append("rect")
         .attr("fill", d => {
-            let arr = [13056, 192, 48, 4, 1];
+            // let arr = [13056, 192, 48, 4, 1];
+            let arr = [hData.maxCabinet + 1, hData.maxChassis + 1, hData.maxBlade + 1, 4, 1];
             let maxVal = arr[d.depth];
             const colorScale = scaleLinear()
                 .domain([0, maxVal])
@@ -199,4 +202,10 @@ function zoomout(d) {
             .call(position, d))
         .call(t => group1.transition(t)
             .call(position, d.parent));
+}
+
+function onSubmit(e) {
+    e.preventDefault();
+    console.log(`hello ${e.target.value}`);
+    return false;
 }

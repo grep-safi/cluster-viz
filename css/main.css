@@ -49,6 +49,11 @@ body {
 /*    visibility: visible;*/
 /*}*/
 
+#input-box {
+    position: relative;
+    display: inline-block;
+}
+
 .tooltip {
     position: relative;
     display: inline-block;

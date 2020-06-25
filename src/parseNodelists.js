@@ -1309,13 +1309,6 @@ const squeue = [
     { "JOBID": "32039272","USER": "jinjinw","ACCOUNT": "m1515","NODELIST": "nid0[7705-7708]" }
 ];
 
-for (let i = 0; i < squeue.length; i++) {
-    const raw = squeue[i].NODELIST;
-    const str = getNodeListArray(raw);
-    squeue[i].NODELIST = str;
-    // console.log(`raw: ${raw} \nparsed: ${squeue[i].NODELIST[0]}`);
-}
-
 function getNodeListArray(nodes) {
     let list = "";
     let startList = nodes.indexOf('[');
@@ -1350,4 +1343,10 @@ function getNodeListArray(nodes) {
     return [nodes];
 }
 
-console.log(`this is what we're looking for: ${squeue[1].NODELIST[0]}`);
+for (let i = 0; i < squeue.length; i++) {
+    // const raw = squeue[i].NODELIST;
+    // const str = getNodeListArray(raw);
+    squeue[i].NODELIST = getNodeListArray(squeue[i].NODELIST);
+}
+
+export { squeue };
