@@ -1,7 +1,12 @@
-import { treemapBinary, interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap,
-    treemapResquarify, hierarchy, treemapDice, treemapSliceDice, treemapSlice, treemapSquarify, mouse} from "d3/dist/d3";
-import { info } from './data';
+import { interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap,
+    hierarchy, mouse} from "d3/dist/d3";
+// import { info } from './data';
+
 import { equallySpacedTiling } from "./tiling";
+
+import { hierarchyData } from './data';
+import { scontrol } from './scontrol-data';
+import { squeue } from './squeue-data';
 
 const width = 800;
 const height = 800;
@@ -43,7 +48,7 @@ let currentPosition = select("#currentPosition")
     .attr("style", "color: gold");
 
 let group = svg.append("g")
-    .call(render, tree(info));
+    .call(render, tree(hierarchyData(scontrol)));
 /**
  *
  * @param {Object} group The <g> (group) tag SVG elements
@@ -90,7 +95,7 @@ function render(group, root) {
     let mousemove = function(d) {
         let txt = d.value;
         if (d.data.nodeData) {
-            txt = d.data.nodeData['NodeName'];
+            txt = d.data.nodeData;
         }
         Tooltip
             .html("The exact value of<br>this cell is: " + txt)
@@ -101,9 +106,11 @@ function render(group, root) {
     let mouseleave = function(d) {
         Tooltip
             .style("opacity", 0)
+            // .remove();
         select(this)
             .style("stroke", "none")
             .style("opacity", 1.0)
+            // .remove();
     }
 
     node.append("rect")

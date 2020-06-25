@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-fs.readFile('data-files/cluster-data.txt', (err, data) => {
+fs.readFile('data-files/scontrol.txt', (err, data) => {
     if (err) throw err;
 
     const dataStr = data.toString();
@@ -21,7 +21,7 @@ fs.readFile('data-files/cluster-data.txt', (err, data) => {
 
     let jsonStr = JSON.parse(formattedDataStr);
 
-    fs.writeFile('formattedSControl.txt', formattedDataStr, function(err) {
+    fs.writeFile('./formatted-scontrol.txt', formattedDataStr, function(err) {
         if (err) {
             return console.error(err);
         }

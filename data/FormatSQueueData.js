@@ -1,6 +1,8 @@
-const fs = require('fs')
+const fs = require('fs');
 
-fs.readFile('data-files/SQueueOutput.txt', (err, data) => {
+const outputFilename = 'formatted-squeue.txt';
+
+fs.readFile('data-files/squeue.txt', (err, data) => {
     if (err) throw err;
 
     const dataStr = data.toString().replace('  ', ' ');
@@ -26,11 +28,11 @@ fs.readFile('data-files/SQueueOutput.txt', (err, data) => {
     formattedDataArr.push(']');
     const formattedDataStr = formattedDataArr.join(' ');
 
-    fs.writeFile('kevin-formatted-squeue.txt', formattedDataStr, function(err) {
+    fs.writeFile(outputFilename, formattedDataStr, function(err) {
         if (err) {
             return console.error(err);
         }
 
-        console.log(`Data formatted successfully and stored in formattedSQueue.txt file!`);
+        console.log(`Data formatted successfully and stored in ${outputFilename} file!`);
     })
 })
