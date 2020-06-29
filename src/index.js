@@ -1,4 +1,4 @@
-import { interpolate, scaleLinear, scaleOrdinal, format, schemeCategory10, rgb, select, treemap,
+import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
     hierarchy, mouse} from "d3/dist/d3";
 // import { info } from './data';
 
@@ -22,13 +22,12 @@ const svg = select("#data-viz")
     .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
 
 function tile(node, x0, y0, x1, y1) {
-    equallySpacedTiling(node);
+    equallySpacedTiling(node, width, height, paddingTop);
     for (const child of node.children) {
         child.x0 = x0 + child.x0 / width * (x1 - x0);
         child.x1 = x0 + child.x1 / width * (x1 - x0);
         child.y0 = y0 + child.y0 / height * (y1 - y0);
         child.y1 = y0 + child.y1 / height * (y1 - y0);
-
     }
 }
 
@@ -38,6 +37,9 @@ const tree = data => treemap()
         .sum(d => d.value)
         .sort((a, b) => b.height - a.height)
     );
+
+// const s = scaleLog().domain([1, 5000]).range([0,5])
+// console.log(`scaleleog stuff: ${s(2)}`);
 
 const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
 
@@ -51,6 +53,9 @@ let hData = hierarchyData(scontrol);
 
 let group = svg.append("g")
     .call(render, tree(hData));
+
+// console.log(`hdata maxcabinet: ${hData.maxCabinet}`);
+
 /**
  *
  * @param {Object} group The <g> (group) tag SVG elements
@@ -69,14 +74,21 @@ function render(group, root) {
     // a click event so that the user can zoom in and zoom out
     node.filter(d => d === root ? d.parent : d.children)
         .attr("cursor", "pointer")
-        .on("click", d => d === root ? zoomout(root) : zoomin(d));
+        .on("click", d => {
+            Tooltip.remove();
+            return d === root ? zoomout(root) : zoomin(d);
+        });
 
     currentPosition
         .text(name(root))
-        .on("click", function() { name(root) !== 'Cori' ? zoomout(root) : null });
+        .on("click", function() {
+            Tooltip.remove();
+            return name(root) !== 'Cori' ? zoomout(root) : null;
+        });
 
     // create a tooltip
     let Tooltip = select("#div_template")
+    // let Tooltip = select("#data-viz")
         .append("div")
         .style("opacity", 0)
         .attr("class", "tooltip")
@@ -117,14 +129,14 @@ function render(group, root) {
 
     node.append("rect")
         .attr("fill", d => {
-            let arr = [13056, 192, 48, 4, 1];
-            // let arr = [hData.maxCabinet + 1, hData.maxChassis + 1, hData.maxBlade + 1, 4, 1];
-            let maxVal = arr[d.depth];
-            const colorScale = scaleLinear()
-                .domain([0, maxVal])
+            // let arr = [13056, 192, 48, 4, 1];
+            let arr = [13056, hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
+            let maxVal = arr[d.depth] + 1;
+            const colorScale = scaleLog()
+                .domain([1, maxVal])
                 .range(['white', 'darkred']);
 
-            return d === root ? "#fff" : `${colorScale(d.value)}`;
+            return d === root ? "#fff" : `${colorScale(d.value + 1)}`;
         })
         .attr("stroke", "rgb(0,0,0)")
         .on("mouseover", mouseover)

@@ -19,7 +19,8 @@ fs.readFile('data-files/scontrol.txt', (err, data) => {
     formattedDataArr.push(']');
     const formattedDataStr = formattedDataArr.join(' ');
 
-    let jsonStr = JSON.parse(formattedDataStr);
+    // If the following throws an error, then the formattedDataStr is not in JSON format
+    JSON.parse(formattedDataStr);
 
     fs.writeFile('./formatted-scontrol.txt', formattedDataStr, function(err) {
         if (err) {

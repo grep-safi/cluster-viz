@@ -1,50 +1,13 @@
-import { data } from './jsonData';
+// import { data } from './jsonData';
 import { squeue } from './parseNodelists';
-import { scontrol } from './scontrol-data';
+// import { scontrol } from './scontrol-data';
 // import { squeue } from './squeue-data';
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// let option = 'USER';
-let option = 'ACCOUNT';
+let option = 'USER';
+// let option = 'ACCOUNT';
 // let option = 'JOBID';
 
-const locator = "gc5";
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+const locator = "mjd";
 
 let nList = [];
 for (let i = 0; i < squeue.length; i++) {
@@ -53,7 +16,7 @@ for (let i = 0; i < squeue.length; i++) {
     }
 }
 
-console.log(`locator: ${locator} and nList: ${nList}`);
+// console.log(`locator: ${locator} and nList: ${nList}`);
 
 function hierarchyData(data) {
     let jsonParseIndex = 0;
@@ -62,7 +25,7 @@ function hierarchyData(data) {
     let maxChassis = 0;
     let maxBlade = 0;
     let maxNode = 0;
-    function createRandomActiveNodes(cabinets) {
+    function generateNodeHierarchy(cabinets) {
 
         const numCabinets = 68;// actual = 68
         const numChassis = 3; // actual = 3
@@ -88,13 +51,11 @@ function hierarchyData(data) {
 
                         let txtVal = getStr(data[jsonParseIndex]);
                         let node = data[jsonParseIndex];
-                        if (node && getNodeID(node['NodeName']) === nodeNum) {
-                            // nodeActive = node['State'] === 'ALLOCATED' ? 1 : 0;
-                            nodeActive = 0;
-
-                            if (node['State'] === 'ALLOCATED' && (node['AvailableFeatures'] === 'haswell')) {
-                                nodeActive = 1;
-                            }
+                        // If node is a compute node, add it to hierarchy tree, else it is an 'invisible' service node
+                        // So add a dummy node to the tree
+                        if (getNodeID(node['NodeName']) === nodeNum) {
+                            // Check if the node is active
+                            nodeActive = isActive(node) ? 1 : 0;
 
                             nodes.push({
                                 "name": `Node ${l}`,
@@ -105,8 +66,6 @@ function hierarchyData(data) {
 
                             jsonParseIndex += 1;
                         } else {
-                            console.log(`jsonparse; ${jsonParseIndex} and data ${data[jsonParseIndex]} and ofcourse the maxsize: ${data.length}`);
-
                             nodes.push({
                                 "name": "service node",
                                 "value": 0,
@@ -145,12 +104,9 @@ function hierarchyData(data) {
         }
     }
 
-    const cabinets = [];
-    createRandomActiveNodes(cabinets); // Creates cabinets with randomly activated nodes
-
-
-    function getActive(n) {
-
+    // Does the checks on the node to see if it should be labeled active
+    function isActive(n) {
+        return n['State'] === 'ALLOCATED' && (n['AvailableFeatures'] === 'haswell');
     }
 
     // Returns an html string with all of the data in the node
@@ -171,6 +127,10 @@ function hierarchyData(data) {
         return parseInt(str.substring(str.indexOf('d') + 1, str.length));
     }
 
+    const cabinets = [];
+    generateNodeHierarchy(cabinets); // Creates cabinets with randomly activated nodes
+
+
     const info = {
         "name": "Cori",
         "children": cabinets,
@@ -182,47 +142,4 @@ function hierarchyData(data) {
     return info;
 }
 
-
-
-// let info = hierarchyData(data);
-
-// let arr = getNodeAddr('nid00064');
-// getNodeAddr('nid00597');
-
-// let i = arr[0];
-// let j = arr[1];
-// let k = arr[2];
-// let l = arr[3];
-
-// let i = 0
-// let j = 0
-// let k = 0
-// let l = 0
-
-// console.log(`indices: i: ${i} j: ${j} k: ${k} l: ${l}`);
-// console.log(`nodename: ${info.children[i].children[j].children[k].children[l].NodeName}`);
-
-// 68 cabinets, 3 chassis, 16 blades, 4 nodes
-// function getNodeAddr(nid) {
-//     let firstNum = 9;
-//     const numCabinets = 68;// actual = 68
-//     const numChassis = 3; // actual = 3
-//     const numBlades = 16;  // actual = 16
-//     const numNodes = 4;   // actual = 4
-//
-//     let id = parseInt(nid.substring(nid.indexOf('d') + 1, nid.length));
-//     id -= firstNum;
-//
-//     let node = id % numNodes;
-//     let blade = Math.floor(id / numNodes);
-//     let chassis = Math.floor(blade / numBlades);
-//     let cabinet = Math.floor(chassis / numChassis);
-//
-//     blade = blade % numBlades;
-//     chassis = chassis % numChassis;
-//     cabinet = cabinet % numCabinets;
-//
-//     return [cabinet,chassis,blade,node];
-// }
-// export { info };
 export { hierarchyData };

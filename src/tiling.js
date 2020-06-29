@@ -1,8 +1,4 @@
-const width = 800;
-const height = 800;
-const paddingTop = 0;
-
-export function equallySpacedTiling(parent) {
+export function equallySpacedTiling(parent, width, height, paddingTop) {
     let rows = 6;
     let columns = 12;
 
@@ -35,9 +31,6 @@ export function equallySpacedTiling(parent) {
         if (columnIndex >= columns) {
             columnIndex = 0;
             rowIndex += 1;
-        }
-        if (rows === 0) {
-            console.log(`row and col: ${rows} and ${columns} x0: ${child.x0} x1: ${child.x1} y0: ${child.y0} y1: ${child.y1}`);
         }
     }
 }
