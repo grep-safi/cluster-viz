@@ -117,8 +117,8 @@ function render(group, root) {
 
     node.append("rect")
         .attr("fill", d => {
-            // let arr = [13056, 192, 48, 4, 1];
-            let arr = [hData.maxCabinet + 1, hData.maxChassis + 1, hData.maxBlade + 1, 4, 1];
+            let arr = [13056, 192, 48, 4, 1];
+            // let arr = [hData.maxCabinet + 1, hData.maxChassis + 1, hData.maxBlade + 1, 4, 1];
             let maxVal = arr[d.depth];
             const colorScale = scaleLinear()
                 .domain([0, maxVal])
