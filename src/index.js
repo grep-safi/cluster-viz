@@ -33,6 +33,11 @@ function isolateFn() {
 }
 
 function createTreemap(hData) {
+    let shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
+    let shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
+
+    // console.log(`shiftx and y: ${shiftX} and y${shiftY}`);
+
     select('#data-viz').selectAll('*').remove();
     select('#div_template').selectAll('*').remove();
     const svg = select("#data-viz")
@@ -90,8 +95,8 @@ function createTreemap(hData) {
 
         // create a tooltip
         let Tooltip = select("#div_template")
-            // let Tooltip = select("#data-viz")
             .append("div")
+            // .style("position", "absolute")
             .style("opacity", 0)
             .style("pointer-events", "none")
             .attr("class", "tooltip")
@@ -116,9 +121,18 @@ function createTreemap(hData) {
                 if (!d.data.nodeData) txt = `This is a service node`;
             }
 
-            let x = event.pageX - document.getElementById('data-viz').getBoundingClientRect().x + 10
-            let y = event.pageY - document.getElementById('data-viz').getBoundingClientRect().y + 10
+            // console.log(`event.pagex: ${event.pageX} and y: ${event.pageY} boundingclient: ${document.getElementById('data-viz').getBoundingClientRect().x}
+            // and ${document.getElementById('data-viz').getBoundingClientRect().y}`);
+            // let x = event.pageX - document.getElementById('data-viz').getBoundingClientRect().x + 10
+            // let y = event.pageY - document.getElementById('data-viz').getBoundingClientRect().y + 10
 
+            // let x = event.pageX - shiftX + 10;
+            // let y = event.pageY - shiftY + 10;
+
+            let x = event.pageX - 480 + 10;
+            let y = event.pageY - 180 + 10;
+
+            console.log(`x and y: ${x} and ${y}`);
             Tooltip
                 .html(txt)
                 .style("left", x + "px")
