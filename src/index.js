@@ -1,5 +1,5 @@
 import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
-    hierarchy, mouse, json} from "d3/dist/d3";
+    hierarchy, mouse, json, event} from "d3/dist/d3";
 // import { info } from './data';
 
 import { equallySpacedTiling } from "./tiling";
@@ -70,6 +70,62 @@ function render(group, root) {
         .data(root.children)
         .join("g");
 
+
+    // create a tooltip
+    let Tooltip = select("#div_template")
+        // let Tooltip = select("#data-viz")
+        .append("div")
+        .style("opacity", 0)
+        .attr("class", "tooltip")
+        .style("background-color", "white")
+        .style("border", "solid")
+        .style("border-width", "2px")
+        .style("border-radius", "5px")
+        .style("padding", "5px");
+
+    // Three functions that change the tooltip when user hover / move / leave a cell
+    let mouseover = function(d) {
+        Tooltip
+            .style("opacity", 1)
+        // select(this)
+            // .style("stroke", "black")
+            // .style("opacity", 1)
+    }
+    let mousemove = function(d) {
+        let txt = d.value;
+        if (d.data.nodeData) {
+            txt = d.data.nodeData;
+        }
+
+        let x = event.pageX - document.getElementById('data-viz').getBoundingClientRect().x + 10
+        let y = event.pageY - document.getElementById('data-viz').getBoundingClientRect().y + 10
+
+        Tooltip
+            .html("The exact value of<br>this cell is: " + txt)
+            .style("left", x + "px")
+            .style("top", y + "px");
+
+        // Tooltip
+        //     .html("The exact value of<br>this cell is: " + txt)
+        //     .style("left", (mouse(this)[0]) + "px")
+        //     .style("top", (mouse(this)[1]) + "px")
+    }
+
+    let mouseleave = function(d) {
+        Tooltip
+            .style("opacity", 0)
+        // .remove();
+        select(this)
+            // .style("stroke", "none")
+            .style("opacity", 1.0)
+        // .remove();
+    }
+
+    node
+        .on("mouseover", mouseover)
+        .on("mousemove", mousemove)
+        .on("mouseleave", mouseleave);
+
     // This returns the root nodes and child nodes and adds
     // a click event so that the user can zoom in and zoom out
     node.filter(d => d === root ? d.parent : d.children)
@@ -86,47 +142,6 @@ function render(group, root) {
             return name(root) !== 'Cori' ? zoomout(root) : null;
         });
 
-    // create a tooltip
-    let Tooltip = select("#div_template")
-    // let Tooltip = select("#data-viz")
-        .append("div")
-        .style("opacity", 0)
-        .attr("class", "tooltip")
-        .style("background-color", "white")
-        .style("border", "solid")
-        .style("border-width", "2px")
-        .style("border-radius", "5px")
-        .style("padding", "5px");
-
-    // Three function that change the tooltip when user hover / move / leave a cell
-    let mouseover = function(d) {
-        Tooltip
-            .style("opacity", 1)
-        select(this)
-            .style("stroke", "black")
-            .style("opacity", 1)
-    }
-    let mousemove = function(d) {
-        let txt = d.value;
-        if (d.data.nodeData) {
-            txt = d.data.nodeData;
-        }
-        Tooltip
-            .html("The exact value of<br>this cell is: " + txt)
-            // .style("left", (mouse(this)[0]+70) + "px")
-            // .style("top", (mouse(this)[1]) + "px")
-    }
-
-    let mouseleave = function(d) {
-        Tooltip
-            .style("opacity", 0)
-            // .remove();
-        select(this)
-            // .style("stroke", "none")
-            .style("opacity", 1.0)
-            // .remove();
-    }
-
     node.append("rect")
         .attr("fill", d => {
             // let arr = [13056, 192, 48, 4, 1];
@@ -138,10 +153,8 @@ function render(group, root) {
 
             return d === root ? "#fff" : `${colorScale(d.value + 1)}`;
         })
-        .attr("stroke", "rgb(0,0,0)")
-        .on("mouseover", mouseover)
-        .on("mousemove", mousemove)
-        .on("mouseleave", mouseleave);
+        .attr("stroke", "rgb(0,0,0)");
+
 
     node.append("text")
         .attr("font-weight", "bold")
