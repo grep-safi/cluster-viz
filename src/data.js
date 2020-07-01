@@ -14,6 +14,7 @@ function hierarchyData(data, selectedOption, selectedLocator) {
     const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
 
     const locateSqueue = optionsArr.includes(option.toUpperCase());
+    const locateNode = option === 'node';
 
     let nList = [];
     for (let i = 0; i < squeue.length; i++) {
@@ -60,7 +61,7 @@ function hierarchyData(data, selectedOption, selectedLocator) {
                         // So add a dummy node to the tree
                         if (getNodeID(node['NodeName']) === nodeNum) {
                             // Check if the node is active
-                            nodeActive = isActive(node, nodeNum, locateSqueue, nList) ? 1 : 0;
+                            nodeActive = isActive(node, nodeNum, locateSqueue, nList, locateNode, locator) ? 1 : 0;
 
                             nodes.push({
                                 "name": `Node ${l}`,
@@ -110,9 +111,21 @@ function hierarchyData(data, selectedOption, selectedLocator) {
     }
 
     // Does the checks on the node to see if it should be labeled active
-    function isActive(n, nNum, locate, nList) {
-        if (locate) {
+    function isActive(n, nNum, locateJob, nList, locateNode, nodeAttrs) {
+        if (locateJob) {
             return nList.includes(n['NodeName']);
+        }
+
+        if (locateNode) {
+            let bool = true;
+            let attrList = nodeAttrs.split(' ');
+            for (let i = 0; i < attrList.length; i++) {
+                let args = attrList[i].split(',');
+                bool = bool && n[args[0]] === args[1];
+                // console.log(`args: ${args[0]}: ${args[1]}`);
+            }
+
+            return bool ? 1 : 0;
         }
 
         return n['State'] === 'ALLOCATED' && (n['AvailableFeatures'] === 'haswell');

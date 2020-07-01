@@ -26,7 +26,7 @@ function isolateFn() {
     let option = document.getElementById("node-options").value;
     let txt = document.getElementById("myText").value;
 
-    console.log(`option: ${option} and txt: ${txt.split(' ')}`);
+    console.log(`option: ${option} and txt: ${txt}`);
 
     treemapData = hierarchyData(scontrol, option, txt);
     createTreemap(treemapData);
@@ -34,6 +34,7 @@ function isolateFn() {
 
 function createTreemap(hData) {
     select('#data-viz').selectAll('*').remove();
+    select('#div_template').selectAll('*').remove();
     const svg = select("#data-viz")
         .append("svg")
         .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
@@ -154,7 +155,7 @@ function createTreemap(hData) {
             .attr("fill", d => {
                 // let arr = [13056, 192, 48, 4, 1];
                 let arr = [13056, hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
-                let maxVal = arr[d.depth] + 1;
+                let maxVal = arr[d.depth] + 2;
                 const colorScale = scaleLog()
                     .domain([1, maxVal])
                     .range(['white', 'green']);
