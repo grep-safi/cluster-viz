@@ -1,5 +1,6 @@
 // import { data } from './jsonData';
 import { squeue } from './parseNodelists';
+import * as d3 from 'd3/dist/d3';
 // import { scontrol } from './scontrol-data';
 // import { squeue } from './squeue-data';
 

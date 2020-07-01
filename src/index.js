@@ -1,5 +1,5 @@
 import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
-    hierarchy, mouse} from "d3/dist/d3";
+    hierarchy, mouse, json} from "d3/dist/d3";
 // import { info } from './data';
 
 import { equallySpacedTiling } from "./tiling";
