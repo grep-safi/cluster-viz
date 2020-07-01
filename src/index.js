@@ -76,6 +76,7 @@ function render(group, root) {
         // let Tooltip = select("#data-viz")
         .append("div")
         .style("opacity", 0)
+        .style("pointer-events", "none")
         .attr("class", "tooltip")
         .style("background-color", "white")
         .style("border", "solid")
@@ -90,12 +91,12 @@ function render(group, root) {
     }
     let mousemove = function(d) {
         const depth = d.depth - 1;
-        console.log(`depth: ${depth}`);
         let arr = ["Cabinet", "Chassis", "Blade"];
         let txt = `The number of active nodes in this ${arr[depth]} is: ${d.value}`;
         if (depth === 3) {
             txt = d.data.nodeData;
             txt = `Node Details <br> ${d.data.nodeData}`;
+            if (!d.data.nodeData) txt = `This is a service node`;
         }
 
         let x = event.pageX - document.getElementById('data-viz').getBoundingClientRect().x + 10
