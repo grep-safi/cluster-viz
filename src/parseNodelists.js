@@ -2,9 +2,7 @@ const squeue = [
     { "JOBID": "32068467","USER": "mjd","ACCOUNT": "majorana","NODELIST": "nid00593" },
     { "JOBID": "32068466","USER": "alsdata","ACCOUNT": "als","NODELIST": "nid00597" },
     { "JOBID": "32068432","USER": "alsdata","ACCOUNT": "als","NODELIST": "nid00596" },
-
     { "JOBID": "32026459","USER": "slrath","ACCOUNT": "m3615","NODELIST": "nid[07071-07072,07110-07111,11112-11113,11134-11135]" },
-
     { "JOBID": "32059172","USER": "jmorales","ACCOUNT": "lz","NODELIST": "nid02762" },
     { "JOBID": "32043521","USER": "lzprod","ACCOUNT": "lz","NODELIST": "nid00848" },
     { "JOBID": "32068565","USER": "zhenyaof","ACCOUNT": "m1338","NODELIST": "nid00[139-170]" },

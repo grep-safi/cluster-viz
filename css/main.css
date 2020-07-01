@@ -2,27 +2,28 @@ body {
     background-color: darkslategrey;
 }
 
+#selector-box {
+    border: 1px solid crimson;
+    margin: auto;
+    width: 17%;
+    /*display: inline-block;*/
+    /*margin: 0 auto;*/
+    /*display: inline-block;*/
+}
+
+#selector-text {
+    font-size: 30px;
+    color: lightblue;
+}
 
 #title {
     text-align: center;
-
 }
+
 #currentPosition {
     text-align: center;
     cursor: pointer;
 }
-
-
-
-/*#data-viz {*/
-/*    border: 1px solid gold;*/
-/*    width: 800px;*/
-/*    height: 800px;*/
-/*    position: relative;*/
-/*    margin: 0 auto;*/
-/*    overflow: visible;*/
-/*    !*color: ;*!*/
-/*}*/
 
 #container {
     width: 800px;

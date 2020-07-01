@@ -4,22 +4,26 @@ import * as d3 from 'd3/dist/d3';
 // import { scontrol } from './scontrol-data';
 // import { squeue } from './squeue-data';
 
-let option = 'USER';
-// let option = 'ACCOUNT';
-// let option = 'JOBID';
+function hierarchyData(data, selectedOption, selectedLocator) {
 
-const locator = "mjd";
+    let option = selectedOption;
+    let locator = selectedLocator;
+    if (!option) option = '';
+    if (!locator) locator = -1;
 
-let nList = [];
-for (let i = 0; i < squeue.length; i++) {
-    if (squeue[i][option] === locator) {
-        nList = nList.concat(squeue[i].NODELIST);
+    const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
+
+    const locateSqueue = optionsArr.includes(option.toUpperCase());
+
+    let nList = [];
+    for (let i = 0; i < squeue.length; i++) {
+        if (squeue[i][option] === locator) {
+            nList = nList.concat(squeue[i].NODELIST);
+        }
     }
-}
 
-// console.log(`locator: ${locator} and nList: ${nList}`);
+    console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
 
-function hierarchyData(data) {
     let jsonParseIndex = 0;
 
     let maxCabinet = 0;
@@ -56,7 +60,7 @@ function hierarchyData(data) {
                         // So add a dummy node to the tree
                         if (getNodeID(node['NodeName']) === nodeNum) {
                             // Check if the node is active
-                            nodeActive = isActive(node) ? 1 : 0;
+                            nodeActive = isActive(node, nodeNum, locateSqueue, nList) ? 1 : 0;
 
                             nodes.push({
                                 "name": `Node ${l}`,
@@ -106,7 +110,11 @@ function hierarchyData(data) {
     }
 
     // Does the checks on the node to see if it should be labeled active
-    function isActive(n) {
+    function isActive(n, nNum, locate, nList) {
+        if (locate) {
+            return nList.includes(n['NodeName']);
+        }
+
         return n['State'] === 'ALLOCATED' && (n['AvailableFeatures'] === 'haswell');
     }
 
