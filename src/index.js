@@ -87,38 +87,29 @@ function render(group, root) {
     let mouseover = function(d) {
         Tooltip
             .style("opacity", 1)
-        // select(this)
-            // .style("stroke", "black")
-            // .style("opacity", 1)
     }
     let mousemove = function(d) {
-        let txt = d.value;
-        if (d.data.nodeData) {
+        const depth = d.depth - 1;
+        console.log(`depth: ${depth}`);
+        let arr = ["Cabinet", "Chassis", "Blade"];
+        let txt = `The number of active nodes in this ${arr[depth]} is: ${d.value}`;
+        if (depth === 3) {
             txt = d.data.nodeData;
+            txt = `Node Details <br> ${d.data.nodeData}`;
         }
 
         let x = event.pageX - document.getElementById('data-viz').getBoundingClientRect().x + 10
         let y = event.pageY - document.getElementById('data-viz').getBoundingClientRect().y + 10
 
         Tooltip
-            .html("The exact value of<br>this cell is: " + txt)
+            .html(txt)
             .style("left", x + "px")
             .style("top", y + "px");
-
-        // Tooltip
-        //     .html("The exact value of<br>this cell is: " + txt)
-        //     .style("left", (mouse(this)[0]) + "px")
-        //     .style("top", (mouse(this)[1]) + "px")
     }
 
     let mouseleave = function(d) {
         Tooltip
             .style("opacity", 0)
-        // .remove();
-        select(this)
-            // .style("stroke", "none")
-            .style("opacity", 1.0)
-        // .remove();
     }
 
     node
@@ -149,7 +140,7 @@ function render(group, root) {
             let maxVal = arr[d.depth] + 1;
             const colorScale = scaleLog()
                 .domain([1, maxVal])
-                .range(['white', 'darkred']);
+                .range(['white', 'green']);
 
             return d === root ? "#fff" : `${colorScale(d.value + 1)}`;
         })
