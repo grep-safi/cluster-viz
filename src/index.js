@@ -109,8 +109,8 @@ function createTreemap(hData) {
         }
         let mousemove = function(d) {
             const depth = d.depth - 1;
-            let arr = ["Cabinet", "Chassis", "Blade"];
-            let txt = `The number of active nodes in this ${arr[depth]} is: ${d.value}`;
+            let arr = ["cabinet", "chassis", "blade"];
+            let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
             if (depth === 3) {
                 txt = d.data.nodeData;
                 txt = `Node Details <br> ${d.data.nodeData}`;
@@ -189,7 +189,6 @@ function createTreemap(hData) {
 
         node.append("text")
             .attr("font-size", `13px`)
-            // .attr("class", "tooltip")
             .selectAll("tspan")
             .data(d => (`nodes: ${formatNum(d.value)}`).split(/(?=[A-Z][^A-Z])/g))
             .join("tspan")
@@ -198,7 +197,6 @@ function createTreemap(hData) {
             .attr("y", (d, i, nodes) => `5em`)
             .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
             .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
-            // .attr("class", "tooltiptext")
             .text(d => d);
 
 

@@ -26,7 +26,6 @@ function hierarchyData(selectedOption, selectedLocator) {
     let maxCabinet = 0;
     let maxChassis = 0;
     let maxBlade = 0;
-    let maxNode = 0;
     function generateNodeHierarchy(cabinets) {
 
         const numCabinets = 68;// actual = 68
