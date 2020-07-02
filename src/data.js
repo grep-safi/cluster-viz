@@ -1,10 +1,9 @@
-// import { data } from './jsonData';
-import { squeue } from './parseNodelists';
-import * as d3 from 'd3/dist/d3';
+import { squeue } from './squeue-data';
 // import { scontrol } from './scontrol-data';
-// import { squeue } from './squeue-data';
 
 function hierarchyData(data, selectedOption, selectedLocator) {
+
+    console.log(`data stuffzzaskdlfn ${data[0]}`);
 
     let option = selectedOption;
     let locator = selectedLocator;
@@ -23,7 +22,7 @@ function hierarchyData(data, selectedOption, selectedLocator) {
         }
     }
 
-    console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
+    // console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
 
     let jsonParseIndex = 0;
 

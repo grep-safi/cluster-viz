@@ -2,11 +2,10 @@ import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategor
     hierarchy, mouse, json, event} from "d3/dist/d3";
 // import { info } from './data';
 
-import { equallySpacedTiling } from "./tiling";
+import { equallySpacedTiling } from "./utils/tiling";
 
 import { hierarchyData } from './data';
 import { scontrol } from './scontrol-data';
-import { squeue } from './squeue-data';
 
 const width = 800;
 const height = 800;
@@ -36,12 +35,13 @@ function createTreemap(hData) {
     let shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
     let shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
 
-    // console.log(`shiftx and y: ${shiftX} and y${shiftY}`);
+    console.log(`shiftx and y: ${shiftX} and y${shiftY}`);
 
     select('#data-viz').selectAll('*').remove();
     select('#div_template').selectAll('*').remove();
     const svg = select("#data-viz")
         .append("svg")
+        .attr("id", 'root')
         .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
 
     function tile(node, x0, y0, x1, y1) {
@@ -123,16 +123,16 @@ function createTreemap(hData) {
 
             // console.log(`event.pagex: ${event.pageX} and y: ${event.pageY} boundingclient: ${document.getElementById('data-viz').getBoundingClientRect().x}
             // and ${document.getElementById('data-viz').getBoundingClientRect().y}`);
-            // let x = event.pageX - document.getElementById('data-viz').getBoundingClientRect().x + 10
-            // let y = event.pageY - document.getElementById('data-viz').getBoundingClientRect().y + 10
+            let x = event.pageX - document.getElementById('root').getBoundingClientRect().x + 10
+            let y = event.pageY - document.getElementById('root').getBoundingClientRect().y + 10
 
             // let x = event.pageX - shiftX + 10;
             // let y = event.pageY - shiftY + 10;
 
-            let x = event.pageX - 480 + 10;
-            let y = event.pageY - 180 + 10;
+            // let x = event.pageX - 480;
+            // let y = event.pageY - 160;
 
-            console.log(`x and y: ${x} and ${y}`);
+            // console.log(`x and y: ${x} and ${y}`);
             Tooltip
                 .html(txt)
                 .style("left", x + "px")

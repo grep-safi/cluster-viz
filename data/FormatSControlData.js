@@ -1,6 +1,6 @@
 const fs = require('fs')
 
-fs.readFile('data-files/scontrol.txt', (err, data) => {
+fs.readFile('raw-data-files/scontrol.txt', (err, data) => {
     if (err) throw err;
 
     const dataStr = data.toString();
@@ -35,7 +35,7 @@ function formatData(string, comma) {
     let modifiedStr = string.replace(/  /g, ' ');
     const originalStrArr = modifiedStr.split(' ');
 
-    handleRepairField(originalStrArr);
+    handleReasonField(originalStrArr);
 
     const modifiedStringFields = [];
     modifiedStringFields.push('{');
@@ -90,7 +90,7 @@ function indexOfKey(arr, targetStr) {
     return -1;
 }
 
-function handleRepairField(arr) {
+function handleReasonField(arr) {
     let index = indexOfKey(arr, 'Reason');
     if (index !== -1) {
         let reasonMessage = "";
