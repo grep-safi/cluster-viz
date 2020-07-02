@@ -1,10 +1,7 @@
-import { squeue } from './squeue-data';
-// import { scontrol } from './scontrol-data';
+const squeue = require('../data/formatted-squeue.json');
+const scontrol = require('../data/formatted-scontrol.json');
 
-function hierarchyData(data, selectedOption, selectedLocator) {
-
-    console.log(`data stuffzzaskdlfn ${data[0]}`);
-
+function hierarchyData(selectedOption, selectedLocator) {
     let option = selectedOption;
     let locator = selectedLocator;
     if (!option) option = '';
@@ -54,8 +51,8 @@ function hierarchyData(data, selectedOption, selectedLocator) {
                         // let probabilityOfActiveNode = 0.50; // 50% chance a given node will be active
                         let nodeActive = 0;
 
-                        let txtVal = getStr(data[jsonParseIndex]);
-                        let node = data[jsonParseIndex];
+                        let txtVal = getStr(scontrol[jsonParseIndex]);
+                        let node = scontrol[jsonParseIndex];
                         // If node is a compute node, add it to hierarchy tree, else it is an 'invisible' service node
                         // So add a dummy node to the tree
                         if (getNodeID(node['NodeName']) === nodeNum) {

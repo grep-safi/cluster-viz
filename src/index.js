@@ -1,11 +1,7 @@
 import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
     hierarchy, mouse, json, event} from "d3/dist/d3";
-// import { info } from './data';
-
 import { equallySpacedTiling } from "./utils/tiling";
-
 import { hierarchyData } from './data';
-import { scontrol } from './scontrol-data';
 
 const width = 800;
 const height = 800;
@@ -16,7 +12,7 @@ const transitionSpeed = 400;
 const x = scaleLinear().rangeRound([0, width]);
 const y = scaleLinear().rangeRound([0, height]);
 
-let treemapData = hierarchyData(scontrol);
+let treemapData = hierarchyData();
 createTreemap(treemapData);
 
 document.getElementById("myBtn").addEventListener("click", isolateFn);
@@ -27,7 +23,7 @@ function isolateFn() {
 
     console.log(`option: ${option} and txt: ${txt}`);
 
-    treemapData = hierarchyData(scontrol, option, txt);
+    treemapData = hierarchyData(option, txt);
     createTreemap(treemapData);
 }
 

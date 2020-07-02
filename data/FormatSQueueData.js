@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-const outputFilename = 'formatted-squeue.txt';
+const outputFilename = 'formatted-squeue.json';
 
 fs.readFile('raw-data-files/squeue.txt', (err, data) => {
     if (err) throw err;

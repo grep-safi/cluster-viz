@@ -1,5 +1,7 @@
 const fs = require('fs')
 
+const outputFilename = 'formatted-scontrol.json';
+
 fs.readFile('raw-data-files/scontrol.txt', (err, data) => {
     if (err) throw err;
 
@@ -22,7 +24,7 @@ fs.readFile('raw-data-files/scontrol.txt', (err, data) => {
     // If the following throws an error, then the formattedDataStr is not in JSON format
     JSON.parse(formattedDataStr);
 
-    fs.writeFile('./formatted-scontrol.txt', formattedDataStr, function(err) {
+    fs.writeFile(outputFilename, formattedDataStr, function(err) {
         if (err) {
             return console.error(err);
         }
