@@ -1,5 +1,5 @@
 import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
-    hierarchy, mouse, json, event} from "d3/dist/d3";
+    hierarchy, mouse, event} from "d3/dist/d3";
 import { equallySpacedTiling } from "./utils/tiling";
 import { hierarchyData } from './data';
 
@@ -12,10 +12,15 @@ const transitionSpeed = 400;
 const x = scaleLinear().rangeRound([0, width]);
 const y = scaleLinear().rangeRound([0, height]);
 
+let shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
+let shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
+
 let treemapData = hierarchyData();
 createTreemap(treemapData);
 
 document.getElementById("myBtn").addEventListener("click", isolateFn);
+
+
 
 function isolateFn() {
     let option = document.getElementById("node-options").value;
@@ -27,12 +32,9 @@ function isolateFn() {
     createTreemap(treemapData);
 }
 
+
+
 function createTreemap(hData) {
-    let shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
-    let shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
-
-    console.log(`shiftx and y: ${shiftX} and y${shiftY}`);
-
     select('#data-viz').selectAll('*').remove();
     select('#div_template').selectAll('*').remove();
     const svg = select("#data-viz")
@@ -74,6 +76,15 @@ function createTreemap(hData) {
 
 // console.log(`hdata maxcabinet: ${hData.maxCabinet}`);
 
+    window.addEventListener('resize', reportWindowSize);
+
+    function reportWindowSize() {
+        console.log(`resizing`);
+
+        shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
+        shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
+    }
+
     /**
      *
      * @param {Object} group The <g> (group) tag SVG elements
@@ -104,10 +115,6 @@ function createTreemap(hData) {
 
         // Three functions that change the tooltip when user hover / move / leave a cell
         let mouseover = function(d) {
-            Tooltip
-                .style("opacity", 1)
-        }
-        let mousemove = function(d) {
             const depth = d.depth - 1;
             let arr = ["cabinet", "chassis", "blade"];
             let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
@@ -117,20 +124,38 @@ function createTreemap(hData) {
                 if (!d.data.nodeData) txt = `This is a service node`;
             }
 
+            Tooltip
+                .style("opacity", 1)
+                .html(txt);
+                // .style("left", x + "px")
+                // .style("top", y + "px");
+
+        }
+        let mousemove = function(d) {
+            // const depth = d.depth - 1;
+            // let arr = ["cabinet", "chassis", "blade"];
+            // let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
+            // if (depth === 3) {
+            //     txt = d.data.nodeData;
+            //     txt = `Node Details <br> ${d.data.nodeData}`;
+            //     if (!d.data.nodeData) txt = `This is a service node`;
+            // }
+
             // console.log(`event.pagex: ${event.pageX} and y: ${event.pageY} boundingclient: ${document.getElementById('data-viz').getBoundingClientRect().x}
             // and ${document.getElementById('data-viz').getBoundingClientRect().y}`);
-            let x = event.pageX - document.getElementById('root').getBoundingClientRect().x + 10
-            let y = event.pageY - document.getElementById('root').getBoundingClientRect().y + 10
+            // let x = event.pageX - document.getElementById('root').getBoundingClientRect().x + 10
+            // let y = event.pageY - document.getElementById('root').getBoundingClientRect().y + 10
 
-            // let x = event.pageX - shiftX + 10;
-            // let y = event.pageY - shiftY + 10;
+            console.log(`shift xandy: ${shiftX} and ${shiftY}`);
+            let x = event.pageX - shiftX + 10;
+            let y = event.pageY - shiftY + 10;
 
             // let x = event.pageX - 480;
             // let y = event.pageY - 160;
 
             // console.log(`x and y: ${x} and ${y}`);
             Tooltip
-                .html(txt)
+                // .html(txt)
                 .style("left", x + "px")
                 .style("top", y + "px");
         }
