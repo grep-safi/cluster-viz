@@ -42,6 +42,8 @@ function createTreemap(hData) {
         .attr("id", 'root')
         .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
 
+
+
     function tile(node, x0, y0, x1, y1) {
         equallySpacedTiling(node, width, height, paddingTop);
         for (const child of node.children) {
@@ -99,7 +101,6 @@ function createTreemap(hData) {
             .data(root.children)
             .join("g");
 
-
         // create a tooltip
         let Tooltip = select("#div_template")
             .append("div")
@@ -132,32 +133,17 @@ function createTreemap(hData) {
 
         }
         let mousemove = function(d) {
-            // const depth = d.depth - 1;
-            // let arr = ["cabinet", "chassis", "blade"];
-            // let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
-            // if (depth === 3) {
-            //     txt = d.data.nodeData;
-            //     txt = `Node Details <br> ${d.data.nodeData}`;
-            //     if (!d.data.nodeData) txt = `This is a service node`;
-            // }
+            x.domain([d.parent.x0, d.parent.x1]);
+            y.domain([d.parent.y0, d.parent.y1]);
 
-            // console.log(`event.pagex: ${event.pageX} and y: ${event.pageY} boundingclient: ${document.getElementById('data-viz').getBoundingClientRect().x}
-            // and ${document.getElementById('data-viz').getBoundingClientRect().y}`);
-            // let x = event.pageX - document.getElementById('root').getBoundingClientRect().x + 10
-            // let y = event.pageY - document.getElementById('root').getBoundingClientRect().y + 10
+            let xPos = (mouse(this)[0]) + x(d.x0) + 10;
+            let yPos = (mouse(this)[1]) + y(d.y0) + 10;
 
-            console.log(`shift xandy: ${shiftX} and ${shiftY}`);
-            let x = event.pageX - shiftX + 10;
-            let y = event.pageY - shiftY + 10;
+            // ttip.attr('transform', `translate(${xPos}, ${yPos})`);
 
-            // let x = event.pageX - 480;
-            // let y = event.pageY - 160;
-
-            // console.log(`x and y: ${x} and ${y}`);
             Tooltip
-                // .html(txt)
-                .style("left", x + "px")
-                .style("top", y + "px");
+                .style("left", xPos + "px")
+                .style("top", yPos + "px");
         }
 
         let mouseleave = function(d) {
@@ -224,6 +210,14 @@ function createTreemap(hData) {
             .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
             .text(d => d);
 
+        // const ttip = svg.append('g').attr('transform', 'translate(0,0)');
+        // ttip.append('rect')
+        //     .attr('x', 0)
+        //     .attr('y', 0)
+        //     .attr('width', 50)
+        //     .attr('height', 50)
+        //     .attr('fill', 'gold')
+        //     .style('opacity', 1);
 
         group.call(position, root);
     }
