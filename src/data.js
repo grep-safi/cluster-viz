@@ -147,16 +147,13 @@ function hierarchyData(selectedOption, selectedLocator) {
     const cabinets = [];
     generateNodeHierarchy(cabinets); // Creates cabinets with randomly activated nodes
 
-
-    const info = {
+    return {
         "name": "Cori",
         "children": cabinets,
         "maxCabinet": maxCabinet,
         "maxChassis": maxChassis,
         "maxBlade": maxBlade,
     };
-
-    return info;
 }
 
 export { hierarchyData };

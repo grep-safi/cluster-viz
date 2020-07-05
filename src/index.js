@@ -7,7 +7,7 @@ const width = 800;
 const height = 800;
 const paddingTop = 0;
 
-const transitionSpeed = 400;
+const transitionSpeed = 500;
 
 const x = scaleLinear().rangeRound([0, width]);
 const y = scaleLinear().rangeRound([0, height]);
@@ -31,7 +31,6 @@ function isolateFn() {
     treemapData = hierarchyData(option, txt);
     createTreemap(treemapData);
 }
-
 
 
 function createTreemap(hData) {
@@ -125,11 +124,17 @@ function createTreemap(hData) {
                 if (!d.data.nodeData) txt = `This is a service node`;
             }
 
+            x.domain([d.parent.x0, d.parent.x1]);
+            y.domain([d.parent.y0, d.parent.y1]);
+
+            let xPos = (mouse(this)[0]) + x(d.x0) + 10;
+            let yPos = (mouse(this)[1]) + y(d.y0) + 10;
+
             Tooltip
                 .style("opacity", 1)
-                .html(txt);
-                // .style("left", x + "px")
-                // .style("top", y + "px");
+                .html(txt)
+                .style("left", xPos + "px")
+                .style("top", yPos + "px");
 
         }
         let mousemove = function(d) {
