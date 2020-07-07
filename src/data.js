@@ -133,7 +133,9 @@ function hierarchyData(selectedOption, selectedLocator) {
         let txt = '';
 
         for (const property in dataLine) {
-            txt = txt.concat(`${property}: ${dataLine[property]}<br />`);
+            if (dataLine.hasOwnProperty(property)) {
+                txt = txt.concat(`${property}: ${dataLine[property]}<br />`);
+            }
         }
 
         return txt;

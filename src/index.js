@@ -209,7 +209,6 @@ function createTreemap(hData) {
             .data(d => (`nodes: ${formatNum(d.value)}`).split(/(?=[A-Z][^A-Z])/g))
             .join("tspan")
             .attr("x", 3)
-            // .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.9 + 8.5 + i * 0.9}em`)
             .attr("y", (d, i, nodes) => `5em`)
             .attr("fill-opacity", (d, i, nodes) => i === nodes.length - 1 ? 0.7 : null)
             .attr("font-weight", (d, i, nodes) => i === nodes.length - 1 ? "normal" : null)
