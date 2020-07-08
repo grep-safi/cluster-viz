@@ -2,30 +2,95 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
 const ClusterViz = () => {
-    const [searchField, handleChange] = useForm({ search: "", options: "USER"});
+    const [jobSearch, handleJobChange] = useForm({ input: "", option: "USER"});
+    const [nodeSearch, handleNodeChange] = useForm({ input: "", option: "STATE"});
+    const [count, setCount] = useState(0);
+
+    const jobOptions = ['USER', 'ACCOUNT', 'JOB ID'];
+    const nodeOptions = ['STATE', 'PARTITIONS', 'AVAILABLE FEATURES'];
+
+    useEffect(() => {
+        console.log(`first render`);
+
+    }, []);
+
+    useEffect(() => {
+        console.log(`New user input: ${jobSearch.input} and ${jobSearch.option}`);
+    }, [count])
 
     return (
         <>
-            <p>The current search: {searchField.search} and option: {searchField.options}</p>
-            <div>
-                <input
-                    id="search-bar"
-                    name="search"
-                    value={searchField.search}
-                    onChange={handleChange}
-                />
+            <h1 id="title">Cluster Visualization</h1>
 
-                <select
-                    id="options-list"
-                    name="options"
-                    onChange={handleChange}
-                    value={searchField.option}
-                >
-                    <option value="USER">USER</option>
-                    <option value="ACCOUNT">ACCOUNT</option>
-                    <option value="JOB ID">JOB ID</option>
-                </select>
+            <p>The current search: {jobSearch.input} and option: {jobSearch.option} and count: {count}</p>
+            <p>The current search: {nodeSearch.input} and option: {nodeSearch.option} and count: {count}</p>
+            <div>
+                <SearchBar
+                    searchField={jobSearch}
+                    handleChange={handleJobChange}
+                    handleEnter={setCount}
+                    options={jobOptions}
+                    searchID={"job-search"}
+                    optionsID={"job-options"}
+                />
             </div>
+            <div>
+                <SearchBar
+                    searchField={nodeSearch}
+                    handleChange={handleNodeChange}
+                    handleEnter={setCount}
+                    options={nodeOptions}
+                    searchID={"node-search"}
+                    optionsID={"node-options"}
+                />
+            </div>
+
+            <button
+                name="enter"
+                id="enter-button"
+                onClick={() => setCount(c => c + 1)}
+            >
+                Enter
+            </button>
+        </>
+    );
+}
+
+const SearchBar = (props) => {
+    useEffect(() => {
+        // Get options element
+        const optionsElement = document.getElementById(props.optionsID);
+        // Get the names of options
+        const options = props.options;
+
+        // Clear options array so it has no values
+        optionsElement.length = 0;
+
+        for (let i = 0; i < options.length; i++) {
+            optionsElement.options[optionsElement.length] = new Option(options[i], options[i]);
+        }
+    }, []);
+
+    return (
+        <>
+            <select
+                id={props.optionsID}
+                name="option"
+                onChange={props.handleChange}
+                value={props.searchField.option}
+            />
+
+            <input
+                id={props.searchID}
+                name="input"
+                value={props.searchField.input}
+                onChange={props.handleChange}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') {
+                        props.handleEnter(c => c + 1);
+                    }
+                }}
+            />
         </>
     );
 }
@@ -35,43 +100,9 @@ const useForm = initialValues => {
 
     return [
         values,
-        e => {
-            setValue({
-                    ...values,
-                    [e.target.name]: e.target.value,
-                }
-            )
-        }
+        e => { setValue({ ...values, [e.target.name]: e.target.value }) }
     ];
 }
-
-
-const SearchBar = () => {
-    return (
-        <div>
-            <label>Filter Options</label>
-            <select>
-                <option value={"USER"}>USER</option>
-                <option value={"ACCOUNT"}>ACCOUNT</option>
-                <option value={"JOBID"}>JOB ID</option>
-            </select>
-
-        </div>
-    );
-}
-
-// function useFriendStatus(friendID) {
-//     const [isOnline, setIsOnline] = useState(null);
-//
-//     useEffect(() => {
-//         console.log(`Status: ${isOnline}`);
-//         return () => {
-//             console.log(`destruction!`);
-//         };
-//     });
-//
-//     return isOnline;
-// }
 
 const domContainer = document.querySelector('#root');
 ReactDOM.render(<ClusterViz />, domContainer);
