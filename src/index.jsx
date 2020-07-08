@@ -1,21 +1,80 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 
-export function SearchBar() {
-    const [count, setCount] = useState(0);
+const ClusterViz = () => {
+    const [searchField, handleChange] = useForm({ search: "", options: "USER"});
 
     return (
+        <>
+            <p>The current search: {searchField.search} and option: {searchField.options}</p>
+            <div>
+                <input
+                    id="search-bar"
+                    name="search"
+                    value={searchField.search}
+                    onChange={handleChange}
+                />
+
+                <select
+                    id="options-list"
+                    name="options"
+                    onChange={handleChange}
+                    value={searchField.option}
+                >
+                    <option value="USER">USER</option>
+                    <option value="ACCOUNT">ACCOUNT</option>
+                    <option value="JOB ID">JOB ID</option>
+                </select>
+            </div>
+        </>
+    );
+}
+
+const useForm = initialValues => {
+    const [values, setValue] = useState(initialValues);
+
+    return [
+        values,
+        e => {
+            setValue({
+                    ...values,
+                    [e.target.name]: e.target.value,
+                }
+            )
+        }
+    ];
+}
+
+
+const SearchBar = () => {
+    return (
         <div>
-            <p>You clicked {count} times</p>
-            <button onClick={() => setCount(count + 1)}>
-                Click me
-            </button>
+            <label>Filter Options</label>
+            <select>
+                <option value={"USER"}>USER</option>
+                <option value={"ACCOUNT"}>ACCOUNT</option>
+                <option value={"JOBID"}>JOB ID</option>
+            </select>
+
         </div>
     );
 }
 
+// function useFriendStatus(friendID) {
+//     const [isOnline, setIsOnline] = useState(null);
+//
+//     useEffect(() => {
+//         console.log(`Status: ${isOnline}`);
+//         return () => {
+//             console.log(`destruction!`);
+//         };
+//     });
+//
+//     return isOnline;
+// }
+
 const domContainer = document.querySelector('#root');
-ReactDOM.render(<SearchBar />, domContainer);
+ReactDOM.render(<ClusterViz />, domContainer);
 
 // import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
 //     hierarchy, mouse, event} from "d3/dist/d3";
