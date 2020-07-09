@@ -1,7 +1,7 @@
 const path = require('path');
 
 module.exports = {
-  entry: './src/index.jsx',
+  entry: './src/ClusterViz.jsx',
   mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
   output: {
     path: path.resolve(__dirname, 'dist'),
