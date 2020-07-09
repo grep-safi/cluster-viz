@@ -2,25 +2,30 @@ const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
 
 function hierarchyData(selectedOption, selectedLocator) {
-    console.log(`helloooooooooooooooooooooooooooooooooooooooooooooooooooooooozzzzzzzzzziees`);
-    let option = selectedOption;
-    let locator = selectedLocator;
-    if (!option) option = '';
-    if (!locator) locator = -1;
-
-    const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
-
-    const locateSqueue = optionsArr.includes(option.toUpperCase());
-    const locateNode = option === 'node';
-
+    let option, locator;
+    let locateSqueue, locateNode;
     let nList = [];
-    for (let i = 0; i < squeue.length; i++) {
-        if (squeue[i][option] === locator) {
-            nList = nList.concat(squeue[i].NODELIST);
+
+    // If the user actually selects an option
+    if (selectedOption) {
+        option = selectedOption.replace(/\s+/g, '');
+        locator = selectedLocator;
+        if (!option) option = '';
+        if (!locator) locator = -1;
+
+        const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
+
+        locateSqueue = optionsArr.includes(option.toUpperCase());
+        locateNode = option === 'node';
+
+        for (let i = 0; i < squeue.length; i++) {
+            if (squeue[i][option] === locator) {
+                nList = nList.concat(squeue[i].NODELIST);
+            }
         }
     }
 
-    // console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
+    console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
 
     let jsonParseIndex = 0;
 
@@ -29,26 +34,25 @@ function hierarchyData(selectedOption, selectedLocator) {
     let maxBlade = 0;
     function generateNodeHierarchy(cabinets) {
 
-        const numCabinets = 68;// actual = 68
-        const numChassis = 3; // actual = 3
-        const numBlades = 16;  // actual = 16
-        const numNodes = 4;   // actual = 4
+        const numCabinets = 68;
+        const numChassis = 3;
+        const numBlades = 16;
+        const numNodes = 4;
 
         let nodeNum = 0;
-        for (let i = 0; i < numCabinets; i++) {                         // First for loop creates cabinets with cabinet vals
+        for (let i = 0; i < numCabinets; i++) {
             const chassis = [];
             let cabinetVal = 0;
 
-            for (let j = 0; j < numChassis; j++) {                      // Second for loop creates chassis with chassis vals
+            for (let j = 0; j < numChassis; j++) {
                 const blades = [];
                 let chassisVal = 0;
 
-                for (let k = 0; k < numBlades; k++) {                   // Third for loop creates blades with blade vals
+                for (let k = 0; k < numBlades; k++) {
                     const nodes = [];
                     let bladeVal = 0;
 
-                    for (let l = 0; l < numNodes; l++) {                // Fourth for loop creates nodes with node vals
-                        // let probabilityOfActiveNode = 0.50; // 50% chance a given node will be active
+                    for (let l = 0; l < numNodes; l++) {
                         let nodeActive = 0;
 
                         let txtVal = getStr(scontrol[jsonParseIndex]);
@@ -118,7 +122,6 @@ function hierarchyData(selectedOption, selectedLocator) {
             for (let i = 0; i < attrList.length; i++) {
                 let args = attrList[i].split(',');
                 bool = bool && n[args[0]] === args[1];
-                // console.log(`args: ${args[0]}: ${args[1]}`);
             }
 
             return bool ? 1 : 0;

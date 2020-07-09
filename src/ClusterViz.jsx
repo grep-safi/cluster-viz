@@ -20,13 +20,15 @@ const ClusterViz = () => {
 
     useEffect(() => {
         console.log(`New user input: ${jobSearch.input} and ${jobSearch.option}`);
+        if (count > 0) {
+            c.createTreemap(h.hierarchyData(jobSearch.option, jobSearch.input));
+        }
     }, [count])
 
     return (
         <>
             <h1 id="title">Cluster Visualization</h1>
 
-            <p id="currentPosition"> hello </p>
 
             <p>The current search: {jobSearch.input} and option: {jobSearch.option} and count: {count}</p>
             <p>The current search: {nodeSearch.input} and option: {nodeSearch.option} and count: {count}</p>
@@ -59,13 +61,12 @@ const ClusterViz = () => {
                 Enter
             </button>
 
+            <p id="currentPosition"> hello </p>
+
             <div id="container">
                 <div id="data-viz" />
                 <div id="div_template" />
             </div>
-
-            {/*<div id="data-viz" />*/}
-            {/*<div id="div_template" />*/}
         </>
     );
 }
