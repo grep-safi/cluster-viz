@@ -2,6 +2,7 @@ const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
 
 function hierarchyData(selectedOption, selectedLocator) {
+    console.log(`helloooooooooooooooooooooooooooooooooooooooooooooooooooooooozzzzzzzzzziees`);
     let option = selectedOption;
     let locator = selectedLocator;
     if (!option) option = '';
