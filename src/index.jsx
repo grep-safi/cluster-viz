@@ -2,25 +2,7 @@ import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategor
     hierarchy, mouse, event} from "d3/dist/d3";
 import { equallySpacedTiling } from "./utils/tiling";
 
-
-
-// let treemapData = hierarchyData();
-// createTreemap(treemapData);
-
-// document.getElementById("myBtn").addEventListener("click", isolateFn);
-//
-// function isolateFn() {
-//     let option = document.getElementById("node-options").value;
-//     let txt = document.getElementById("myText").value;
-//
-//     console.log(`option: ${option} and txt: ${txt}`);
-//
-//     treemapData = hierarchyData(option, txt);
-//     createTreemap(treemapData);
-// }
-
-
-function createTreemap(hData) {
+export default hData => {
     const width = 800;
     const height = 800;
     const paddingTop = 0;
@@ -268,5 +250,3 @@ function createTreemap(hData) {
                 .call(position, d.parent));
     }
 }
-
-export { createTreemap };

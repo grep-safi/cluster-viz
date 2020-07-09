@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import SearchBar from './components/SearchBar';
 import useForm from './components/useForm';
-import * as h from './data';
-import * as c from './index';
+import hierarchyData from './data';
+import createTreemap from './index';
 
 const ClusterViz = () => {
     const [jobSearch, handleJobChange] = useForm({ input: "", option: "USER"});
@@ -15,20 +15,19 @@ const ClusterViz = () => {
 
     useEffect(() => {
         console.log(`first render`);
-        c.createTreemap(h.hierarchyData());
+        createTreemap(hierarchyData());
     }, []);
 
     useEffect(() => {
         console.log(`New user input: ${jobSearch.input} and ${jobSearch.option}`);
         if (count > 0) {
-            c.createTreemap(h.hierarchyData(jobSearch.option, jobSearch.input));
+            createTreemap(hierarchyData(jobSearch.option, jobSearch.input));
         }
     }, [count])
 
     return (
         <>
             <h1 id="title">Cluster Visualization</h1>
-
 
             <p>The current search: {jobSearch.input} and option: {jobSearch.option} and count: {count}</p>
             <p>The current search: {nodeSearch.input} and option: {nodeSearch.option} and count: {count}</p>

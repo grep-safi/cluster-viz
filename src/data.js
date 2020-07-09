@@ -1,7 +1,7 @@
 const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
 
-function hierarchyData(selectedOption, selectedLocator) {
+export default (selectedOption, selectedLocator) => {
     let option, locator;
     let locateSqueue, locateNode;
     let nList = [];
@@ -161,5 +161,3 @@ function hierarchyData(selectedOption, selectedLocator) {
         "maxBlade": maxBlade,
     };
 }
-
-export { hierarchyData };
