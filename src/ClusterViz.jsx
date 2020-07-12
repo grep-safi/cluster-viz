@@ -14,15 +14,8 @@ const ClusterViz = () => {
     const nodeOptions = ['STATE', 'PARTITIONS', 'AVAILABLE FEATURES'];
 
     useEffect(() => {
-        console.log(`first render`);
-        createTreemap(hierarchyData());
-    }, []);
-
-    useEffect(() => {
-        console.log(`New user input: ${jobSearch.input} and ${jobSearch.option}`);
-        if (count > 0) {
-            createTreemap(hierarchyData(jobSearch.option, jobSearch.input));
-        }
+        if (count === 0) createTreemap(hierarchyData());
+        else createTreemap(hierarchyData(jobSearch['option'], jobSearch['input']));
     }, [count])
 
     return (

@@ -73,7 +73,7 @@ export default (selectedOption, selectedLocator) => {
                             jsonParseIndex += 1;
                         } else {
                             nodes.push({
-                                "name": "service node",
+                                "name": "Service Node",
                                 "value": 0,
                             });
                         }
@@ -103,7 +103,7 @@ export default (selectedOption, selectedLocator) => {
             }
 
             cabinets.push({
-                "name": `cabinet ${i}`,
+                "name": `Cabinet ${i}`,
                 "children": chassis,
                 // "value": cabinetVal
             });
