@@ -19,6 +19,7 @@ export default (props) => {
     return (
         <>
             <select
+                className="sel-light"
                 id={props.optionsID}
                 name="option"
                 onChange={e => props.handleChange(e, props.index)}

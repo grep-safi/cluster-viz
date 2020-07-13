@@ -12,11 +12,19 @@ body {
 }
 
 #job-search {
-    flex: 0 0 65%;
+    flex: 0 0 50%;
 }
 
 #node-search {
     flex: 1;
+}
+
+select {
+    width: 200px;
+}
+
+input {
+    width: 200px;
 }
 
 #selector-box {
@@ -99,3 +107,74 @@ body {
 .tooltip:hover .tooltiptext {
     visibility: visible;
 }
+
+
+/*Credit*/
+/*https://codepen.io/tomhodgins/pen/PzyRGA*/
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    /*display: block;*/
+    /*margin: 0 auto 1em auto;*/
+    /*padding: .5em;*/
+    /*padding-right: 1.5em;*/
+    /*width: auto;*/
+    /*min-width: 200px;*/
+    outline: none;
+    font-family: sans-serif;
+    font-size: 12pt;
+    font-weight: 400;
+    text-indent: 0.01px;
+    text-overflow: '';
+    border: 1px solid rgba(255,255,255,.7);
+    border-radius: 2px;
+    color: rgba(0,0,0,.7);
+    background-color: rgba(255,255,255,.5);
+    background-repeat: no-repeat;
+    background-position: calc(100% - .5em) 50%;
+    background-size: 12px;
+    transition: all .2s ease-in-out;
+    box-shadow: rgba(0,0,0,.15) 0 1px 0;
+}
+select::-ms-expand {
+    display: none;
+}
+select:focus {
+    border-color: orange;
+    box-shadow: #fc0 0 0 3px;
+}
+
+/* Light Theme */
+select.sel-light {
+    color: rgba(0,0,0,.7);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+DQo8cG9seWdvbiBvcGFjaXR5PSIwLjciIHBvaW50cz0iMCw0IDE2LDQgOCwxMiIvPg0KPC9zdmc+DQo=');/* dark arrow*/
+}
+select.sel-light:active {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBvbHlnb24gb3BhY2l0eT0iMC41IiBwb2ludHM9IjAsNCAxNiw0IDgsMTIiLz48L3N2Zz4=');
+}
+
+/* Dark Theme */
+select.sel-dark {
+    color: rgba(255,255,255,.7);
+    border-color: rgba(0,0,0,.7);
+    background-color: rgba(0,0,0,.5);
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBvbHlnb24gZmlsbD0id2hpdGUiIG9wYWNpdHk9Ii43IiBwb2ludHM9IjAsNCAxNiw0IDgsMTIiLz48L3N2Zz4=');/* light arrow */
+}
+
+select.sel-dark:active {
+    background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAxNiAxNiI+PHBvbHlnb24gZmlsbD0id2hpdGUiIG9wYWNpdHk9Ii41IiBwb2ludHM9IjAsNCAxNiw0IDgsMTIiLz48L3N2Zz4=');
+}
+
+
+
+
+
+
+
+
+
+
+
+

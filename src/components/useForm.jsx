@@ -12,7 +12,7 @@ export default initialValues => {
      * @param removeSearch {boolean}        - Tells function to remove a specified element in the array
      *
      */
-    const handleChanges = (e, i, addSearch, removeSearch) => {
+    const handleChanges = (e, i, addSearch, removeSearch, refresh) => {
         // React's setValue will only trigger a re-render if it detects
         // a new object, that's why we're using the spread operator.
         // Don't remove it.
@@ -21,8 +21,15 @@ export default initialValues => {
             setValue( [...values, {input: "", option: e}]);
         }
         else if (removeSearch) {
+            // console.log(`we're removing a serach bar: ${i} and ${values[i].input}`);
             values.splice(i, 1);
+            // console.log(`part 2 bar: ${i + 1} and ${values[i + 1].input} and ${[...values]}`);
+            console.log(`new values ${i} ${[...values]}`);
+            for (let i = 0; i < values.length; i++) {
+                console.log(`nums ${i} ${JSON.stringify(values[i])}`);
+            }
             setValue([...values]);
+            refresh(c => c + 1);
         }
         else {
             setValue(values.map((item, index) => {

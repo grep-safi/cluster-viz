@@ -35,9 +35,9 @@ const ClusterViz = () => {
                 />
 
                 <button
-                    name="remove node"
-                    id="addnode"
-                    onClick={() => handleJobChange('STATE', 1, false, true)}
+                    name="remove job"
+                    id="remove-job"
+                    onClick={() => handleJobChange('USER', i, false, true, setCount)}
                 >
                     X
                 </button>
@@ -60,8 +60,8 @@ const ClusterViz = () => {
 
                 <button
                     name="remove node"
-                    id="addnode"
-                    onClick={() => handleNodeChange('STATE', 1, false, true)}
+                    id="remove-node"
+                    onClick={() => handleNodeChange('State', i, false, true, setCount)}
                 >
                     X
                 </button>
@@ -75,12 +75,13 @@ const ClusterViz = () => {
 
             <div id="search-wrapper">
                 <div id="job-search">
+                    Job
                     { jobArr }
 
                     <button
                         name="add job"
                         id="add-job"
-                        onClick={() => handleJobChange('USER', 1, true, false)}
+                        onClick={() => handleJobChange('USER', 1, true, false, setCount)}
                     >
                         Add job
                     </button>
@@ -88,26 +89,28 @@ const ClusterViz = () => {
                 </div>
 
                 <div id="node-search">
+                    Node
                     { nodeArr }
 
                     <button
                         name="add node"
                         id="add-node"
-                        onClick={() => handleNodeChange('STATE', 1, true, false)}
+                        onClick={() => handleNodeChange('State', 1, true, false, setCount)}
                     >
                         Add node
                     </button>
 
                 </div>
+
             </div>
 
-            <button
-                name="enter"
-                id="enter-button"
-                onClick={() => setCount(c => c + 1)}
-            >
-                Enter
-            </button>
+            {/*<button*/}
+            {/*    name="enter"*/}
+            {/*    id="enter-button"*/}
+            {/*    onClick={() => setCount(c => c + 1)}*/}
+            {/*>*/}
+            {/*    Enter*/}
+            {/*</button>*/}
 
             <p id="currentPosition"> hello </p>
 

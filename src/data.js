@@ -119,6 +119,9 @@ export default (jobEntries, nodeEntries) => {
         for (let entry = 0; entry < nodeEntries.length; entry++) {
             // console.log(`im running for states`);
             const field = nodeEntries[entry]['option'].replace(/\s+/g, '');
+            if (!node[field]) {
+                console.log(`the field: ${field}`);
+            }
             const nodeValue = node[field].toUpperCase();
             const userValue = nodeEntries[entry]['input'].toUpperCase();
 
