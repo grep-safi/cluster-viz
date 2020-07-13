@@ -4,14 +4,12 @@ import SearchBar from './components/SearchBar';
 import useForm from './components/useForm';
 import hierarchyData from './data';
 import createTreemap from './index';
+import { nodeOptions, jobOptions } from "./utils/Options";
 
 const ClusterViz = () => {
     const [jobSearch, handleJobChange] = useForm([{ input: "", option: "USER"}]);
     const [nodeSearch, handleNodeChange] = useForm([{ input: "", option: "State"}]);
     const [count, setCount] = useState(0);
-
-    const jobOptions = ['USER', 'ACCOUNT', 'JOB ID'];
-    const nodeOptions = ['State', 'Partitions', 'Available Features'];
 
     useEffect(() => {
         if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]));
@@ -25,7 +23,7 @@ const ClusterViz = () => {
     // TODO Simplify the double for loops with a while loop and extract the React code into a function
     for (let i = 0; i < jobSearch.length; i++) {
         jobArr.push(
-            <>
+            <div>
                 <SearchBar
                     searchField={jobSearch[i]}
                     handleChange={handleJobChange}
@@ -43,13 +41,13 @@ const ClusterViz = () => {
                 >
                     X
                 </button>
-            </>
+            </div>
         );
     }
 
     for (let i = 0; i < nodeSearch.length; i++) {
         nodeArr.push(
-            <>
+            <div>
                 <SearchBar
                     searchField={nodeSearch}
                     handleChange={handleNodeChange}
@@ -63,11 +61,11 @@ const ClusterViz = () => {
                 <button
                     name="remove node"
                     id="addnode"
-                    onClick={() => handleJobChange('STATE', 1, false, true)}
+                    onClick={() => handleNodeChange('STATE', 1, false, true)}
                 >
                     X
                 </button>
-            </>
+            </div>
         );
     }
 
@@ -75,12 +73,32 @@ const ClusterViz = () => {
         <>
             <h1 id="title">Cluster Visualization</h1>
 
-            <div>
-                { jobArr }
-            </div>
+            <div id="search-wrapper">
+                <div id="job-search">
+                    { jobArr }
 
-            <div>
-                { nodeArr }
+                    <button
+                        name="add job"
+                        id="add-job"
+                        onClick={() => handleJobChange('USER', 1, true, false)}
+                    >
+                        Add job
+                    </button>
+
+                </div>
+
+                <div id="node-search">
+                    { nodeArr }
+
+                    <button
+                        name="add node"
+                        id="add-node"
+                        onClick={() => handleNodeChange('STATE', 1, true, false)}
+                    >
+                        Add node
+                    </button>
+
+                </div>
             </div>
 
             <button

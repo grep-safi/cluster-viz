@@ -125,7 +125,7 @@ export default (jobEntries, nodeEntries) => {
             // If the user inputs whitespace or nothing, just skip
             if (userValue.replace(/\s+/g, '').length === 0) continue;
 
-            bool = bool && nodeValue.includes(userValue);
+            bool = bool && nodeValue.split(',').includes(userValue);
         }
 
         return bool && jobNode;

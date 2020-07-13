@@ -1,5 +1,22 @@
 body {
-    background-color: darkslategrey;
+    /*background-color: darkslategrey;*/
+    background-color: grey;
+}
+
+#search-wrapper {
+    border: 1px solid crimson;
+    /*display: inline-block;*/
+    display: flex;
+    width: 1000px;
+    margin: 0 auto;
+}
+
+#job-search {
+    flex: 0 0 65%;
+}
+
+#node-search {
+    flex: 1;
 }
 
 #selector-box {
