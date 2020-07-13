@@ -16,11 +16,11 @@ const ClusterViz = () => {
     useEffect(() => {
         if (count === 0) createTreemap(hierarchyData());
         else createTreemap(hierarchyData(jobSearch, nodeSearch));
-    }, [count])
+    }, [count]);
 
-    console.log(`size of jobsearch: ${jobSearch.length}`);
     let jobArr = [];
     let nodeArr = [];
+    console.log(`size of jobsearch: ${jobSearch.length}`);
     for (let i = 0; i < jobSearch.length; i++) {
         jobArr.push(
             <SearchBar
@@ -33,7 +33,9 @@ const ClusterViz = () => {
                 index={i}
             />
         );
+    }
 
+    for (let i = 0; i < nodeSearch.length; i++) {
         nodeArr.push(
             <SearchBar
                 searchField={nodeSearch}
@@ -56,26 +58,10 @@ const ClusterViz = () => {
 
             <div>
                 { jobArr }
-                {/*<SearchBar*/}
-                {/*    searchField={jobSearch}*/}
-                {/*    handleChange={handleJobChange}*/}
-                {/*    handleEnter={setCount}*/}
-                {/*    options={jobOptions}*/}
-                {/*    searchID={"job-search"}*/}
-                {/*    optionsID={"job-options"}*/}
-                {/*/>*/}
+
             </div>
             <div>
                 { nodeArr }
-
-                {/*<SearchBar*/}
-                {/*    searchField={nodeSearch}*/}
-                {/*    handleChange={handleNodeChange}*/}
-                {/*    handleEnter={setCount}*/}
-                {/*    options={nodeOptions}*/}
-                {/*    searchID={"node-search"}*/}
-                {/*    optionsID={"node-options"}*/}
-                {/*/>*/}
             </div>
 
             <button
@@ -84,6 +70,14 @@ const ClusterViz = () => {
                 onClick={() => setCount(c => c + 1)}
             >
                 Enter
+            </button>
+
+            <button
+                name="add job"
+                id="add"
+                onClick={() => handleJobChange('USER', 0, true, false)}
+            >
+                add job
             </button>
 
             <p id="currentPosition"> hello </p>
