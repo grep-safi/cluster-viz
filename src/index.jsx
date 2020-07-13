@@ -164,8 +164,6 @@ export default hData => {
             })
             .attr("stroke", "gold");
 
-
-
         const textPosition = (text, depth, xShift, y) => {
             const widths = [width / 24, width / 6, width / 8, width / 4];
             const textWidth = Number(text.split(' ')[1]) > 9 ? (xShift + 2) : xShift;
@@ -173,7 +171,6 @@ export default hData => {
 
             return `translate(${x},${y})`;
         }
-
 
         node.append("text")
             .attr("font-weight", "bold")
@@ -195,32 +192,6 @@ export default hData => {
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
             .text(d => d);
-
-
-
-
-        // node.append("text")
-        //     .attr("font-weight", "bold")
-        //     .attr("font-size", `13px`)
-        //     .selectAll("tspan")
-        //     .data(d => (d === root ? name(d) : d.data.name).split(/(?=[A-Z][^A-Z])/g))
-        //     .join("tspan")
-        //     .attr("x", 3)
-        //     .attr("y", (d, i, nodes) => `${(i === nodes.length - 1) * 0.9 + 1.1 + i * 0.9}em`)
-        //     .attr("fill-opacity", 0.7)
-        //     .attr("font-weight", "normal")
-        //     .text(d => d);
-        //
-        // node.append("text")
-        //     .attr("font-size", `13px`)
-        //     .selectAll("tspan")
-        //     .data(d => (`nodes: ${formatNum(d.value)}`).split(/(?=[A-Z][^A-Z])/g))
-        //     .join("tspan")
-        //     .attr("x", 3)
-        //     .attr("y", `4em`)
-        //     .attr("fill-opacity", 0.7)
-        //     .attr("font-weight", "normal")
-        //     .text(d => d);
 
         group.call(position, root);
     }

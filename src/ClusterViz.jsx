@@ -6,8 +6,8 @@ import hierarchyData from './data';
 import createTreemap from './index';
 
 const ClusterViz = () => {
-    const [jobSearch, handleJobChange] = useForm({ input: "", option: "USER"});
-    const [nodeSearch, handleNodeChange] = useForm({ input: "", option: "STATE"});
+    const [jobSearch, handleJobChange] = useForm([{ input: "", option: "USER"}]);
+    const [nodeSearch, handleNodeChange] = useForm([{ input: "", option: "STATE"}]);
     const [count, setCount] = useState(0);
 
     const jobOptions = ['USER', 'ACCOUNT', 'JOB ID'];
@@ -15,34 +15,67 @@ const ClusterViz = () => {
 
     useEffect(() => {
         if (count === 0) createTreemap(hierarchyData());
-        else createTreemap(hierarchyData(jobSearch['option'], jobSearch['input']));
+        else createTreemap(hierarchyData(jobSearch, nodeSearch));
     }, [count])
+
+    console.log(`size of jobsearch: ${jobSearch.length}`);
+    let jobArr = [];
+    let nodeArr = [];
+    for (let i = 0; i < jobSearch.length; i++) {
+        jobArr.push(
+            <SearchBar
+                searchField={jobSearch[i]}
+                handleChange={handleJobChange}
+                handleEnter={setCount}
+                options={jobOptions}
+                searchID={`job-search-${i}`}
+                optionsID={`job-options-${i}`}
+                index={i}
+            />
+        );
+
+        nodeArr.push(
+            <SearchBar
+                searchField={nodeSearch}
+                handleChange={handleNodeChange}
+                handleEnter={setCount}
+                options={nodeOptions}
+                searchID={`node-search-${i}`}
+                optionsID={`node-options-${i}`}
+                index={i}
+            />
+        );
+    }
 
     return (
         <>
             <h1 id="title">Cluster Visualization</h1>
 
-            <p>The current search: {jobSearch.input} and option: {jobSearch.option} and count: {count}</p>
-            <p>The current search: {nodeSearch.input} and option: {nodeSearch.option} and count: {count}</p>
+            <p>The current search: {jobSearch[0].input} and option: {jobSearch[0].option} and count: {count}</p>
+            <p>The current search: {nodeSearch[0].input} and option: {nodeSearch[0].option} and count: {count}</p>
+
             <div>
-                <SearchBar
-                    searchField={jobSearch}
-                    handleChange={handleJobChange}
-                    handleEnter={setCount}
-                    options={jobOptions}
-                    searchID={"job-search"}
-                    optionsID={"job-options"}
-                />
+                { jobArr }
+                {/*<SearchBar*/}
+                {/*    searchField={jobSearch}*/}
+                {/*    handleChange={handleJobChange}*/}
+                {/*    handleEnter={setCount}*/}
+                {/*    options={jobOptions}*/}
+                {/*    searchID={"job-search"}*/}
+                {/*    optionsID={"job-options"}*/}
+                {/*/>*/}
             </div>
             <div>
-                <SearchBar
-                    searchField={nodeSearch}
-                    handleChange={handleNodeChange}
-                    handleEnter={setCount}
-                    options={nodeOptions}
-                    searchID={"node-search"}
-                    optionsID={"node-options"}
-                />
+                { nodeArr }
+
+                {/*<SearchBar*/}
+                {/*    searchField={nodeSearch}*/}
+                {/*    handleChange={handleNodeChange}*/}
+                {/*    handleEnter={setCount}*/}
+                {/*    options={nodeOptions}*/}
+                {/*    searchID={"node-search"}*/}
+                {/*    optionsID={"node-options"}*/}
+                {/*/>*/}
             </div>
 
             <button

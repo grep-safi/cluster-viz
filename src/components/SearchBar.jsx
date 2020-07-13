@@ -20,7 +20,7 @@ export default (props) => {
             <select
                 id={props.optionsID}
                 name="option"
-                onChange={props.handleChange}
+                onChange={e => props.handleChange(e, props.index)}
                 value={props.searchField.option}
             />
 
@@ -28,7 +28,7 @@ export default (props) => {
                 id={props.searchID}
                 name="input"
                 value={props.searchField.input}
-                onChange={props.handleChange}
+                onChange={e => props.handleChange(e, props.index)}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') {
                         props.handleEnter(c => c + 1);

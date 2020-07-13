@@ -1,29 +1,29 @@
 const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
 
-export default (selectedOption, selectedLocator) => {
+export default (job, node) => {
     let option, locator;
     let locateSqueue, locateNode;
     let nList = [];
-
-    // If the user actually selects an option
-    if (selectedOption) {
-        option = selectedOption.replace(/\s+/g, '');
-        locator = selectedLocator;
-        if (!option) option = '';
-        if (!locator) locator = -1;
-
-        const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
-
-        locateSqueue = optionsArr.includes(option.toUpperCase());
-        locateNode = option === 'node';
-
-        for (let i = 0; i < squeue.length; i++) {
-            if (squeue[i][option] === locator) {
-                nList = nList.concat(squeue[i].NODELIST);
-            }
-        }
-    }
+    //
+    // // If the user actually selects an option
+    // if (selectedOption) {
+    //     option = selectedOption.replace(/\s+/g, '');
+    //     locator = selectedLocator;
+    //     if (!option) option = '';
+    //     if (!locator) locator = -1;
+    //
+    //     const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
+    //
+    //     locateSqueue = optionsArr.includes(option.toUpperCase());
+    //     locateNode = option === 'node';
+    //
+    //     for (let i = 0; i < squeue.length; i++) {
+    //         if (squeue[i][option] === locator) {
+    //             nList = nList.concat(squeue[i].NODELIST);
+    //         }
+    //     }
+    // }
 
     console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
 
