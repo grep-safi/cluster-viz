@@ -13,21 +13,22 @@ export default initialValues => {
      *
      */
     const handleChanges = (e, i, addSearch, removeSearch) => {
+        // React's setValue will only trigger a re-render if it detects
+        // a new object, that's why we're using the spread operator.
+        // Don't remove it.
+
         if (addSearch) {
-            console.log(`helooooooo`);
-            values.push( {input: "", option: e} );
-            setValue(values);
+            setValue( [...values, {input: "", option: e}]);
         }
         else if (removeSearch) {
             values.splice(i, 1);
-            setValue(values);
+            setValue([...values]);
         }
         else {
             setValue(values.map((item, index) => {
-                    if (index === i) return { ...values[index], [e.target.name]: e.target.value };
-                    return item;
-                })
-            );
+                if (index === i) return { ...values[index], [e.target.name]: e.target.value };
+                return item;
+            }));
         }
     }
 

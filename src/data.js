@@ -1,31 +1,20 @@
 const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
 
-export default (job, node) => {
-    let option, locator;
-    let locateSqueue, locateNode;
+export default (jobEntries, nodeEntries) => {
     let nList = [];
-    //
-    // // If the user actually selects an option
-    // if (selectedOption) {
-    //     option = selectedOption.replace(/\s+/g, '');
-    //     locator = selectedLocator;
-    //     if (!option) option = '';
-    //     if (!locator) locator = -1;
-    //
-    //     const optionsArr = ['USER', 'ACCOUNT', 'JOBID'];
-    //
-    //     locateSqueue = optionsArr.includes(option.toUpperCase());
-    //     locateNode = option === 'node';
-    //
-    //     for (let i = 0; i < squeue.length; i++) {
-    //         if (squeue[i][option] === locator) {
-    //             nList = nList.concat(squeue[i].NODELIST);
-    //         }
-    //     }
-    // }
 
-    console.log(`optoin: ${option} locator: ${locator} and nList: ${nList}`);
+    // Get a list of nids that correspond to the entered search string in the jobs json file
+    for (let entry = 0; entry < jobEntries.length; entry++) {
+        const option = jobEntries[entry]['option'].replace(/\s+/g, '');
+        const searchStr = jobEntries[entry]['input'];
+
+        for (let i = 0; i < squeue.length; i++) {
+            if (squeue[i][option] === searchStr) {
+                nList = nList.concat(squeue[i]['NODELIST']);
+            }
+        }
+    }
 
     let jsonParseIndex = 0;
 
@@ -61,7 +50,7 @@ export default (job, node) => {
                         // So add a dummy node to the tree
                         if (getNodeID(node['NodeName']) === nodeNum) {
                             // Check if the node is active
-                            nodeActive = isActive(node, nodeNum, locateSqueue, nList, locateNode, locator) ? 1 : 0;
+                            nodeActive = isActive(nList, node, nodeEntries) ? 1 : 0;
 
                             nodes.push({
                                 "name": `Node ${l}`,
@@ -110,24 +99,20 @@ export default (job, node) => {
         }
     }
 
-    // Does the checks on the node to see if it should be labeled active
-    function isActive(n, nNum, locateJob, nList, locateNode, nodeAttrs) {
-        if (locateJob) {
-            return nList.includes(n['NodeName']);
+    // checks the node to see if it should be labeled active
+    function isActive(nList, node, nodeEntries) {
+        // If the length of nList is 0, then the user isn't looking for jobs, so set it to true
+        const jobNode = nList.length === 0 ? true : nList.includes(node['NodeName']);
+
+        let bool = true;
+        for (let entry = 0; entry < nodeEntries.length; entry++) {
+            const nodeValue = node[nodeEntries[entry]['option']].toUpperCase();
+            const userValue = nodeEntries[entry]['input'].toUpperCase();
+
+            bool = bool && nodeValue.includes(userValue);
         }
 
-        if (locateNode) {
-            let bool = true;
-            let attrList = nodeAttrs.split(' ');
-            for (let i = 0; i < attrList.length; i++) {
-                let args = attrList[i].split(',');
-                bool = bool && n[args[0]] === args[1];
-            }
-
-            return bool ? 1 : 0;
-        }
-
-        return n['State'] === 'ALLOCATED' && (n['AvailableFeatures'] === 'haswell');
+        return bool && jobNode;
     }
 
     // Returns an html string with all of the data in the node

@@ -7,45 +7,67 @@ import createTreemap from './index';
 
 const ClusterViz = () => {
     const [jobSearch, handleJobChange] = useForm([{ input: "", option: "USER"}]);
-    const [nodeSearch, handleNodeChange] = useForm([{ input: "", option: "STATE"}]);
+    const [nodeSearch, handleNodeChange] = useForm([{ input: "", option: "State"}]);
     const [count, setCount] = useState(0);
 
     const jobOptions = ['USER', 'ACCOUNT', 'JOB ID'];
-    const nodeOptions = ['STATE', 'PARTITIONS', 'AVAILABLE FEATURES'];
+    const nodeOptions = ['State', 'Partitions', 'Available Features'];
 
     useEffect(() => {
-        if (count === 0) createTreemap(hierarchyData());
+        if (count === 0) createTreemap(hierarchyData([], [{ input: "ALLOCATED", option: "State"}]));
         else createTreemap(hierarchyData(jobSearch, nodeSearch));
     }, [count]);
 
     let jobArr = [];
     let nodeArr = [];
-    console.log(`size of jobsearch: ${jobSearch.length}`);
+
+    // TODO Add better identifier keys for React as a field in each element
+    // TODO Simplify the double for loops with a while loop and extract the React code into a function
     for (let i = 0; i < jobSearch.length; i++) {
         jobArr.push(
-            <SearchBar
-                searchField={jobSearch[i]}
-                handleChange={handleJobChange}
-                handleEnter={setCount}
-                options={jobOptions}
-                searchID={`job-search-${i}`}
-                optionsID={`job-options-${i}`}
-                index={i}
-            />
+            <>
+                <SearchBar
+                    searchField={jobSearch[i]}
+                    handleChange={handleJobChange}
+                    handleEnter={setCount}
+                    options={jobOptions}
+                    searchID={`job-search-${i}`}
+                    optionsID={`job-options-${i}`}
+                    index={i}
+                />
+
+                <button
+                    name="remove node"
+                    id="addnode"
+                    onClick={() => handleJobChange('STATE', 1, false, true)}
+                >
+                    X
+                </button>
+            </>
         );
     }
 
     for (let i = 0; i < nodeSearch.length; i++) {
         nodeArr.push(
-            <SearchBar
-                searchField={nodeSearch}
-                handleChange={handleNodeChange}
-                handleEnter={setCount}
-                options={nodeOptions}
-                searchID={`node-search-${i}`}
-                optionsID={`node-options-${i}`}
-                index={i}
-            />
+            <>
+                <SearchBar
+                    searchField={nodeSearch}
+                    handleChange={handleNodeChange}
+                    handleEnter={setCount}
+                    options={nodeOptions}
+                    searchID={`node-search-${i}`}
+                    optionsID={`node-options-${i}`}
+                    index={i}
+                />
+
+                <button
+                    name="remove node"
+                    id="addnode"
+                    onClick={() => handleJobChange('STATE', 1, false, true)}
+                >
+                    X
+                </button>
+            </>
         );
     }
 
@@ -60,6 +82,7 @@ const ClusterViz = () => {
                 { jobArr }
 
             </div>
+
             <div>
                 { nodeArr }
             </div>
@@ -70,14 +93,6 @@ const ClusterViz = () => {
                 onClick={() => setCount(c => c + 1)}
             >
                 Enter
-            </button>
-
-            <button
-                name="add job"
-                id="add"
-                onClick={() => handleJobChange('USER', 0, true, false)}
-            >
-                add job
             </button>
 
             <p id="currentPosition"> hello </p>

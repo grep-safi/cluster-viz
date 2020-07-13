@@ -10,6 +10,7 @@ export default (props) => {
         // Clear options array so it has no values
         optionsElement.length = 0;
 
+        // Add each option to the options element
         for (let i = 0; i < options.length; i++) {
             optionsElement.options[optionsElement.length] = new Option(options[i], options[i]);
         }
