@@ -14,7 +14,7 @@ const ClusterViz = () => {
     const nodeOptions = ['State', 'Partitions', 'Available Features'];
 
     useEffect(() => {
-        if (count === 0) createTreemap(hierarchyData([], [{ input: "ALLOCATED", option: "State"}]));
+        if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]));
         else createTreemap(hierarchyData(jobSearch, nodeSearch));
     }, [count]);
 
@@ -75,12 +75,8 @@ const ClusterViz = () => {
         <>
             <h1 id="title">Cluster Visualization</h1>
 
-            <p>The current search: {jobSearch[0].input} and option: {jobSearch[0].option} and count: {count}</p>
-            <p>The current search: {nodeSearch[0].input} and option: {nodeSearch[0].option} and count: {count}</p>
-
             <div>
                 { jobArr }
-
             </div>
 
             <div>

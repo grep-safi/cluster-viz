@@ -1,0 +1,419 @@
+
+
+<!DOCTYPE html>
+<html>
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+
+    <link rel="apple-touch-icon-precomposed" href="apple-touch-icon-precomposed.png" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+
+    <title>MyNERSC</title>
+
+    <!-- Core CSS - Include with every page -->
+    <link href="css/bootstrap.css" rel="stylesheet">
+    <link href="font-awesome/css/font-awesome.css" rel="stylesheet">
+
+    <!-- For tables -->
+    <link href="css/plugins/dataTables/dataTables.bootstrap.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" rel="stylesheet">
+
+    <!-- SB Admin CSS - Include with every page -->
+    <link href="css/sb-admin.css" rel="stylesheet">
+
+    <!-- MyNERSC Custom CSS -->
+    <link href="css/mynersc.css" rel="stylesheet">
+
+    <!-- Darshan Charts Disabled For Now
+    <link rel="stylesheet" href="css/darshan-charts.css">
+    -->
+
+    <link rel="stylesheet" href="css/plugins/jquery-ui-1.10.4.custom.min.css">
+    <link rel="stylesheet" href="css/plugins/jQRangeSlider/iThing.css">
+    <link rel="stylesheet" href="css/plugins/bootstrap-select/bootstrap-select.min.css">
+
+    <!-- Datepicker Custom CSS -->
+    <link href="css/datepicker.css" rel="stylesheet">
+
+    <script>
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+            (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+            m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+        ga('create', 'UA-50239004-1', 'nersc.gov');
+        ga('send', 'pageview');
+    </script>
+
+    <script type="text/javascript">
+        var _gaq = _gaq || [];
+        _gaq.push(['_setAccount', 'UA-50239004-1']);
+        _gaq.push(['_trackPageview']);
+
+        (function() {
+            var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+            ga.src = ('https:' == document.location.protocol ? 'https://ssl' : 'http://www') + '.google-analytics.com/ga.js';
+            var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+        })();
+    </script>
+
+
+</head>
+
+<body>
+
+<div id="headerModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Job" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">x</button>
+                <h3 id="header-modal-label"></h3>
+            </div>
+            <div class="modal-body" id="headerModalBody">
+                <div id="header-modal-content">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="alertModal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="Job" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-body" id="alertModalBody">
+                <div id="alert-modal-content">
+                    The alert system is currently a static-mock-up. Check back soon.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="wrapper">
+
+    <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="index.php" style="padding:1px 8px;"><table border=0 padding=0 cellspacing=0><tr><td>&nbsp;<img src="images/my.png" height=35></td><td><img src="images/NERSC-Small-Logo.png" height=40 border=0></td></tr></table></a>
+
+        </div>
+
+        <ul class="nav navbar-top-links navbar-right">
+
+            <li id="auth-spinner"><br>&nbsp;&nbsp;<img src="images/ajax-loader.gif">&nbsp;&nbsp;</li>
+            <li class="dropdown" style='display:none;' id='message-area'>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-envelope fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-messages" id="announcements">
+                    <center><img src="images/ajax-loader.gif"></center>
+                </ul>
+            </li>
+
+            <li class="dropdown" style='display:none;' id='status-area'>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-tasks fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-tasks" id="jobs-dropdown">
+                    <center><img src="images/ajax-loader.gif"></center>
+                </ul>
+            </li>
+            <li class="dropdown" style='display:none;' id='user-area'>
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i>  <i class="fa fa-caret-down"></i>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href='javascript: logout();'><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+    </nav>
+
+    <nav class="navbar-default sidebar" role="navigation">
+        <div class="sidebar-nav navbar-collapse">
+            <ul class="nav" id="side-menu">
+                <li class="sidebar-search">
+                </li>
+                <li id=login-area style='display:none;'>
+                    <a href="login.php"><i class="fa fa-user fa-fw"></i> Sign In</a>
+                </li>
+                <!-- <li id=welcome-area style='display:none;'>
+                   <a href="profile.php"><i class="fa fa-user fa-fw"></i><text id='welcome-text'>Welcome</text></a>
+                </li> -->
+
+                <li>
+                    <a href="index.php"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                </li>
+                <li>                        <a href="#"><i class="fa fa-table fa-fw"></i> Jobs<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="script_generator.php"><i class="fa fa-file fa-fw"></i> Jobscript Generator</a>
+                        </li>
+                        <li>
+                            <a href="completedjobs.php"><i class="fa fa-archive fa-fw"></i> Completed Jobs</a>
+                        </li>
+                        <li>
+                            <a href="queues.php?machine=cori&full_name=Cori"><i class="fa fa-tasks fa-fw"></i> Cori Queues</a>
+                        </li>
+                        <!--<li>
+                            <a href="queues.php?machine=edison&full_name=Edison"><i class="fa fa-tasks fa-fw"></i> Edison Queues</a>
+                        </li> -->
+                        <li>
+                            <a href="backlog.php"><i class="fa fa-line-chart fa-fw"></i> Queue Backlog</a>
+                        </li>
+                        <li>
+                            <a href="jobcompletion.php"><i class="fa fa-bar-chart fa-fw"></i> Job Completion Stats</a>
+                        </li>
+                        <!--                             <li>
+                                                        <a href="queuewait.php">Queue Wait Times</a>
+                                                    </li>
+                        -->
+                        <!-- Disabling Darshan Charts
+                                                    <li>
+                                                     <a href="darshan-charts.php"><i class="fa fa-hdd-o fa-fw"></i> Jobs IO Statistics</a>
+                                                    </li>
+                        -->
+                    </ul>
+                </li>
+                <li>                       <a href="#"><i class="fa fa-medkit fa-fw"></i> Center Status<span class="fa arrow"></span></a>
+                    <ul class="nav nav-second-level">
+                        <li>
+                            <a href="announcements-cs.php"><i class="fa fa-envelope fa-fw"></i> Announcements</a>
+                        </li>
+                        <!--<li>
+                          <a href="knleap.php"><i class="fa fa-server fa-fw"></i> Cori Phase II Early Access Program (KNLEAP)</a>
+                        </li>-->
+                        <!--<li>
+                          <a href="benchmarks-cs.php"><i class="fa fa-bar-chart-o fa-fw"></i> Benchmarks Monitor</a>
+                        </li>-->
+                        <li>
+                            <a href="filesystems-cs.php"><i class="fa fa-sitemap fa-fw"></i> Filesystems Monitor</a>
+                        </li>
+                        <li>
+                            <a href="nowcomputing-cs.php"><i class="fa fa-table fa-fw"></i> Now Computing</a>
+                        </li>
+                        <li>
+                            <a href="outagecal-cs.php"><i class="fa fa-calendar fa-fw"></i> Outage Calendar</a>
+                        </li>
+                        <li>
+                            <a href="outagelog-cs.php"><i class="fa fa-book fa-fw"></i> Outage Log</a>
+                        </li>
+                        <li>
+                            <a href="jobsize.php"><i class="fa fa-area-chart fa-fw"></i> Job Size Charts</a>
+                        </li>
+                        <li>
+                            <a href="queuewaittimes.php"><i class="fa fa-table fa-fw"></i> Queue Wait Times</a>
+                        </li>
+                    </ul>
+                </li>
+                <li>
+                    <a href="filebrowser.php"><i class="fa fa-folder fa-fw"></i> File Browser</a>
+                </li>
+                <li>
+                    <a href="https://help.nersc.gov"><i class="fa fa-ticket fa-fw"></i> Service Tickets</a>
+                </li>
+                <li>
+                    <a href="data-mgt.php"><i class="fa fa-bar-chart-o fa-fw"></i> Data Dashboard</a>
+                </li>
+                <li>
+                    <a href="https://nxcloud01.nersc.gov/nxwebplayer"><i class="fa fa-desktop fa-fw"></i> NX Desktop</a>
+                </li>
+                <li>
+                    <a href="https://jupyter.nersc.gov"><i class="fa fa-desktop fa-fw"></i> Jupyter Hub</a>
+                </li>
+                <li>
+                    <a href="https://www.nersc.gov"><i class="fa fa-newspaper-o fa-fw"></i> NERSC Homepage</a>
+                </li>
+                <li>
+                    <a href="https://docs.nersc.gov"><i class="fa fa-newspaper-o fa-fw"></i> Documentation Portal</a>
+                </li>
+                <li>
+                    <a href="https://iris.nersc.gov"><i class="fa fa-newspaper-o fa-fw"></i> Accounts Portal</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <div id="page-wrapper">
+
+        <!--[if lte IE 9]>
+        <br>
+        <div class="well well-sm">
+            <h4 class="red">You are using an unsupported version of Internet Explorer (version 9 or lower)</h4><br>
+            This website will not function as expected. We recommend using a recent version of Chrome, Firefox or IE 10+.
+        </div>
+        <![endif]-->
+
+
+        <div class="row">
+            <div class="col-lg-12">
+                <h4 class='page-header'>Job Completion</h4>    </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
+
+        <div class="row">
+            <div class="col-lg-12">
+                <!-- panel -->
+                <div class="panel panel-default" id="graph-panel">
+                    <div class="panel-heading">
+                        Job Completion Over Time
+                    </div>
+                    <div class="panel-body">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="machine-form">Machine: </label>
+                                    <select id='machine-form' class="form-control queryDB">
+                                        <option value="cori-all" selected>Cori (all)</option>
+                                        <option value="cori-hsw">Cori (Haswell)</option>
+                                        <option value="cori-knl">Cori (KNL)</option>
+                                        <option value="edison-all">Edison</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="data-form">Data: </label>
+                                    <select id='data-form' class="form-control queryDB">
+                                        <option value="jobcount" selected>Job Count</option>
+                                        <option value="nodehours">Node-Hours</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="scale-form">Y-Axis Scale: </label>
+                                    <select id='scale-form' class="form-control">
+                                        <option value="raw" selected>Normal</option>
+                                        <option value="percent">Relative</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="category-form">Categories: </label>
+                                    <select id='category-form' class="form-control queryDB">
+                                        <option value="slurm" title="Job state categories used by Slurm" selected>Slurm Job States</option>
+                                        <option value="summary" title="A simpler job state category that groups Slurm job states into Success, Failed (User or System), and Unknown (cannot be determined as Success or Failed)">Simplified Job States (Success or Failed)</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="interval-form">Time Interval: </label>
+                                    <select id='interval-form' class="form-control queryDB">
+                                        <option value="10min" selected>10 Minutes</option>
+                                        <option value="1day">1 Day</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Worlds most amazing CSS free centering technique -->
+                        <div id="myspinner">
+                            <center>
+                                <br><br><br><br><br><br><br><br><br><br><br>
+                                <img src="images/blue-ajax-loader.gif">
+                                <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                            </center>
+                        </div>
+
+                        <div id="jobcompletion-content">
+                            <div id="container"></div>
+                        </div>
+
+                        <!-- info panel -->
+                        <div class='col-lg-12'>
+                            <div class='panel panel-default'>
+                                <div class='panel-body'>
+                                    Series can be shown or hidden by clicking on a legend entry.
+                                </div>
+                            </div>
+                        </div>
+                        <!-- info panel end-->
+                    </div>
+                </div>
+                <!-- panel end -->
+            </div>
+        </div>
+
+        <!-- stats table -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="panel panel-default" id="table-panel">
+                    <div id="summary-heading" class="panel-heading">Summary</div>
+                    <div class="panel-body">
+                        The average and standard deviation refer to the average and standard deviation of
+                        the points for each series across the date-time range selected. The values are all
+                        in units of the data type specified.
+                    </div>
+                    <table id="stats-table" class="table table-striped table-bordered"></table>
+                </div>
+            </div>
+        </div>
+        <!-- stats table end -->
+    </div>
+
+</div>
+<!-- /#page-wrapper -->
+
+</div>
+<!-- /#wrapper -->
+
+<!-- Core Scripts - Include with every page -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/plugins/metisMenu/jquery.metisMenu.js"></script>
+
+<script src="https://code.highcharts.com/stock/5.0/highstock.js"></script>
+<script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+
+<!-- SB Admin Scripts - Include with every page -->
+<script src="js/sb-admin.js"></script>
+
+<script src="js/mynewt.js"></script>
+<script src="js/mynersc.js"></script>
+
+<script src="js/plugins/dataTables/jquery.dataTables.js"></script>
+
+<link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/themes/smoothness/jquery-ui.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.12.1/jquery-ui.min.js"></script>
+
+<script src="js/plugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.js"></script>
+<link rel="stylesheet" type="text/css" href="js/plugins/jquery-ui-timepicker-addon/jquery-ui-timepicker-addon.css">
+
+<script src="js/spectrum.js"></script>
+<link rel="stylesheet" href="css/spectrum.css"/>
+
+<script src="chartUtils.js"></script>
+<script src="jobcompletion.js"></script>
+<link rel="stylesheet" href="css/jobcompletion.css" type="text/css">
+
+<script>
+    myCheckAuth();
+    function checkAuthCallback() {}
+</script>
+
+</body>
+
+</html>
+
+

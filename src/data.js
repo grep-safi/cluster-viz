@@ -4,11 +4,16 @@ const scontrol = require('../data/formatted-scontrol.json');
 export default (jobEntries, nodeEntries) => {
     let nList = [];
 
+    // if (jobEntries) {
+    // }
+
     // Get a list of nids that correspond to the entered search string in the jobs json file
-    for (let entry = 0; entry < jobEntries.length; entry++) {
+    for (let entry = 0; jobEntries && entry < jobEntries.length; entry++) {
         const option = jobEntries[entry]['option'].replace(/\s+/g, '');
         const searchStr = jobEntries[entry]['input'];
 
+        // If the user inputted empty space, just skip the search
+        if (searchStr.replace(/\s+/g, '').length === 0) continue;
         for (let i = 0; i < squeue.length; i++) {
             if (squeue[i][option] === searchStr) {
                 nList = nList.concat(squeue[i]['NODELIST']);
@@ -50,7 +55,7 @@ export default (jobEntries, nodeEntries) => {
                         // So add a dummy node to the tree
                         if (getNodeID(node['NodeName']) === nodeNum) {
                             // Check if the node is active
-                            nodeActive = isActive(nList, node, nodeEntries) ? 1 : 0;
+                            nodeActive = isActive(nList, node, nodeEntries, jobEntries) ? 1 : 0;
 
                             nodes.push({
                                 "name": `Node ${l}`,
@@ -100,19 +105,38 @@ export default (jobEntries, nodeEntries) => {
     }
 
     // checks the node to see if it should be labeled active
-    function isActive(nList, node, nodeEntries) {
-        // If the length of nList is 0, then the user isn't looking for jobs, so set it to true
-        const jobNode = nList.length === 0 ? true : nList.includes(node['NodeName']);
+    function isActive(nList, node, nodeEntries, jobEntries) {
+        // If there are no nodes and the node input is empty then they're not searching for anything
+        if (nList.length === 0 && isEmptyInput(nodeEntries)) return false;
+
+        // If the length of nList is 0 and jobEntries is an empty input,
+        // then the user isn't looking for jobs, so set it to true
+        const jobNode = nList.length === 0 && isEmptyInput(jobEntries) ? true : nList.includes(node['NodeName']);
+
+        // if (!nodeEntries) return jobNode;
 
         let bool = true;
         for (let entry = 0; entry < nodeEntries.length; entry++) {
-            const nodeValue = node[nodeEntries[entry]['option']].toUpperCase();
+            // console.log(`im running for states`);
+            const field = nodeEntries[entry]['option'].replace(/\s+/g, '');
+            const nodeValue = node[field].toUpperCase();
             const userValue = nodeEntries[entry]['input'].toUpperCase();
+
+            // If the user inputs whitespace or nothing, just skip
+            if (userValue.replace(/\s+/g, '').length === 0) continue;
 
             bool = bool && nodeValue.includes(userValue);
         }
 
         return bool && jobNode;
+    }
+
+    // Check if the entries array has empty inputs
+    function isEmptyInput(entries) {
+        if (!entries) return false;
+        if (entries.length === 1 && entries[0]['input'].replace(/\s+/g, '').length === 0) return true;
+
+        return entries.length === 0;
     }
 
     // Returns an html string with all of the data in the node
