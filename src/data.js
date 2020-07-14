@@ -150,7 +150,9 @@ export default (jobEntries, nodeEntries) => {
 
         for (const property in dataLine) {
             if (dataLine.hasOwnProperty(property)) {
-                txt = txt.concat(`${property}: ${dataLine[property]}<br />`);
+                let line = `${property}: ${dataLine[property]}<br />`;
+                txt = txt.concat(`${line}`);
+                // txt = txt.concat(`${property}: ${dataLine[property]}<br />`);
             }
         }
 

@@ -77,90 +77,105 @@ export default hData => {
             .join("g");
 
         // create a tooltip
-        let Tooltip = select("#div_template")
-            .append("div")
-            // .style("position", "absolute")
-            .style("opacity", 0)
-            .style("pointer-events", "none")
-            .attr("class", "tooltip")
-            .style("background-color", "white")
-            .style("border", "solid")
-            .style("border-width", "2px")
-            .style("border-radius", "5px")
-            .style("padding", "5px");
+        // let Tooltip = select("#div_template")
+        //     .append("div")
+        //     // .style("position", "absolute")
+        //     .style("opacity", 0)
+        //     .style("pointer-events", "none")
+        //     .attr("class", "tooltip")
+        //     .style("background-color", "white")
+        //     .style("border", "solid")
+        //     .style("border-width", "2px")
+        //     .style("border-radius", "5px")
+        //     .style("padding", "5px");
 
         // Three functions that change the tooltip when user hover / move / leave a cell
-        let mouseover = function(d) {
-            const depth = d.depth - 1;
-            let arr = ["cabinet", "chassis", "blade"];
-            let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
-            if (depth === 3) {
-                txt = d.data.nodeData;
-                txt = `Node Details <br> ${d.data.nodeData}`;
-                if (!d.data.nodeData) txt = `This is a service node`;
-            }
+        // let mouseover = function(d) {
+        //     const depth = d.depth - 1;
+        //     let arr = ["cabinet", "chassis", "blade"];
+        //     let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
+        //     if (depth === 3) {
+        //         txt = d.data.nodeData;
+        //         txt = `Node Details <br> ${d.data.nodeData}`;
+        //         if (!d.data.nodeData) txt = `This is a service node`;
+        //     }
+        //
+        //     x.domain([d.parent.x0, d.parent.x1]);
+        //     y.domain([d.parent.y0, d.parent.y1]);
+        //
+        //     let xPos = (mouse(this)[0]) + x(d.x0) + 10;
+        //     let yPos = (mouse(this)[1]) + y(d.y0) + 10;
+        //
+        //     Tooltip
+        //         .style("opacity", 1)
+        //         .html(txt)
+        //         .style("left", xPos + "px")
+        //         .style("top", yPos + "px");
+        //
+        // }
+        // let mousemove = function(d) {
+        //     x.domain([d.parent.x0, d.parent.x1]);
+        //     y.domain([d.parent.y0, d.parent.y1]);
+        //
+        //     let xPos = (mouse(this)[0]) + x(d.x0) + 10;
+        //     let yPos = (mouse(this)[1]) + y(d.y0) + 10;
+        //
+        //     Tooltip
+        //         .style("left", xPos + "px")
+        //         .style("top", yPos + "px");
+        // }
+        //
+        // let mouseleave = function(d) {
+        //     Tooltip
+        //         .style("opacity", 0)
+        // }
 
-            x.domain([d.parent.x0, d.parent.x1]);
-            y.domain([d.parent.y0, d.parent.y1]);
-
-            let xPos = (mouse(this)[0]) + x(d.x0) + 10;
-            let yPos = (mouse(this)[1]) + y(d.y0) + 10;
-
-            Tooltip
-                .style("opacity", 1)
-                .html(txt)
-                .style("left", xPos + "px")
-                .style("top", yPos + "px");
-
-        }
-        let mousemove = function(d) {
-            x.domain([d.parent.x0, d.parent.x1]);
-            y.domain([d.parent.y0, d.parent.y1]);
-
-            let xPos = (mouse(this)[0]) + x(d.x0) + 10;
-            let yPos = (mouse(this)[1]) + y(d.y0) + 10;
-
-            Tooltip
-                .style("left", xPos + "px")
-                .style("top", yPos + "px");
-        }
-
-        let mouseleave = function(d) {
-            Tooltip
-                .style("opacity", 0)
-        }
-
-        node
-            .on("mouseover", mouseover)
-            .on("mousemove", mousemove)
-            .on("mouseleave", mouseleave);
+        // node
+        //     .on("mouseover", mouseover)
+        //     .on("mousemove", mousemove)
+        //     .on("mouseleave", mouseleave);
 
         // This returns the root nodes and child nodes and adds
         // a click event so that the user can zoom in and zoom out
         node.filter(d => d === root ? d.parent : d.children)
             .attr("cursor", "pointer")
             .on("click", d => {
-                Tooltip.remove();
+                // Tooltip.remove();
                 return d === root ? zoomout(root) : zoomin(d);
             });
 
         currentPosition
             .text(name(root))
             .on("click", function() {
-                Tooltip.remove();
+                // Tooltip.remove();
                 return name(root) !== 'Cori' ? zoomout(root) : null;
             });
 
         node.append("rect")
             .attr("fill", d => {
-                // let arr = [13056, 192, 48, 4, 1];
-                let arr = [13056, hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
-                let maxVal = arr[d.depth] + 2;
+                // This function will fill the rect based on the node value and the maximum node value possible
+                // Uses logarithmic scaling
+                const maxValuesArray = [hData.maxCabinet, hData.maxChassis, hData.maxBlade, 2];
+                const depth = d.depth - 1;
+                let maxVal = maxValuesArray[depth] === 0 ? 2 : maxValuesArray[depth] + 1;
                 const colorScale = scaleLog()
                     .domain([1, maxVal])
-                    .range(['white', 'green']);
+                    .range(['white', 'lightseagreen']);
 
-                return d === root ? "#fff" : `${colorScale(d.value + 1)}`;
+                const nodeValue = d.value === 0 ? 1 : d.value + 1;
+                return d === root ? "#fff" : `${colorScale(nodeValue)}`;
+
+                // Code for linear scaling
+
+                // const maxValuesArray = [hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
+                // const depth = d.depth - 1;
+                // let maxVal = maxValuesArray[depth] === 0 ? 1 : maxValuesArray[depth];
+                // const colorScale = scaleLinear()
+                //     .domain([0, maxVal])
+                //     .range(['white', 'lightseagreen']);
+                //
+                // const nodeValue = d.value;
+                // return d === root ? "#fff" : `${colorScale(nodeValue)}`;
             })
             .attr("stroke", "gold");
 
@@ -189,6 +204,26 @@ export default hData => {
             .selectAll("tspan")
             .data(d => [`nodes: \n ${formatNum(d.value)}`])
             .join("tspan")
+            .attr("fill-opacity", 0.7)
+            .attr("font-weight", "normal")
+            .text(d => d);
+
+        const displayFields = d => {
+            if (d.depth !== 4 || !d.data.nodeData) return '';
+            let arr = d.data.nodeData.split('<br />');
+            if (arr.length > 25) return arr.splice(0, 26);
+            return '';
+        }
+
+        node.append("text")
+            .attr("font-weight", "bold")
+            .attr("font-size", `13px`)
+            .attr('transform', 'translate(10, 50)')
+            .selectAll("tspan")
+            .data(d => displayFields(d))
+            .join("tspan")
+            .attr('dy', '1.0em')
+            .attr('x', '0')
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
             .text(d => d);
