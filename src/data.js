@@ -49,19 +49,17 @@ export default (jobEntries, nodeEntries) => {
                     for (let l = 0; l < numNodes; l++) {
                         let nodeActive = 0;
 
-                        let txtVal = getStr(scontrol[jsonParseIndex]);
-                        let node = scontrol[jsonParseIndex];
+                        let nodeData = scontrol[jsonParseIndex];
                         // If node is a compute node, add it to hierarchy tree, else it is an 'invisible' service node
                         // So add a dummy node to the tree
-                        if (getNodeID(node['NodeName']) === nodeNum) {
+                        if (getNodeID(nodeData['NodeName']) === nodeNum) {
                             // Check if the node is active
-                            nodeActive = isActive(nList, node, nodeEntries, jobEntries) ? 1 : 0;
+                            nodeActive = isActive(nList, nodeData, nodeEntries, jobEntries) ? 1 : 0;
 
                             nodes.push({
                                 "name": `Node ${l}`,
                                 "value": nodeActive,
-                                "NodeName": node ? node['NodeName'] : '',
-                                "nodeData": txtVal
+                                "nodeData": nodeData
                             });
 
                             jsonParseIndex += 1;
@@ -147,16 +145,17 @@ export default (jobEntries, nodeEntries) => {
         if (!dataLine) return 'undefined';
 
         let txt = '';
+        let obj = {};
 
         for (const property in dataLine) {
             if (dataLine.hasOwnProperty(property)) {
                 let line = `${property}: ${dataLine[property]}<br />`;
                 txt = txt.concat(`${line}`);
-                // txt = txt.concat(`${property}: ${dataLine[property]}<br />`);
+                obj[property] = dataLine[property];
             }
         }
 
-        return txt;
+        return dataLine;
     }
 
     // Returns the number of the Node ID

@@ -76,65 +76,6 @@ export default hData => {
             .data(root.children)
             .join("g");
 
-        // create a tooltip
-        // let Tooltip = select("#div_template")
-        //     .append("div")
-        //     // .style("position", "absolute")
-        //     .style("opacity", 0)
-        //     .style("pointer-events", "none")
-        //     .attr("class", "tooltip")
-        //     .style("background-color", "white")
-        //     .style("border", "solid")
-        //     .style("border-width", "2px")
-        //     .style("border-radius", "5px")
-        //     .style("padding", "5px");
-
-        // Three functions that change the tooltip when user hover / move / leave a cell
-        // let mouseover = function(d) {
-        //     const depth = d.depth - 1;
-        //     let arr = ["cabinet", "chassis", "blade"];
-        //     let txt = `# of active nodes in this ${arr[depth]} is: ${d.value}`;
-        //     if (depth === 3) {
-        //         txt = d.data.nodeData;
-        //         txt = `Node Details <br> ${d.data.nodeData}`;
-        //         if (!d.data.nodeData) txt = `This is a service node`;
-        //     }
-        //
-        //     x.domain([d.parent.x0, d.parent.x1]);
-        //     y.domain([d.parent.y0, d.parent.y1]);
-        //
-        //     let xPos = (mouse(this)[0]) + x(d.x0) + 10;
-        //     let yPos = (mouse(this)[1]) + y(d.y0) + 10;
-        //
-        //     Tooltip
-        //         .style("opacity", 1)
-        //         .html(txt)
-        //         .style("left", xPos + "px")
-        //         .style("top", yPos + "px");
-        //
-        // }
-        // let mousemove = function(d) {
-        //     x.domain([d.parent.x0, d.parent.x1]);
-        //     y.domain([d.parent.y0, d.parent.y1]);
-        //
-        //     let xPos = (mouse(this)[0]) + x(d.x0) + 10;
-        //     let yPos = (mouse(this)[1]) + y(d.y0) + 10;
-        //
-        //     Tooltip
-        //         .style("left", xPos + "px")
-        //         .style("top", yPos + "px");
-        // }
-        //
-        // let mouseleave = function(d) {
-        //     Tooltip
-        //         .style("opacity", 0)
-        // }
-
-        // node
-        //     .on("mouseover", mouseover)
-        //     .on("mousemove", mousemove)
-        //     .on("mouseleave", mouseleave);
-
         // This returns the root nodes and child nodes and adds
         // a click event so that the user can zoom in and zoom out
         node.filter(d => d === root ? d.parent : d.children)
@@ -200,7 +141,7 @@ export default hData => {
 
         node.append("text")
             .attr("font-size", `13px`)
-            .attr('transform', d => textPosition(d.data.name, d.depth, 25, 50))
+            .attr('transform', d => textPosition(d.data.name, d.depth, 22, 30))
             .selectAll("tspan")
             .data(d => [`nodes: \n ${formatNum(d.value)}`])
             .join("tspan")
@@ -210,9 +151,12 @@ export default hData => {
 
         const displayFields = d => {
             if (d.depth !== 4 || !d.data.nodeData) return '';
-            let arr = d.data.nodeData.split('<br />');
-            if (arr.length > 25) return arr.splice(0, 26);
-            return '';
+            return [d.data.nodeData['NodeName']];
+
+            // let arr = d.data.nodeData.split('<br />');
+            // let arr = d.data.nodeData.split('<br />');
+            // if (arr.length > 25) return arr.splice(0, 26);
+            // return '';
         }
 
         node.append("text")
@@ -224,6 +168,7 @@ export default hData => {
             .join("tspan")
             .attr('dy', '1.0em')
             .attr('x', '0')
+            .attr('fill', 'crimson')
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
             .text(d => d);
