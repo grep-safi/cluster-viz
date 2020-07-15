@@ -40,10 +40,9 @@ export default hData => {
     const formatNum = format(",d")
 
     const currentPosition = select("#currentPosition")
-        .text("super califragilistic expialodocious")
         .attr("style", "color: gold");
 
-    const group = svg.append("g")
+    let group = svg.append("g")
         .call(render, tree(hData));
 
     /**

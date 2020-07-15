@@ -18,6 +18,7 @@ const ClusterViz = () => {
 
     const jobArr = [];
     const nodeArr = [];
+    const checkBoxes = [];
 
     // TODO Add better identifier keys for React as a field in each element
     // TODO Simplify the double for loops with a while loop and extract the React code into a function
@@ -69,16 +70,18 @@ const ClusterViz = () => {
         );
     }
 
-    // for (let i = 0; i < nodeDisplayAttributes.length; i++) {
-    //     nodeDisplayAttributes.push(
-    //         <input
-    //             type="checkbox"
-    //             id={`display-attr-${nodeDisplayAttributes[i]}`}
-    //             name={nodeDisplayAttributes[i]}
-    //             value={nodeDisplayAttributes[i]}
-    //         />
-    //     );
-    // }
+    for (let i = 0; i < nodeDisplayAttributes.length; i++) {
+        checkBoxes.push(
+            <>
+                <input
+                    type="checkbox"
+                    id={`display-attr-${i}`}
+                />
+
+                <label htmlFor={`display-attr-${i}`}>{nodeDisplayAttributes[i]}</label>
+            </>
+        );
+    }
 
     return (
         <>
@@ -115,19 +118,16 @@ const ClusterViz = () => {
 
             </div>
 
-            {/*<button*/}
-            {/*    name="enter"*/}
-            {/*    id="enter-button"*/}
-            {/*    onClick={() => setCount(c => c + 1)}*/}
-            {/*>*/}
-            {/*    Enter*/}
-            {/*</button>*/}
-
             <p id="currentPosition"> hello </p>
 
             <div id="container">
                 <div id="data-viz" />
             </div>
+
+            <div>
+                { checkBoxes }
+            </div>
+
         </>
     );
 }
