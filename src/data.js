@@ -24,12 +24,6 @@ export default (jobEntries, nodeEntries) => {
     let maxChassis = 0;
     let maxBlade = 0;
 
-
-    console.log(`heads up scontrl ${scontrol[0]}`);
-    for (const property in scontrol[0]) {
-        console.log(`${property}`);
-    }
-
     function generateNodeHierarchy(cabinets) {
 
         const numCabinets = 68;

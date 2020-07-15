@@ -72,14 +72,20 @@ const ClusterViz = () => {
 
     for (let i = 0; i < nodeDisplayAttributes.length; i++) {
         checkBoxes.push(
-            <>
+            <div>
                 <input
                     type="checkbox"
                     id={`display-attr-${i}`}
+                    className="checkbox"
                 />
 
-                <label htmlFor={`display-attr-${i}`}>{nodeDisplayAttributes[i]}</label>
-            </>
+                <label
+                    htmlFor={`display-attr-${i}`}
+                    className="checkbox-label"
+                >
+                    {nodeDisplayAttributes[i]}
+                </label>
+            </div>
         );
     }
 
@@ -118,16 +124,19 @@ const ClusterViz = () => {
 
             </div>
 
-            <p id="currentPosition"> hello </p>
+            <p id="currentPosition" />
 
-            <div id="container">
-                <div id="data-viz" />
+            <div className="main-wrapper">
+                <div className="checkboxes">
+                    <p id="display-options-text">Display Options</p>
+                    { checkBoxes }
+                </div>
+
+                <div id="main-container">
+                    <div id="data-viz" />
+                </div>
+
             </div>
-
-            <div>
-                { checkBoxes }
-            </div>
-
         </>
     );
 }

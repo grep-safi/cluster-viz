@@ -29,8 +29,6 @@ const nodeDisplayAttributes = [
     'AvailableFeatures',
     'ActiveFeatures',
     'Gres',
-    'NodeAddr',
-    'NodeHostName',
     'Version',
     'RealMemory',
     'AllocMem',
