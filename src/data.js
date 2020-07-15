@@ -102,6 +102,8 @@ export default (jobEntries, nodeEntries) => {
         }
     }
 
+    const numericFields = ['CPULoad', 'RealMemory', 'AllocMem', 'FreeMem'];
+
     // checks the node to see if it should be labeled active
     function isActive(nList, node, nodeEntries, jobEntries) {
         // If there are no nodes and the node input is empty then they're not searching for anything
@@ -111,25 +113,41 @@ export default (jobEntries, nodeEntries) => {
         // then the user isn't looking for jobs, so set it to true
         const jobNode = nList.length === 0 && isEmptyInput(jobEntries) ? true : nList.includes(node['NodeName']);
 
-        // if (!nodeEntries) return jobNode;
-
         let bool = true;
         for (let entry = 0; entry < nodeEntries.length; entry++) {
-            // console.log(`im running for states`);
             const field = nodeEntries[entry]['option'].replace(/\s+/g, '');
-            if (!node[field]) {
-                console.log(`the field: ${field}`);
-            }
             const nodeValue = node[field].toUpperCase();
             const userValue = nodeEntries[entry]['input'].toUpperCase();
 
             // If the user inputs whitespace or nothing, just skip
             if (userValue.replace(/\s+/g, '').length === 0) continue;
 
-            bool = bool && nodeValue.split(',').includes(userValue);
+            let matches = nodeValue.split(',').includes(userValue);
+            if (numericFields.includes(field)) matches = getMatch(nodeValue, userValue);
+            bool = bool && matches;
+            // bool = bool && nodeValue.split(',').includes(userValue);
         }
 
         return bool && jobNode;
+    }
+
+    function getMatch(nodeVal, userVal) {
+        let userNum = 0;
+        if (userVal.includes('>=')) {
+            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('=') + 1, userVal.length));
+            return Number.parseFloat(nodeVal) >= userNum;
+        } else if (userVal.includes('<=')) {
+            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('=') + 1, userVal.length));
+            return Number.parseFloat(nodeVal) <= userNum;
+        } else if (userVal.includes('<')) {
+            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('<') + 1, userVal.length));
+            return Number.parseFloat(nodeVal) < userNum;
+        } else if (userVal.includes('>')) {
+            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('>') + 1, userVal.length));
+            return Number.parseFloat(nodeVal) > userNum;
+        }
+
+        return false;
     }
 
     // Check if the entries array has empty inputs
