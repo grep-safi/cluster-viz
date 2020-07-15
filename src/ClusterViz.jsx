@@ -12,8 +12,8 @@ const ClusterViz = () => {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-        if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]));
-        else createTreemap(hierarchyData(jobSearch, nodeSearch));
+        if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]), true);
+        else createTreemap(hierarchyData(jobSearch, nodeSearch), true);
     }, [count]);
 
     let jobArr = [];

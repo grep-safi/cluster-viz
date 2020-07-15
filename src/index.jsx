@@ -2,7 +2,7 @@ import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategor
     hierarchy, mouse, event} from "d3/dist/d3";
 import { equallySpacedTiling } from "./utils/tiling";
 
-export default hData => {
+export default (hData, r) => {
     const width = 800;
     const height = 800;
     const paddingTop = 0;
@@ -14,7 +14,7 @@ export default hData => {
 
     let refresh = true;
     let svg, tree, name, formatNum, currentPosition, group;
-    if (refresh) {
+    if (r) {
         select('#data-viz').selectAll('*').remove();
         select('#div_template').selectAll('*').remove();
         svg = select("#data-viz")
@@ -81,7 +81,9 @@ export default hData => {
             .attr("fill", d => {
                 // This function will fill the rect based on the node value and the maximum node value possible
                 // Uses logarithmic scaling
-                const maxValuesArray = [hData.maxCabinet, hData.maxChassis, hData.maxBlade, 2];
+
+                // const maxValuesArray = [192, 64, 4, 1]
+                const maxValuesArray = [hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
                 const depth = d.depth - 1;
                 let maxVal = maxValuesArray[depth] === 0 ? 2 : maxValuesArray[depth] + 1;
                 const colorScale = scaleLog()
