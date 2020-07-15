@@ -2,7 +2,7 @@ import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategor
     hierarchy, mouse, event} from "d3/dist/d3";
 import { equallySpacedTiling } from "./utils/tiling";
 
-export default (hData, r) => {
+export default hData => {
     const width = 800;
     const height = 800;
     const paddingTop = 0;
@@ -12,45 +12,39 @@ export default (hData, r) => {
     const x = scaleLinear().rangeRound([0, width]);
     const y = scaleLinear().rangeRound([0, height]);
 
-    let refresh = true;
-    let svg, tree, name, formatNum, currentPosition, group;
-    if (r) {
-        select('#data-viz').selectAll('*').remove();
-        svg = select("#data-viz")
-            .append("svg")
-            .attr("id", 'root')
-            .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
+    select('#data-viz').selectAll('*').remove();
+    const svg = select("#data-viz")
+        .append("svg")
+        .attr("id", 'root')
+        .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
 
-        function tile(node, x0, y0, x1, y1) {
-            equallySpacedTiling(node, width, height, paddingTop);
-            for (const child of node.children) {
-                child.x0 = x0 + child.x0 / width * (x1 - x0);
-                child.x1 = x0 + child.x1 / width * (x1 - x0);
-                child.y0 = y0 + child.y0 / height * (y1 - y0);
-                child.y1 = y0 + child.y1 / height * (y1 - y0);
-            }
+    function tile(node, x0, y0, x1, y1) {
+        equallySpacedTiling(node, width, height, paddingTop);
+        for (const child of node.children) {
+            child.x0 = x0 + child.x0 / width * (x1 - x0);
+            child.x1 = x0 + child.x1 / width * (x1 - x0);
+            child.y0 = y0 + child.y0 / height * (y1 - y0);
+            child.y1 = y0 + child.y1 / height * (y1 - y0);
         }
-
-        tree = data => treemap()
-            .tile(tile)
-            (hierarchy(data)
-                .sum(d => d.value)
-                .sort((a, b) => b.height - a.height)
-            );
-
-        name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
-
-        formatNum = format(",d")
-
-        currentPosition = select("#currentPosition")
-            .text("super califragilistic expialodocious")
-            .attr("style", "color: gold");
-
-
-        group = svg.append("g")
-            .call(render, tree(hData));
     }
 
+    const tree = data => treemap()
+        .tile(tile)
+        (hierarchy(data)
+            .sum(d => d.value)
+            .sort((a, b) => b.height - a.height)
+        );
+
+    const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
+
+    const formatNum = format(",d")
+
+    const currentPosition = select("#currentPosition")
+        .text("super califragilistic expialodocious")
+        .attr("style", "color: gold");
+
+    const group = svg.append("g")
+        .call(render, tree(hData));
 
     /**
      *

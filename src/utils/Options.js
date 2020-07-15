@@ -3,11 +3,14 @@ const nodeOptions = [
     'Partitions',
     'Active Features',
     'Available Features',
+    'CPULoad',
+    'RealMemory',
+    'AllocMem',
+    'FreeMem',
     'NodeName',
     'Arch',
     'CoresPerSocket',
     'CPUAlloc',
-    'CPULoad',
 ];
 
 const jobOptions = [
