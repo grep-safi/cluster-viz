@@ -4,9 +4,6 @@ const scontrol = require('../data/formatted-scontrol.json');
 export default (jobEntries, nodeEntries) => {
     let nList = [];
 
-    // if (jobEntries) {
-    // }
-
     // Get a list of nids that correspond to the entered search string in the jobs json file
     for (let entry = 0; jobEntries && entry < jobEntries.length; entry++) {
         const option = jobEntries[entry]['option'].replace(/\s+/g, '');
@@ -26,6 +23,13 @@ export default (jobEntries, nodeEntries) => {
     let maxCabinet = 0;
     let maxChassis = 0;
     let maxBlade = 0;
+
+
+    console.log(`heads up scontrl ${scontrol[0]}`);
+    for (const property in scontrol[0]) {
+        console.log(`${property}`);
+    }
+
     function generateNodeHierarchy(cabinets) {
 
         const numCabinets = 68;

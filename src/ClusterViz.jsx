@@ -4,7 +4,7 @@ import SearchBar from './components/SearchBar';
 import useForm from './components/useForm';
 import hierarchyData from './data';
 import createTreemap from './index';
-import { nodeOptions, jobOptions } from "./utils/Options";
+import { nodeOptions, jobOptions, nodeDisplayAttributes } from "./utils/Options";
 
 const ClusterViz = () => {
     const [jobSearch, handleJobChange] = useForm([{ input: "", option: "USER"}]);
@@ -16,8 +16,8 @@ const ClusterViz = () => {
         else createTreemap(hierarchyData(jobSearch, nodeSearch));
     }, [count]);
 
-    let jobArr = [];
-    let nodeArr = [];
+    const jobArr = [];
+    const nodeArr = [];
 
     // TODO Add better identifier keys for React as a field in each element
     // TODO Simplify the double for loops with a while loop and extract the React code into a function
@@ -68,6 +68,17 @@ const ClusterViz = () => {
             </div>
         );
     }
+
+    // for (let i = 0; i < nodeDisplayAttributes.length; i++) {
+    //     nodeDisplayAttributes.push(
+    //         <input
+    //             type="checkbox"
+    //             id={`display-attr-${nodeDisplayAttributes[i]}`}
+    //             name={nodeDisplayAttributes[i]}
+    //             value={nodeDisplayAttributes[i]}
+    //         />
+    //     );
+    // }
 
     return (
         <>
