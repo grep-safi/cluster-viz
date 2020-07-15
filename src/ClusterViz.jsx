@@ -11,9 +11,22 @@ const ClusterViz = () => {
     const [nodeSearch, handleNodeChange] = useForm([{ input: "", option: "State"}]);
     const [count, setCount] = useState(0);
 
+    const initialDisplay = {};
+    nodeDisplayAttributes.forEach(e => initialDisplay[e] = false);
+    const [checkedItems, setCheckedItems] = useState(initialDisplay);
+
+    const handleCheckboxChange = (event) => {
+        setCheckedItems(
+            {
+                ...checkedItems,
+                [event.target.name]: event.target.checked
+            }
+        )
+    }
+
     useEffect(() => {
         if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]));
-        else createTreemap(hierarchyData(jobSearch, nodeSearch));
+        else createTreemap(hierarchyData(jobSearch, nodeSearch), checkedItems);
     }, [count]);
 
     const jobArr = [];
@@ -77,6 +90,9 @@ const ClusterViz = () => {
                     type="checkbox"
                     id={`display-attr-${i}`}
                     className="checkbox"
+                    name={nodeDisplayAttributes[i]}
+                    checked={checkedItems[nodeDisplayAttributes[i]] || false}
+                    onChange={handleCheckboxChange}
                 />
 
                 <label

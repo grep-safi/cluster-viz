@@ -53,6 +53,8 @@ input {
 #display-options-text {
     text-align: center;
     font-size: 20px;
+    font-weight: bold;
+    color: lightblue;
 }
 
 .checkbox {
@@ -66,6 +68,7 @@ input {
     right: 160px;
     bottom: 8px;
     font-size: 20px;
+    color: lightpink;
 }
 
 .checkboxes {

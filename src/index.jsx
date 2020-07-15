@@ -2,7 +2,7 @@ import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategor
     hierarchy, mouse, event} from "d3/dist/d3";
 import { equallySpacedTiling } from "./utils/tiling";
 
-export default hData => {
+export default (hData, nodeFieldList) => {
     const width = 800;
     const height = 800;
     const paddingTop = 0;
@@ -124,7 +124,14 @@ export default hData => {
 
         const displayFields = d => {
             if (d.depth !== 4 || !d.data.nodeData) return [''];
-            return [d.data.nodeData['NodeName']];
+            // return [d.data.nodeData['NodeName']];
+            const displayAttributes = [];
+
+            for (const property in nodeFieldList) {
+                if (nodeFieldList[property]) displayAttributes.push(`${property}: ${d.data.nodeData[property]}`);
+            }
+
+            return displayAttributes;
 
             // let arr = d.data.nodeData.split('<br />');
             // if (arr.length > 25) return arr.splice(0, 26);
