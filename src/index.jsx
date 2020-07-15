@@ -16,7 +16,6 @@ export default (hData, r) => {
     let svg, tree, name, formatNum, currentPosition, group;
     if (r) {
         select('#data-viz').selectAll('*').remove();
-        select('#div_template').selectAll('*').remove();
         svg = select("#data-viz")
             .append("svg")
             .attr("id", 'root')
