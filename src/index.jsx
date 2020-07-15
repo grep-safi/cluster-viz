@@ -107,47 +107,37 @@ export default (hData, nodeFieldList) => {
             return `translate(${x},${y})`;
         }
 
-        node.append("text")
-            .attr("font-weight", "bold")
-            .attr("font-size", `13px`)
-            .attr('transform', d => textPosition(d.data.name, d.depth, 25, 15))
-            .selectAll("tspan")
-            // .data(d => [d.data.name, `nodes: ${formatNum(d.value)}`])
-            .data(d => [d.data.name, 'nodes:', formatNum(d.value)])
-            .join("tspan")
-            // .attr('x', '0')
-            .attr('x', (d, i) => i === 0 ? 0 : 1)
-            .attr('dy', '1.0em')
-            .attr("fill-opacity", 0.7)
-            .attr("font-weight", "normal")
-            .text(d => d);
-
         const displayFields = d => {
+            // If the depth isn't 4, then we aren't at the node level, so simply return empty string
+            // If there is no nodeData, then we're probably at a service node which has no fields so return empty string
             if (d.depth !== 4 || !d.data.nodeData) return [''];
-            // return [d.data.nodeData['NodeName']];
-            const displayAttributes = [];
 
+            // This for loop iterates through node attributes that are checked by the user
+            // And pushes those to an array
+            // If the number of checked boxes is greater than 25, then there's no space for more,
+            // so simply exit the for loop
+            const displayAttributes = [];
+            let count = 0;
             for (const property in nodeFieldList) {
-                if (nodeFieldList[property]) displayAttributes.push(`${property}: ${d.data.nodeData[property]}`);
+                if (nodeFieldList[property]) {
+                    displayAttributes.push(`${property}: ${d.data.nodeData[property]}`);
+                    count += 1;
+                }
+                if (count > 25) break;
             }
 
             return displayAttributes;
-
-            // let arr = d.data.nodeData.split('<br />');
-            // if (arr.length > 25) return arr.splice(0, 26);
-            // return '';
         }
 
         node.append("text")
             .attr("font-weight", "bold")
             .attr("font-size", `13px`)
-            .attr('transform', 'translate(10, 50)')
+            .attr('transform', d => textPosition(d.data.name, d.depth, 25, 15))
             .selectAll("tspan")
-            .data(d => displayFields(d))
+            .data(d => [d.data.name, 'nodes:', formatNum(d.value), ...displayFields(d)])
             .join("tspan")
-            .attr('x', '0')
+            .attr('x', (d, i) => i === 0 ? 0 : 1)
             .attr('dy', '1.0em')
-            .attr('fill', 'crimson')
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
             .text(d => d);
