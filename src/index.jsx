@@ -101,10 +101,13 @@ export default (hData, nodeFieldList) => {
 
         const textPosition = (text, depth, xShift, y) => {
             const widths = [width / 24, width / 6, width / 8, width / 4];
-            const textWidth = Number(text.split(' ')[1]) > 9 ? (xShift + 2) : xShift;
-            const x = widths[depth - 1] - textWidth;
+            // const textWidthScale = scaleLinear().domain([0, 10]).range([0, 25]);
+            // const textWidth = textWidthScale(text.length);
+            // console.log(`text: ${text} and ${text.length} and ${textWidth}`);
+            // const x = widths[depth - 1] - textWidth;
+            const x = widths[depth - 1] - xShift;
 
-            return `translate(${x},${y})`;
+            return `translate(${0},${y})`;
         }
 
         const displayFields = d => {
@@ -130,16 +133,16 @@ export default (hData, nodeFieldList) => {
         }
 
         node.append("text")
-            .attr("font-weight", "bold")
-            .attr("font-size", `13px`)
-            .attr('transform', d => textPosition(d.data.name, d.depth, 25, 15))
+            .attr('transform', 'translate(0, 5)')
             .selectAll("tspan")
             .data(d => [d.data.name, 'nodes:', formatNum(d.value), ...displayFields(d)])
             .join("tspan")
-            .attr('x', (d, i) => i === 0 ? 0 : 1)
+            .attr('x', (d, i) => i > 2 ? 0 : 0)
             .attr('dy', '1.0em')
+            .attr("font-size", `13px`)
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
+            .attr('fill', (d, i) => i > 2 ? 'green' : 'black')
             .text(d => d);
 
         group.call(position, root);

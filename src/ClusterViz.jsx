@@ -21,7 +21,9 @@ const ClusterViz = () => {
                 ...checkedItems,
                 [event.target.name]: event.target.checked
             }
-        )
+        );
+
+        setCount(c => c + 1);
     }
 
     useEffect(() => {
@@ -138,6 +140,17 @@ const ClusterViz = () => {
 
                 </div>
 
+            </div>
+
+
+            <div className="apply-button-wrapper">
+                <button
+                    name="apply changes"
+                    id="apply-changes"
+                    onClick={() => setCount(c => c + 1)}
+                >
+                    Apply Changes
+                </button>
             </div>
 
             <p id="currentPosition" />

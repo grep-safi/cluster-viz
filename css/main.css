@@ -80,6 +80,18 @@ input {
     /*float: left;*/
 }
 
+.apply-button-wrapper {
+    width: 105px;
+    height: 55px;
+    margin: 5px auto auto;
+}
+
+#apply-changes {
+    width: 100px;
+    height: 50px;
+    background-color: lightseagreen;
+}
+
 .main-wrapper {
     /*width: 1125px;*/
     width: 1170px;
