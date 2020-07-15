@@ -125,7 +125,6 @@ export default (jobEntries, nodeEntries) => {
             let matches = nodeValue.split(',').includes(userValue);
             if (numericFields.includes(field)) matches = getMatch(nodeValue, userValue);
             bool = bool && matches;
-            // bool = bool && nodeValue.split(',').includes(userValue);
         }
 
         return bool && jobNode;
@@ -134,20 +133,33 @@ export default (jobEntries, nodeEntries) => {
     function getMatch(nodeVal, userVal) {
         let userNum = 0;
         if (userVal.includes('>=')) {
-            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('=') + 1, userVal.length));
+            userNum = parseNumber(userVal, '=');
             return Number.parseFloat(nodeVal) >= userNum;
         } else if (userVal.includes('<=')) {
-            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('=') + 1, userVal.length));
+            userNum = parseNumber(userVal, '=');
             return Number.parseFloat(nodeVal) <= userNum;
         } else if (userVal.includes('<')) {
-            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('<') + 1, userVal.length));
+            userNum = parseNumber(userVal, '<');
             return Number.parseFloat(nodeVal) < userNum;
         } else if (userVal.includes('>')) {
-            userNum = Number.parseFloat(userVal.substring(userVal.indexOf('>') + 1, userVal.length));
+            userNum = parseNumber(userVal, '>');
             return Number.parseFloat(nodeVal) > userNum;
+        } else if (!Number.isNaN(Number.parseFloat(userVal))) {
+            return Number.parseFloat(nodeVal) === Number.parseFloat(userVal);
         }
 
         return false;
+    }
+
+    /**
+     *
+     * @param num {string} Gets the string that contains the number and comparison operator
+     * @param char {string} Gets the character that should be the end of the comparison operator and beginning of
+     * the actual num
+     * @returns {number}
+     */
+    function parseNumber(num, char) {
+        return Number.parseFloat(num.substring(num.indexOf(char) + 1, num.length));
     }
 
     // Check if the entries array has empty inputs
@@ -156,24 +168,6 @@ export default (jobEntries, nodeEntries) => {
         if (entries.length === 1 && entries[0]['input'].replace(/\s+/g, '').length === 0) return true;
 
         return entries.length === 0;
-    }
-
-    // Returns an html string with all of the data in the node
-    function getStr(dataLine) {
-        if (!dataLine) return 'undefined';
-
-        let txt = '';
-        let obj = {};
-
-        for (const property in dataLine) {
-            if (dataLine.hasOwnProperty(property)) {
-                let line = `${property}: ${dataLine[property]}<br />`;
-                txt = txt.concat(`${line}`);
-                obj[property] = dataLine[property];
-            }
-        }
-
-        return dataLine;
     }
 
     // Returns the number of the Node ID
