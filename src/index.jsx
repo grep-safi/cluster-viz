@@ -12,55 +12,46 @@ export default hData => {
     const x = scaleLinear().rangeRound([0, width]);
     const y = scaleLinear().rangeRound([0, height]);
 
-    let shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
-    let shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
+    let refresh = true;
+    let svg, tree, name, formatNum, currentPosition, group;
+    if (refresh) {
+        select('#data-viz').selectAll('*').remove();
+        select('#div_template').selectAll('*').remove();
+        svg = select("#data-viz")
+            .append("svg")
+            .attr("id", 'root')
+            .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
 
-    select('#data-viz').selectAll('*').remove();
-    select('#div_template').selectAll('*').remove();
-    const svg = select("#data-viz")
-        .append("svg")
-        .attr("id", 'root')
-        .attr("viewBox", `0 0 ${width} ${height + paddingTop}`);
-
-    function tile(node, x0, y0, x1, y1) {
-        equallySpacedTiling(node, width, height, paddingTop);
-        for (const child of node.children) {
-            child.x0 = x0 + child.x0 / width * (x1 - x0);
-            child.x1 = x0 + child.x1 / width * (x1 - x0);
-            child.y0 = y0 + child.y0 / height * (y1 - y0);
-            child.y1 = y0 + child.y1 / height * (y1 - y0);
+        function tile(node, x0, y0, x1, y1) {
+            equallySpacedTiling(node, width, height, paddingTop);
+            for (const child of node.children) {
+                child.x0 = x0 + child.x0 / width * (x1 - x0);
+                child.x1 = x0 + child.x1 / width * (x1 - x0);
+                child.y0 = y0 + child.y0 / height * (y1 - y0);
+                child.y1 = y0 + child.y1 / height * (y1 - y0);
+            }
         }
+
+        tree = data => treemap()
+            .tile(tile)
+            (hierarchy(data)
+                .sum(d => d.value)
+                .sort((a, b) => b.height - a.height)
+            );
+
+        name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
+
+        formatNum = format(",d")
+
+        currentPosition = select("#currentPosition")
+            .text("super califragilistic expialodocious")
+            .attr("style", "color: gold");
+
+
+        group = svg.append("g")
+            .call(render, tree(hData));
     }
 
-    const tree = data => treemap()
-        .tile(tile)
-        (hierarchy(data)
-            .sum(d => d.value)
-            .sort((a, b) => b.height - a.height)
-        );
-
-    const name = d => d.ancestors().reverse().map(d => d.data.name).join("/");
-
-    const formatNum = format(",d")
-
-    let currentPosition = select("#currentPosition")
-        .text("super califragilistic expialodocious")
-        .attr("style", "color: gold");
-
-
-    let group = svg.append("g")
-        .call(render, tree(hData));
-
-// console.log(`hdata maxcabinet: ${hData.maxCabinet}`);
-
-    window.addEventListener('resize', reportWindowSize);
-
-    function reportWindowSize() {
-        console.log(`resizing`);
-
-        shiftX = document.getElementById('data-viz').getBoundingClientRect().x;
-        shiftY = document.getElementById('data-viz').getBoundingClientRect().y;
-    }
 
     /**
      *
@@ -80,17 +71,11 @@ export default hData => {
         // a click event so that the user can zoom in and zoom out
         node.filter(d => d === root ? d.parent : d.children)
             .attr("cursor", "pointer")
-            .on("click", d => {
-                // Tooltip.remove();
-                return d === root ? zoomout(root) : zoomin(d);
-            });
+            .on("click", d => d === root ? zoomout(root) : zoomin(d));
 
         currentPosition
             .text(name(root))
-            .on("click", function() {
-                // Tooltip.remove();
-                return name(root) !== 'Cori' ? zoomout(root) : null;
-            });
+            .on("click", () => name(root) !== 'Cori' ? zoomout(root) : null);
 
         node.append("rect")
             .attr("fill", d => {
@@ -133,27 +118,20 @@ export default hData => {
             .attr("font-size", `13px`)
             .attr('transform', d => textPosition(d.data.name, d.depth, 25, 15))
             .selectAll("tspan")
-            .data(d => [d.data.name])
+            // .data(d => [d.data.name, `nodes: ${formatNum(d.value)}`])
+            .data(d => [d.data.name, 'nodes:', formatNum(d.value)])
             .join("tspan")
-            .attr("fill-opacity", 0.7)
-            .attr("font-weight", "normal")
-            .text(d => d);
-
-        node.append("text")
-            .attr("font-size", `13px`)
-            .attr('transform', d => textPosition(d.data.name, d.depth, 22, 30))
-            .selectAll("tspan")
-            .data(d => [`nodes: \n ${formatNum(d.value)}`])
-            .join("tspan")
+            // .attr('x', '0')
+            .attr('x', (d, i) => i === 0 ? 0 : 1)
+            .attr('dy', '1.0em')
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
             .text(d => d);
 
         const displayFields = d => {
-            if (d.depth !== 4 || !d.data.nodeData) return '';
+            if (d.depth !== 4 || !d.data.nodeData) return [''];
             return [d.data.nodeData['NodeName']];
 
-            // let arr = d.data.nodeData.split('<br />');
             // let arr = d.data.nodeData.split('<br />');
             // if (arr.length > 25) return arr.splice(0, 26);
             // return '';
@@ -166,8 +144,8 @@ export default hData => {
             .selectAll("tspan")
             .data(d => displayFields(d))
             .join("tspan")
-            .attr('dy', '1.0em')
             .attr('x', '0')
+            .attr('dy', '1.0em')
             .attr('fill', 'crimson')
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")

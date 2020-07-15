@@ -130,6 +130,12 @@ export default (jobEntries, nodeEntries) => {
         return bool && jobNode;
     }
 
+    /**
+     * Takes in two strings with numbers and returns true if the operator matches or false if not
+     * @param nodeVal
+     * @param userVal
+     * @returns {boolean}
+     */
     function getMatch(nodeVal, userVal) {
         let userNum = 0;
         if (userVal.includes('>=')) {
@@ -152,7 +158,7 @@ export default (jobEntries, nodeEntries) => {
     }
 
     /**
-     *
+     * Returns a number that is parsed from a string
      * @param num {string} Gets the string that contains the number and comparison operator
      * @param char {string} Gets the character that should be the end of the comparison operator and beginning of
      * the actual num
