@@ -1,5 +1,6 @@
 const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
+const s = require('../data/s.json');
 
 export default (jobEntries, nodeEntries) => {
     let nList = [];
@@ -48,6 +49,9 @@ export default (jobEntries, nodeEntries) => {
                         let nodeActive = 0;
 
                         let nodeData = scontrol[jsonParseIndex];
+                        let queueData = s[nodeData['NodeName']];
+                        if (queueData) nodeData = {...nodeData, queueData};
+
                         // If node is a compute node, add it to hierarchy tree, else it is an 'invisible' service node
                         // So add a dummy node to the tree
                         if (getNodeID(nodeData['NodeName']) === nodeNum) {

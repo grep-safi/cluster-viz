@@ -129,6 +129,13 @@ export default (hData, nodeFieldList) => {
                 if (count > 25) break;
             }
 
+            let q = d.data.nodeData['queueData'];
+            if (q) {
+                displayAttributes.push(`${'JOBID'}: ${q[0]['JOBID']}`);
+                displayAttributes.push(`${'ACCOUNT'}: ${q[0]['ACCOUNT']}`);
+                displayAttributes.push(`${'USER'}: ${q[0]['USER']}`);
+            }
+
             return displayAttributes;
         }
 

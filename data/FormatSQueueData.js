@@ -8,6 +8,7 @@ fs.readFile('raw-data-files/squeue.txt', (err, data) => {
     const dataStr = data.toString().replace('  ', ' ');
     const dataArr = dataStr.split('\n');
     const formattedDataArr = [];
+    const nidToUser = {};
     formattedDataArr.push('[\n')
 
     // Get the keys which are on the first row
@@ -27,8 +28,9 @@ fs.readFile('raw-data-files/squeue.txt', (err, data) => {
             } else {
                 tempStrArr.push(`\"${key}\": \"${value}\"`)
             }
-            // tempStrArr.push(`\"${keys[j]}\": \"${dataLine[j]}\"`)
         }
+
+        addNidsToObject(nidToUser, tempStrArr);
 
         const comma = i === dataArr.length - 2 ? '' : ',';
         formattedDataArr.push(`\t{ ${tempStrArr.join()} }${comma}\n`);
@@ -37,12 +39,23 @@ fs.readFile('raw-data-files/squeue.txt', (err, data) => {
     formattedDataArr.push(']');
     const formattedDataStr = formattedDataArr.join(' ');
 
+    // console.log(`nid to user objj: ${JSON.stringify(nidToUser)}`);
+    let n = JSON.stringify(nidToUser);
+
     fs.writeFile(outputFilename, formattedDataStr, function(err) {
         if (err) {
             return console.error(err);
         }
 
         console.log(`Data formatted successfully and stored in ${outputFilename} file!`);
+    })
+
+    fs.writeFile('s.json', n, function(err) {
+        if (err) {
+            return console.error(err);
+        }
+
+        console.log(`Data formatted successfully and stored in file!`);
     })
 })
 
@@ -79,7 +92,9 @@ function getNodeListArray(nodes) {
                 }
 
                 for (let start = range[0]; start <= range[1]; start++) {
-                    nodeList.push('\"' + startStr + startingZeroes + parseInt(start) + '\"');
+                    const nid = startStr + startingZeroes + parseInt(start);
+                    nodeList.push('\"' + nid + '\"');
+                    // nodeList.push('\"' + startStr + startingZeroes + parseInt(start) + '\"');
                 }
             }
             // Else if there was no dash, then the list wasn't specifying a range. It was specifying
@@ -93,4 +108,30 @@ function getNodeListArray(nodes) {
         return '[' + nodeList.toString() + ']';
     }
     return '[\"' + nodes + '\"]';
+}
+
+function addNidsToObject(nidObj, objectsStr) {
+    let queueObjects = JSON.parse(`{${objectsStr.join()}}`);
+    let nodeList = queueObjects['NODELIST'];
+
+    // Iterate through the node list and add the other fields as an object to the
+    // nidObj object
+    for (let i = 0; i < nodeList.length; i++) {
+        let {NODELIST, ...queueObjNoNodelist} = queueObjects;
+        let node = nidObj[nodeList[i]];
+        // console.log(`first the node: ${nodeList[i]} and the nidObj: ${nidObj[nodeList[i]]}`);
+        // nidObj[nodeList[i]] = [queueObjNoNodelist];
+        // console.log(`2. first the node: ${nodeList[i]} and the nidObj: ${nidObj[nodeList[i]][0]['USER']}`);
+        // If there's already an entry, it means more than one user is utiilzing
+        // this node, so make an array of objects with the data
+        if (node) {
+            // console.log(`duppppsc`);
+            node.push(queueObjNoNodelist);
+        } else {
+            node = [queueObjNoNodelist];
+        }
+        // console.log(`nodezies: ${nidObj['nid00593']}`);
+        nidObj[nodeList[i]] = node;
+        // console.log(`nodezies: ${node} and ${nidObj[nodeList[i]]}`);
+    }
 }
