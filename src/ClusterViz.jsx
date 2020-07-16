@@ -158,7 +158,9 @@ const ClusterViz = () => {
             <div className="main-wrapper">
                 <div className="checkboxes">
                     <p id="display-options-text">Display Options</p>
-                    { checkBoxes }
+                    <div className="checkbox-wrapper">
+                        { checkBoxes }
+                    </div>
                 </div>
 
                 <div id="main-container">

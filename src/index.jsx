@@ -115,6 +115,12 @@ export default (hData, nodeFieldList) => {
             // If there is no nodeData, then we're probably at a service node which has no fields so return empty string
             if (d.depth !== 4 || !d.data.nodeData) return [''];
 
+            const jobAttributes = [
+                'JOBID',
+                'ACCOUNT',
+                'USER'
+            ];
+
             // This for loop iterates through node attributes that are checked by the user
             // And pushes those to an array
             // If the number of checked boxes is greater than 25, then there's no space for more,
@@ -122,19 +128,33 @@ export default (hData, nodeFieldList) => {
             const displayAttributes = [];
             let count = 0;
             for (const property in nodeFieldList) {
-                if (nodeFieldList[property]) {
-                    displayAttributes.push(`${property}: ${d.data.nodeData[property]}`);
+                if (nodeFieldList.hasOwnProperty(property) && nodeFieldList[property]) {
+                    if (d.data.nodeData.hasOwnProperty(property)) {
+                        displayAttributes.push(`${property}: ${d.data.nodeData[property]}`);
+                    } else {
+                        const formattedProp = property.toUpperCase().replace(/\s+/g, '');
+                        const queueData = d.data.nodeData['queueData'];
+                        if (jobAttributes.includes(formattedProp)) {
+                            let str = `${property}: `;
+                            // for (const queueObj of queueData) {
+                            for (let i = 0; i < queueData.length; i++) {
+                                const comma = i === queueData.length - 1 ? '' : ', ';
+                                str = str.concat(queueData[i][formattedProp] + comma);
+                            }
+                            displayAttributes.push(str);
+                        }
+                    }
                     count += 1;
                 }
                 if (count > 25) break;
             }
 
-            let q = d.data.nodeData['queueData'];
-            if (q) {
-                displayAttributes.push(`${'JOBID'}: ${q[0]['JOBID']}`);
-                displayAttributes.push(`${'ACCOUNT'}: ${q[0]['ACCOUNT']}`);
-                displayAttributes.push(`${'USER'}: ${q[0]['USER']}`);
-            }
+            // let q = d.data.nodeData['queueData'];
+            // if (q) {
+            //     displayAttributes.push(`${'JOBID'}: ${q[0]['JOBID']}`);
+            //     displayAttributes.push(`${'ACCOUNT'}: ${q[0]['ACCOUNT']}`);
+            //     displayAttributes.push(`${'USER'}: ${q[0]['USER']}`);
+            // }
 
             return displayAttributes;
         }
@@ -149,7 +169,7 @@ export default (hData, nodeFieldList) => {
             .attr("font-size", `13px`)
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "normal")
-            .attr('fill', (d, i) => i > 2 ? 'green' : 'black')
+            .attr('fill', (d, i) => i > 2 ? 'crimson' : 'black')
             .text(d => d);
 
         group.call(position, root);

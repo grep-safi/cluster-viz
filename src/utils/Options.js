@@ -53,9 +53,9 @@ const nodeDisplayAttributes = [
     'ExtSensorsWatts',
     'ExtSensorsTemp',
     'Reason',
-    'JOBID',
-    'ACCOUNT',
-    'USER',
+    'Job ID',
+    'Account',
+    'User',
 ]
 
 export {nodeOptions, jobOptions, nodeDisplayAttributes};
