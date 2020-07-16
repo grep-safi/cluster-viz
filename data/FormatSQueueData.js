@@ -91,10 +91,6 @@ function getNodeListArray(nodes) {
         }
 
         return '[' + nodeList.toString() + ']';
-        // return `[${nodeList.toString()}]`;
-        // return nodeList;
     }
     return '[\"' + nodes + '\"]';
-    // return `[\"${nodes}\"]`;
-    // return [nodes];
 }
