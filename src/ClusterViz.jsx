@@ -12,7 +12,11 @@ const ClusterViz = () => {
     const [count, setCount] = useState(0);
 
     const initialDisplay = {};
-    nodeDisplayAttributes.forEach(e => initialDisplay[e] = false);
+    nodeDisplayAttributes.forEach(e => {
+        const display = ['NodeName', 'CPUAlloc', 'CPUTotal', 'CPULoad', 'RealMemory', 'AllocatedMem', 'FreeMem',
+        'State', 'Partitions', 'Job ID', 'Account', 'User'];
+        initialDisplay[e] = display.includes(e);
+    });
     const [checkedItems, setCheckedItems] = useState(initialDisplay);
 
     const handleCheckboxChange = (event) => {
@@ -27,7 +31,7 @@ const ClusterViz = () => {
     }
 
     useEffect(() => {
-        if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]));
+        if (count === 0) createTreemap(hierarchyData([], [{ input: "", option: "State"}]), checkedItems);
         else createTreemap(hierarchyData(jobSearch, nodeSearch), checkedItems);
     }, [count]);
 

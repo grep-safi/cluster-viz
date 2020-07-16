@@ -134,7 +134,7 @@ export default (hData, nodeFieldList) => {
                     } else {
                         const formattedProp = property.toUpperCase().replace(/\s+/g, '');
                         const queueData = d.data.nodeData['queueData'];
-                        if (jobAttributes.includes(formattedProp)) {
+                        if (queueData && jobAttributes.includes(formattedProp)) {
                             let str = `${property}: `;
                             // for (const queueObj of queueData) {
                             for (let i = 0; i < queueData.length; i++) {
