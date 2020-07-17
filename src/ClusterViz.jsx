@@ -13,7 +13,7 @@ const ClusterViz = () => {
 
     const initialDisplay = {};
     nodeDisplayAttributes.forEach(e => {
-        const display = ['NodeName', 'CPUAlloc', 'CPUTotal', 'CPULoad', 'RealMemory', 'AllocatedMem', 'FreeMem',
+        const display = ['NodeName', 'CPUAlloc', 'CPUTot', 'CPULoad', 'RealMemory', 'AllocMem', 'FreeMem',
         'State', 'Partitions', 'Job ID', 'Account', 'User'];
         initialDisplay[e] = display.includes(e);
     });

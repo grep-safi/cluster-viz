@@ -3,6 +3,8 @@ const nodeOptions = [
     'Partitions',
     'Active Features',
     'Available Features',
+    'CPUAlloc',
+    'CPUTot',
     'CPULoad',
     'RealMemory',
     'AllocMem',
