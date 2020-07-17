@@ -1,6 +1,7 @@
 const fs = require('fs');
 
 const outputFilename = 'formatted-squeue.json';
+const outputNidToUserFile = 'nid-to-user.json';
 
 fs.readFile('raw-data-files/squeue.txt', (err, data) => {
     if (err) throw err;
@@ -50,12 +51,12 @@ fs.readFile('raw-data-files/squeue.txt', (err, data) => {
         console.log(`Data formatted successfully and stored in ${outputFilename} file!`);
     })
 
-    fs.writeFile('s.json', n, function(err) {
+    fs.writeFile(outputNidToUserFile, n, function(err) {
         if (err) {
             return console.error(err);
         }
 
-        console.log(`Data formatted successfully and stored in file!`);
+        console.log(`Data formatted successfully and stored in ${outputNidToUserFile} file!`);
     })
 })
 

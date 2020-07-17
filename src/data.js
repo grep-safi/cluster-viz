@@ -1,6 +1,6 @@
 const squeue = require('../data/formatted-squeue.json');
 const scontrol = require('../data/formatted-scontrol.json');
-const s = require('../data/s.json');
+const nidToUser = require('../data/nid-to-user.json');
 
 export default (jobEntries, nodeEntries) => {
     let nList = [];
@@ -49,7 +49,7 @@ export default (jobEntries, nodeEntries) => {
                         let nodeActive = 0;
 
                         let nodeData = scontrol[jsonParseIndex];
-                        let queueData = s[nodeData['NodeName']];
+                        let queueData = nidToUser[nodeData['NodeName']];
                         if (queueData) nodeData = {...nodeData, queueData};
 
                         // If node is a compute node, add it to hierarchy tree, else it is an 'invisible' service node
