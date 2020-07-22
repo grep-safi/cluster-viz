@@ -12,7 +12,6 @@ const nodeOptions = [
     'NodeName',
     'Arch',
     'CoresPerSocket',
-    'CPUAlloc',
 ];
 
 const jobOptions = [

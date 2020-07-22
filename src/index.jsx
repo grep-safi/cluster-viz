@@ -1,6 +1,13 @@
 import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
-    hierarchy, mouse, event} from "d3/dist/d3";
+    hierarchy, mouse, event, axisBottom, axisLeft, line} from "d3/dist/d3";
 import { equallySpacedTiling } from "./utils/tiling";
+
+let dt = {
+    time: [1,2,3,4,5,6,7,8,9,10],
+    valueA: [2,3,1,7,8,8,5,4,9,11],
+    valueB: [5,4,4,4,8,13,15,17,18],
+    valueC: [13,14,16,12,7,9,3,2,1,1],
+};
 
 export default (hData, nodeFieldList) => {
     const width = 800;
@@ -55,7 +62,6 @@ export default (hData, nodeFieldList) => {
         // children as the data and join all the <g> paths
         const node = group
             .selectAll("g")
-            // .data(root.children.concat(root))
             .data(root.children)
             .join("g");
 
@@ -69,7 +75,8 @@ export default (hData, nodeFieldList) => {
             .text(name(root))
             .on("click", () => name(root) !== 'Cori' ? zoomout(root) : null);
 
-        node.append("rect")
+        let rect = node
+            .append("rect")
             .attr("fill", d => {
                 // This function will fill the rect based on the node value and the maximum node value possible
                 // Uses logarithmic scaling
@@ -172,12 +179,65 @@ export default (hData, nodeFieldList) => {
             .attr('fill', (d, i) => i > 2 ? 'crimson' : 'black')
             .text(d => d);
 
+        // Graph stuff
+        let dpth = root.children[0].depth;
+        console.log(`depths: ${dpth}`);
+        if (dpth === 4) {
+            let w = 100;
+            let h = 100;
+
+            const xAxis = scaleLinear()
+                .domain([0, 10])
+                .range([0, w]);
+
+            const yAxis = scaleLinear()
+                .domain([0, 20])
+                .range([h, 0]);
+
+            // node
+            //     .call(axisBottom(xAxis))
+            //     .attr('transform', (d) => `translate(0,0)`);
+
+            node.append('g')
+                .attr('transform', 'translate(100,100)')
+                .call(axisBottom(xAxis))
+
+            // node.append('g')
+            //     .attr('transform', 'translate(10,10)')
+            //     .call(axisLeft(yAxis));
+
+            // const ln = node
+            //     .append('g')
+            //     .append("path")
+            //     .datum(dt)
+            //     .attr("d", line()
+            //         .x(function(d) { return xAxis(+d.time) })
+            //         .y(function(d) { return yAxis(+d.valueA) })
+            //     )
+            //     .attr("stroke", "black")
+            //     .style("stroke-width", 4)
+            //     .style("fill", "none");
+            //
+            // const dot = node
+            //     .selectAll('circle')
+            //     .data(dt)
+            //     .enter()
+            //     .append('circle')
+            //     .attr("cx", function(d) { return xAxis(+d.time) })
+            //     .attr("cy", function(d) { return yAxis(+d.valueA) })
+            //     .attr("r", 7)
+            //     .style("fill", "#69b3a2");
+        }
+
+        // ----------
         group.call(position, root);
     }
 
     function position(group, root) {
         group.selectAll("g")
-            .attr("transform", d => d === root ? `translate(0,0)` : `translate(${x(d.x0)},${y(d.y0)})`)
+            .attr("transform", d => {
+                return d === root ? `translate(0,0)` : `translate(${x(d.x0)},${y(d.y0)})`;
+            })
             .select("rect")
             .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
             .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0));
