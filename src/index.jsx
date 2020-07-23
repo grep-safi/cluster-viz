@@ -1,6 +1,5 @@
-import { interpolate, scaleLinear, scaleOrdinal, scaleLog, format, schemeCategory10, rgb, select, treemap,
-    hierarchy, mouse, event, axisBottom, axisLeft, line} from "d3/dist/d3";
-import { equallySpacedTiling } from "./utils/tiling";
+import {axisBottom, format, hierarchy, interpolate, scaleLinear, scaleLog, select, treemap} from "d3/dist/d3";
+import {equallySpacedTiling} from "./utils/tiling";
 
 let dt = {
     time: [1,2,3,4,5,6,7,8,9,10],
@@ -75,13 +74,12 @@ export default (hData, nodeFieldList) => {
             .text(name(root))
             .on("click", () => name(root) !== 'Cori' ? zoomout(root) : null);
 
-        let rect = node
+        node
             .append("rect")
             .attr("fill", d => {
                 // This function will fill the rect based on the node value and the maximum node value possible
                 // Uses logarithmic scaling
 
-                // const maxValuesArray = [192, 64, 4, 1]
                 const maxValuesArray = [hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
                 const depth = d.depth - 1;
                 let maxVal = maxValuesArray[depth] === 0 ? 2 : maxValuesArray[depth] + 1;
@@ -91,18 +89,6 @@ export default (hData, nodeFieldList) => {
 
                 const nodeValue = d.value === 0 ? 1 : d.value + 1;
                 return d === root ? "#fff" : `${colorScale(nodeValue)}`;
-
-                // Code for linear scaling
-
-                // const maxValuesArray = [hData.maxCabinet, hData.maxChassis, hData.maxBlade, 1];
-                // const depth = d.depth - 1;
-                // let maxVal = maxValuesArray[depth] === 0 ? 1 : maxValuesArray[depth];
-                // const colorScale = scaleLinear()
-                //     .domain([0, maxVal])
-                //     .range(['white', 'lightseagreen']);
-                //
-                // const nodeValue = d.value;
-                // return d === root ? "#fff" : `${colorScale(nodeValue)}`;
             })
             .attr("stroke", "gold");
 
@@ -156,13 +142,6 @@ export default (hData, nodeFieldList) => {
                 if (count > 25) break;
             }
 
-            // let q = d.data.nodeData['queueData'];
-            // if (q) {
-            //     displayAttributes.push(`${'JOBID'}: ${q[0]['JOBID']}`);
-            //     displayAttributes.push(`${'ACCOUNT'}: ${q[0]['ACCOUNT']}`);
-            //     displayAttributes.push(`${'USER'}: ${q[0]['USER']}`);
-            // }
-
             return displayAttributes;
         }
 
@@ -178,6 +157,25 @@ export default (hData, nodeFieldList) => {
             .attr("font-weight", "normal")
             .attr('fill', (d, i) => i > 2 ? 'crimson' : 'black')
             .text(d => d);
+
+        // node
+        //     // .append('g')
+        //     .append("text")
+        //     .attr('transform', 'translate(20, 20)')
+        //     // .selectAll("tspan")
+        //     // .data(d => [d.data.name, 'nodes:', formatNum(d.value), ...displayFields(d)])
+        //     // .join("tspan")
+        //     .attr('fill', 'black')
+        //     .text("hello wrld");
+
+        const xax = scaleLinear()
+            .domain([0, 10])
+            .range([0, 100]);
+
+        node
+            // .append('g')
+            .call(axisBottom(xax))
+            .attr('transform', 'translate(100, 200)')
 
         // Graph stuff
         let dpth = root.children[0].depth;
@@ -198,9 +196,11 @@ export default (hData, nodeFieldList) => {
             //     .call(axisBottom(xAxis))
             //     .attr('transform', (d) => `translate(0,0)`);
 
-            node.append('g')
-                .attr('transform', 'translate(100,100)')
-                .call(axisBottom(xAxis))
+            // node.call(axisBottom(xAxis));
+
+            // node.append('g')
+            //     .attr('transform', 'translate(100,150)')
+            //     .call(axisBottom(xAxis))
 
             // node.append('g')
             //     .attr('transform', 'translate(10,10)')
@@ -236,11 +236,32 @@ export default (hData, nodeFieldList) => {
     function position(group, root) {
         group.selectAll("g")
             .attr("transform", d => {
-                return d === root ? `translate(0,0)` : `translate(${x(d.x0)},${y(d.y0)})`;
+                let xCoord = x(d.x0);
+                let yCoord = y(d.y0);
+
+                return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
             })
+            // .attr("transform", d => {
+            //     let xCoord = x(d.x0);
+            //     let yCoord = y(d.y0);
+            //
+            //     if (isNaN(xCoord) && isNaN(yCoord) && d !== root) {
+            //         if (!isNaN(d)) return `translate(${d * 10},100)`;
+            //
+            //         return "translate(0,50)";
+            //     }
+            //
+            //     return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
+            // })
             .select("rect")
+            // .attr("transform", d => {
+            //     let xCoord = x(d.x0);
+            //     let yCoord = y(d.y0);
+            //
+            //     return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
+            // })
             .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
-            .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0));
+            .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0))
     }
 
 // When zooming in, draw the new nodes on top, and fade them in.
