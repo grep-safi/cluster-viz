@@ -60,6 +60,7 @@ export default (hData, nodeFieldList) => {
         // Select all the <g> tags and bind the root's
         // children as the data and join all the <g> paths
         const node = group
+            // .select('.rectGroup')
             .selectAll("g")
             .data(root.children)
             .join("g");
@@ -76,6 +77,7 @@ export default (hData, nodeFieldList) => {
 
         node
             .append("rect")
+            .classed('rectGroup', true)
             .attr("fill", d => {
                 // This function will fill the rect based on the node value and the maximum node value possible
                 // Uses logarithmic scaling
@@ -91,17 +93,6 @@ export default (hData, nodeFieldList) => {
                 return d === root ? "#fff" : `${colorScale(nodeValue)}`;
             })
             .attr("stroke", "gold");
-
-        const textPosition = (text, depth, xShift, y) => {
-            const widths = [width / 24, width / 6, width / 8, width / 4];
-            // const textWidthScale = scaleLinear().domain([0, 10]).range([0, 25]);
-            // const textWidth = textWidthScale(text.length);
-            // console.log(`text: ${text} and ${text.length} and ${textWidth}`);
-            // const x = widths[depth - 1] - textWidth;
-            const x = widths[depth - 1] - xShift;
-
-            return `translate(${0},${y})`;
-        }
 
         const displayFields = d => {
             // If the depth isn't 4, then we aren't at the node level, so simply return empty string
@@ -129,7 +120,6 @@ export default (hData, nodeFieldList) => {
                         const queueData = d.data.nodeData['queueData'];
                         if (queueData && jobAttributes.includes(formattedProp)) {
                             let str = `${property}: `;
-                            // for (const queueObj of queueData) {
                             for (let i = 0; i < queueData.length; i++) {
                                 const comma = i === queueData.length - 1 ? '' : ', ';
                                 str = str.concat(queueData[i][formattedProp] + comma);
@@ -146,6 +136,7 @@ export default (hData, nodeFieldList) => {
         }
 
         node.append("text")
+            .classed('rectGroup', true)
             .attr('transform', 'translate(0, 5)')
             .selectAll("tspan")
             .data(d => [d.data.name, 'nodes:', formatNum(d.value), ...displayFields(d)])
@@ -158,110 +149,86 @@ export default (hData, nodeFieldList) => {
             .attr('fill', (d, i) => i > 2 ? 'crimson' : 'black')
             .text(d => d);
 
-        // node
-        //     // .append('g')
-        //     .append("text")
-        //     .attr('transform', 'translate(20, 20)')
-        //     // .selectAll("tspan")
-        //     // .data(d => [d.data.name, 'nodes:', formatNum(d.value), ...displayFields(d)])
-        //     // .join("tspan")
-        //     .attr('fill', 'black')
-        //     .text("hello wrld");
-
         const xax = scaleLinear()
             .domain([0, 10])
-            .range([0, 100]);
+            .range([0, 50]);
 
-        node
-            // .append('g')
-            .call(axisBottom(xax))
-            .attr('transform', 'translate(100, 200)')
+        let d = root.children[0].depth;
+        if (d === 4) {
+            console.log(`printing`);
 
-        // Graph stuff
-        let dpth = root.children[0].depth;
-        console.log(`depths: ${dpth}`);
-        if (dpth === 4) {
-            let w = 100;
-            let h = 100;
+            node
+                // .selectAll('g')
+                // .insert('g', '*')
+                .append('g')
+                .classed('rectGroup', false)
+                // .classed('axis', true)
+                .attr('transform', d => {
 
-            const xAxis = scaleLinear()
-                .domain([0, 10])
-                .range([0, w]);
+                    x.domain([d.parent.x0, d.parent.x1]);
+                    y.domain([d.parent.y0, d.parent.y1]);
 
-            const yAxis = scaleLinear()
-                .domain([0, 20])
-                .range([h, 0]);
+                    // let xVal = x(d.parent.x1) - x(d.parent.x0);
+                    // let yVal = y(d.parent.y1) - y(d.parent.y0);
 
-            // node
-            //     .call(axisBottom(xAxis))
-            //     .attr('transform', (d) => `translate(0,0)`);
+                    // let xVal = x(d.x1) - x(d.x0);
+                    // let yVal = y(d.y1) - y(d.y0);
 
-            // node.call(axisBottom(xAxis));
+                    let xVal = x(d.x0);
+                    let yVal = y(d.y0);
 
-            // node.append('g')
-            //     .attr('transform', 'translate(100,150)')
-            //     .call(axisBottom(xAxis))
+                    // let xVal = d.x0 * 2 * width;
+                    // let yVal = d.y0 * 2 * width;
 
-            // node.append('g')
-            //     .attr('transform', 'translate(10,10)')
-            //     .call(axisLeft(yAxis));
-
-            // const ln = node
-            //     .append('g')
-            //     .append("path")
-            //     .datum(dt)
-            //     .attr("d", line()
-            //         .x(function(d) { return xAxis(+d.time) })
-            //         .y(function(d) { return yAxis(+d.valueA) })
-            //     )
-            //     .attr("stroke", "black")
-            //     .style("stroke-width", 4)
-            //     .style("fill", "none");
-            //
-            // const dot = node
-            //     .selectAll('circle')
-            //     .data(dt)
-            //     .enter()
-            //     .append('circle')
-            //     .attr("cx", function(d) { return xAxis(+d.time) })
-            //     .attr("cy", function(d) { return yAxis(+d.valueA) })
-            //     .attr("r", 7)
-            //     .style("fill", "#69b3a2");
+                    console.log(`first: ${d.x0} ${d.y0} this sithe d:: parent: ${d.parent.x0} ${xVal} and ${yVal}`);
+                    return `translate(${xVal},${yVal})`;
+                    // return 'translate(50,50)';
+                })
+                .call(axisBottom(xax));
         }
 
         // ----------
-        group.call(position, root);
+        group.call(position, root, true);
     }
 
-    function position(group, root) {
-        group.selectAll("g")
+    function isFunction(functionToCheck) {
+        return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
+    }
+
+    function position(group, root, drawAxis) {
+        group
+            .selectAll("g")
+            .selectAll('.rectGroup')
             .attr("transform", d => {
                 let xCoord = x(d.x0);
                 let yCoord = y(d.y0);
 
+                if (isNaN(xCoord) && isNaN(yCoord) && d !== root) {
+                    console.log(`d ::: ${d}`);
+                    // return `translate(${d * 10},100)`;
+                }
                 return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
-            })
-            // .attr("transform", d => {
-            //     let xCoord = x(d.x0);
-            //     let yCoord = y(d.y0);
-            //
-            //     if (isNaN(xCoord) && isNaN(yCoord) && d !== root) {
-            //         if (!isNaN(d)) return `translate(${d * 10},100)`;
-            //
-            //         return "translate(0,50)";
-            //     }
-            //
-            //     return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
-            // })
+            });
+
+        // let d = root.children[0].depth;
+        // if (d === 1 && drawAxis) {
+        //     console.log(`printing`);
+        //
+        //     group.selectAll('g')
+        //         // .insert('g', '*')
+        //         .append('g')
+        //         .classed('axis', true)
+        //         .attr('transform', 'translate(20,120)')
+        //         .call(axisBottom(xax));
+        // }
+
+        group.selectAll('g')
+            // .selectAll('.rectGroup')
             .select("rect")
-            // .attr("transform", d => {
-            //     let xCoord = x(d.x0);
-            //     let yCoord = y(d.y0);
-            //
-            //     return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
-            // })
             .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
             .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0))
+
+        // console.log(`running`);
     }
 
 // When zooming in, draw the new nodes on top, and fade them in.
@@ -292,7 +259,8 @@ export default (hData, nodeFieldList) => {
 
         svg.transition()
             .duration(transitionSpeed)
-            .call(t => group0.transition(t).remove()
+            .call(t => group0.transition(t)
+                .remove()
                 .attrTween("opacity", () => interpolate(1, 0))
                 .call(position, d))
             .call(t => group1.transition(t)
