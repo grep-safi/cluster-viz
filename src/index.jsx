@@ -159,7 +159,6 @@ export default (hData, nodeFieldList) => {
                 .domain([0, max(dt.valueA)])
                 .range([height / 6, 0]);
 
-            console.log(`printing`);
             node
                 .append('g')
                 .classed('rectGroup', false)
@@ -176,6 +175,18 @@ export default (hData, nodeFieldList) => {
                 })
                 .call(axisBottom(xAxis));
 
+            const lineGenerator = (xScaleLine, yScaleLine) => {
+                return line()
+                    .x((d, i) => {
+                        console.log(`waston and crickets`);
+                        return xScaleLine(i)
+                    })
+                    .y(d => yScaleLine(d));
+            };
+
+            let l = lineGenerator(xAxis, yAxis);
+
+            console.log(`here is the data; ${typeof dt.time}`);
             node
                 .append('g')
                 .classed('rectGroup', false)
@@ -188,24 +199,9 @@ export default (hData, nodeFieldList) => {
 
                     return `translate(${xVal},${yVal})`;
                 })
-                .selectAll("path")
-                .data(dt.valueA)
-                .join("path")
-                .attr("d", line()
-                    .x(datum => {
-                        console.log(`lookie here: ${datum}`);
-                        xAxis(datum)
-                    })
-                    .y(datum => yAxis(datum))
-                )
-                // .attr("d", d => {
-                //         let val = line()
-                //             .x(datum => xAxis(datum))
-                //             .y(datum => yAxis(datum))
-                //
-                //         console.log(`im also running: ${d} and val: ${val}`);
-                //     }
-                // )
+                .append('path')
+                .datum([2, 3, 4, 8, 1, 7])
+                .attr("d", l)
                 .attr("stroke", "gold")
                 .style("stroke-width", 4)
                 .style("fill", "none");
