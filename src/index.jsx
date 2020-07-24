@@ -175,18 +175,6 @@ export default (hData, nodeFieldList) => {
                 })
                 .call(axisBottom(xAxis));
 
-            const lineGenerator = (xScaleLine, yScaleLine) => {
-                return line()
-                    .x((d, i) => {
-                        console.log(`waston and crickets`);
-                        return xScaleLine(i)
-                    })
-                    .y(d => yScaleLine(d));
-            };
-
-            let l = lineGenerator(xAxis, yAxis);
-
-            console.log(`here is the data; ${typeof dt.time}`);
             node
                 .append('g')
                 .classed('rectGroup', false)
@@ -200,34 +188,13 @@ export default (hData, nodeFieldList) => {
                     return `translate(${xVal},${yVal})`;
                 })
                 .append('path')
-                .datum([2, 3, 4, 8, 1, 7])
-                .attr("d", l)
+                .datum(dt.valueA)
+                .attr("d", line()
+                    .x((d, i) => xAxis(i))
+                    .y(d => yAxis(d)))
                 .attr("stroke", "gold")
                 .style("stroke-width", 4)
                 .style("fill", "none");
-
-            // Uncomment the following when you actually have some data, fam
-
-            // node
-            //     .append('g')
-            //     .classed('rectGroup', false)
-            //     .attr('transform', d => {
-            //         x.domain([d.parent.x0, d.parent.x1]);
-            //         y.domain([d.parent.y0, d.parent.y1]);
-            //
-            //         let xVal = x(d.x0) + width / 6;
-            //         let yVal = y(d.y0) + height / 4 - height / 6;
-            //
-            //         return `translate(${xVal},${yVal})`;
-            //     })
-            //     .append('path')
-            //     .attr("d", d => {
-            //             console.log(`im also runing:L ${d.x0}`);
-            //         }
-            //     )
-            //     .attr("stroke", "gold")
-            //     .style("stroke-width", 4)
-            //     .style("fill", "none");
 
             node
                 .append('g')
