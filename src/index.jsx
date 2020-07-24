@@ -1,4 +1,4 @@
-import {axisBottom, format, hierarchy, interpolate, scaleLinear, scaleLog, select, treemap} from "d3/dist/d3";
+import {line, axisBottom, axisLeft, format, hierarchy, interpolate, scaleLinear, scaleLog, select, treemap, max} from "d3/dist/d3";
 import {equallySpacedTiling} from "./utils/tiling";
 
 let dt = {
@@ -149,50 +149,107 @@ export default (hData, nodeFieldList) => {
             .attr('fill', (d, i) => i > 2 ? 'crimson' : 'black')
             .text(d => d);
 
-        const xax = scaleLinear()
-            .domain([0, 10])
-            .range([0, 50]);
-
         let d = root.children[0].depth;
         if (d === 4) {
-            console.log(`printing`);
+            const xAxis = scaleLinear()
+                .domain([0, max(dt.time)])
+                .range([0, width / 6]);
 
+            const yAxis = scaleLinear()
+                .domain([0, max(dt.valueA)])
+                .range([height / 6, 0]);
+
+            console.log(`printing`);
             node
-                // .selectAll('g')
-                // .insert('g', '*')
                 .append('g')
                 .classed('rectGroup', false)
-                // .classed('axis', true)
                 .attr('transform', d => {
 
                     x.domain([d.parent.x0, d.parent.x1]);
                     y.domain([d.parent.y0, d.parent.y1]);
 
-                    // let xVal = x(d.parent.x1) - x(d.parent.x0);
-                    // let yVal = y(d.parent.y1) - y(d.parent.y0);
+                    let xVal = x(d.x0) + width / 6;
+                    let yVal = y(d.y0) + height / 4;
 
-                    // let xVal = x(d.x1) - x(d.x0);
-                    // let yVal = y(d.y1) - y(d.y0);
-
-                    let xVal = x(d.x0);
-                    let yVal = y(d.y0);
-
-                    // let xVal = d.x0 * 2 * width;
-                    // let yVal = d.y0 * 2 * width;
-
-                    console.log(`first: ${d.x0} ${d.y0} this sithe d:: parent: ${d.parent.x0} ${xVal} and ${yVal}`);
+                    // console.log(`first: ${d.x0} ${d.y0} this sithe d:: parent: ${d.parent.x0} ${xVal} and ${yVal}`);
                     return `translate(${xVal},${yVal})`;
-                    // return 'translate(50,50)';
                 })
-                .call(axisBottom(xax));
+                .call(axisBottom(xAxis));
+
+            node
+                .append('g')
+                .classed('rectGroup', false)
+                .attr('transform', d => {
+                    x.domain([d.parent.x0, d.parent.x1]);
+                    y.domain([d.parent.y0, d.parent.y1]);
+
+                    let xVal = x(d.x0) + width / 6;
+                    let yVal = y(d.y0) + height / 4 - height / 6;
+
+                    return `translate(${xVal},${yVal})`;
+                })
+                .selectAll("path")
+                .data(dt.valueA)
+                .join("path")
+                .attr("d", line()
+                    .x(datum => {
+                        console.log(`lookie here: ${datum}`);
+                        xAxis(datum)
+                    })
+                    .y(datum => yAxis(datum))
+                )
+                // .attr("d", d => {
+                //         let val = line()
+                //             .x(datum => xAxis(datum))
+                //             .y(datum => yAxis(datum))
+                //
+                //         console.log(`im also running: ${d} and val: ${val}`);
+                //     }
+                // )
+                .attr("stroke", "gold")
+                .style("stroke-width", 4)
+                .style("fill", "none");
+
+            // Uncomment the following when you actually have some data, fam
+
+            // node
+            //     .append('g')
+            //     .classed('rectGroup', false)
+            //     .attr('transform', d => {
+            //         x.domain([d.parent.x0, d.parent.x1]);
+            //         y.domain([d.parent.y0, d.parent.y1]);
+            //
+            //         let xVal = x(d.x0) + width / 6;
+            //         let yVal = y(d.y0) + height / 4 - height / 6;
+            //
+            //         return `translate(${xVal},${yVal})`;
+            //     })
+            //     .append('path')
+            //     .attr("d", d => {
+            //             console.log(`im also runing:L ${d.x0}`);
+            //         }
+            //     )
+            //     .attr("stroke", "gold")
+            //     .style("stroke-width", 4)
+            //     .style("fill", "none");
+
+            node
+                .append('g')
+                .classed('rectGroup', false)
+                .attr('transform', d => {
+                    x.domain([d.parent.x0, d.parent.x1]);
+                    y.domain([d.parent.y0, d.parent.y1]);
+
+                    let xVal = x(d.x0) + width / 6;
+                    let yVal = y(d.y0) + height / 4 - height / 6;
+
+                    return `translate(${xVal},${yVal})`;
+                })
+                .call(axisLeft(yAxis));
         }
 
         // ----------
         group.call(position, root, true);
-    }
-
-    function isFunction(functionToCheck) {
-        return functionToCheck && {}.toString.call(functionToCheck) === '[object Function]';
     }
 
     function position(group, root, drawAxis) {
@@ -203,32 +260,13 @@ export default (hData, nodeFieldList) => {
                 let xCoord = x(d.x0);
                 let yCoord = y(d.y0);
 
-                if (isNaN(xCoord) && isNaN(yCoord) && d !== root) {
-                    console.log(`d ::: ${d}`);
-                    // return `translate(${d * 10},100)`;
-                }
                 return d === root ? `translate(0,0)` : `translate(${xCoord},${yCoord})`;
             });
 
-        // let d = root.children[0].depth;
-        // if (d === 1 && drawAxis) {
-        //     console.log(`printing`);
-        //
-        //     group.selectAll('g')
-        //         // .insert('g', '*')
-        //         .append('g')
-        //         .classed('axis', true)
-        //         .attr('transform', 'translate(20,120)')
-        //         .call(axisBottom(xax));
-        // }
-
         group.selectAll('g')
-            // .selectAll('.rectGroup')
             .select("rect")
             .attr("width", d => d === root ? width : x(d.x1) - x(d.x0))
             .attr("height", d => d === root ? 30 : y(d.y1) - y(d.y0))
-
-        // console.log(`running`);
     }
 
 // When zooming in, draw the new nodes on top, and fade them in.
