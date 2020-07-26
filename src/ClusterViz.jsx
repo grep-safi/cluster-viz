@@ -113,64 +113,66 @@ const ClusterViz = () => {
 
     return (
         <>
-            <h1 id="title">Cluster Visualization</h1>
+            <div className="full-page">
+                <h1 id="title">Cluster Visualization</h1>
 
-            <div id="search-wrapper">
-                <div id="job-search">
-                    Job
-                    { jobArr }
+                <div id="search-wrapper">
+                    <div id="job-search">
+                        Job
+                        { jobArr }
 
-                    <button
-                        name="add job"
-                        id="add-job"
-                        onClick={() => handleJobChange('USER', 1, true, false, setCount)}
-                    >
-                        Add job
-                    </button>
+                        <button
+                            name="add job"
+                            id="add-job"
+                            onClick={() => handleJobChange('USER', 1, true, false, setCount)}
+                        >
+                            Add job
+                        </button>
 
-                </div>
-
-                <div id="node-search">
-                    Node
-                    { nodeArr }
-
-                    <button
-                        name="add node"
-                        id="add-node"
-                        onClick={() => handleNodeChange('State', 1, true, false, setCount)}
-                    >
-                        Add node
-                    </button>
-
-                </div>
-
-            </div>
-
-
-            <div className="apply-button-wrapper">
-                <button
-                    name="apply changes"
-                    id="apply-changes"
-                    onClick={() => setCount(c => c + 1)}
-                >
-                    Apply Changes
-                </button>
-            </div>
-
-            <p id="currentPosition" />
-
-            <div className="main-wrapper">
-                <div className="checkboxes">
-                    <p id="display-options-text">Display Options</p>
-                    <div className="checkbox-wrapper">
-                        { checkBoxes }
                     </div>
+
+                    <div id="node-search">
+                        Node
+                        { nodeArr }
+
+                        <button
+                            name="add node"
+                            id="add-node"
+                            onClick={() => handleNodeChange('State', 1, true, false, setCount)}
+                        >
+                            Add node
+                        </button>
+
+                    </div>
+
                 </div>
 
-                <div id="main-container">
-                    <div id="data-viz" />
+
+                <div className="apply-button-wrapper">
+                    <button
+                        name="apply changes"
+                        id="apply-changes"
+                        onClick={() => setCount(c => c + 1)}
+                    >
+                        Apply Changes
+                    </button>
                 </div>
 
+                <p id="currentPosition" />
+
+                <div className="main-wrapper">
+                    <div className="checkboxes">
+                        <p id="display-options-text">Display Options</p>
+                        <div className="checkbox-wrapper">
+                            { checkBoxes }
+                        </div>
+                    </div>
+
+                    <div id="main-container">
+                        <div id="data-viz" />
+                    </div>
+
+                </div>
             </div>
         </>
     );

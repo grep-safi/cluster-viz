@@ -87,7 +87,7 @@ export default (hData, nodeFieldList) => {
                 let maxVal = maxValuesArray[depth] === 0 ? 2 : maxValuesArray[depth] + 1;
                 const colorScale = scaleLog()
                     .domain([1, maxVal])
-                    .range(['white', 'lightseagreen']);
+                    .range(['white', 'darkorange']);
 
                 const nodeValue = d.value === 0 ? 1 : d.value + 1;
                 return d === root ? "#fff" : `${colorScale(nodeValue)}`;
@@ -143,10 +143,10 @@ export default (hData, nodeFieldList) => {
             .join("tspan")
             .attr('x', (d, i) => i > 2 ? 0 : 0)
             .attr('dy', '1.0em')
-            .attr("font-size", `13px`)
+            .attr("font-size", `14px`)
             .attr("fill-opacity", 0.7)
-            .attr("font-weight", "normal")
-            .attr('fill', (d, i) => i > 2 ? 'crimson' : 'black')
+            .attr("font-weight", "bold")
+            .attr('fill', (d, i) => i > 2 ? 'white' : 'black')
             .text(d => d);
 
         let d = root.children[0].depth;
