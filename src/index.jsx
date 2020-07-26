@@ -150,7 +150,7 @@ export default (hData, nodeFieldList) => {
             .text(d => d);
 
         let d = root.children[0].depth;
-        if (d === 4) {
+        if (d === 5) {
             const xAxis = scaleLinear()
                 .domain([0, max(dt.time)])
                 .range([0, width / 6]);
@@ -212,10 +212,10 @@ export default (hData, nodeFieldList) => {
         }
 
         // ----------
-        group.call(position, root, true);
+        group.call(position, root);
     }
 
-    function position(group, root, drawAxis) {
+    function position(group, root) {
         group
             .selectAll("g")
             .selectAll('.rectGroup')
