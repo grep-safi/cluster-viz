@@ -13,6 +13,7 @@ body {
 
 #job-search {
     flex: 0 0 50%;
+    /*color: green;*/
 }
 
 #node-search {

@@ -135,22 +135,40 @@ export default (hData, nodeFieldList) => {
             return displayAttributes;
         }
 
+        const viewDepth = root.children[0].depth;
+        const textPosition = (text) => {
+            const widths = [width / 24, width / 6, width / 8, width / 4];
+            const shifts = [width / 24, 20, 20, 16];
+            const maxTextLengths = [10, 9, 8, 6];
+            const textWidthScale = scaleLinear().domain([0, maxTextLengths[viewDepth - 1]]).range([0, shifts[viewDepth - 1]]);
+            const textWidth = textWidthScale(text.length);
+            return widths[viewDepth - 1] - textWidth;
+        }
+
         node.append("text")
             .classed('rectGroup', true)
             .attr('transform', 'translate(0, 5)')
             .selectAll("tspan")
-            .data(d => [d.data.name, 'nodes:', formatNum(d.value), ...displayFields(d)])
+            .data(d => {
+                const additions = viewDepth < 4 ? ['Matching', 'Nodes:', formatNum(d.value)] : [];
+                return [d.data.name, ...additions, ...displayFields(d)];
+            })
             .join("tspan")
-            .attr('x', (d, i) => i > 2 ? 0 : 0)
-            .attr('dy', '1.0em')
-            .attr("font-size", `14px`)
+            .attr('x', (d, i) => {
+                const numHeaders = viewDepth < 4 ? 3 : 0;
+                return i <= numHeaders ? textPosition(d) : 0;
+            })
+            .attr('dy', (d, i) => i === 0 || i >= 2 ? '1.0em' : '3.0em')
+            .attr("font-size", `13px`)
             .attr("fill-opacity", 0.7)
             .attr("font-weight", "bold")
-            .attr('fill', (d, i) => i > 2 ? 'white' : 'black')
+            .attr('fill', (d, i) => {
+                const numHeaders = viewDepth < 4 ? 2 : 0;
+                return i === 0 ? 'black' : i <= numHeaders ? 'midnightblue' : 'forestgreen'
+            })
             .text(d => d);
 
-        let d = root.children[0].depth;
-        if (d === 5) {
+        if (viewDepth === 4) {
             const xAxis = scaleLinear()
                 .domain([0, max(dt.time)])
                 .range([0, width / 6]);
