@@ -1,6 +1,5 @@
 body {
-    /*background-color: darkslategrey;*/
-    background-color: grey;
+    background-color: darkslategrey;
 }
 
 #search-wrapper {
@@ -13,7 +12,6 @@ body {
 
 #job-search {
     flex: 0 0 50%;
-    /*color: green;*/
 }
 
 #node-search {
@@ -116,11 +114,6 @@ input {
     background-color: seagreen;
     /*color: ;*/
     /*color: ;*/
-}
-
-.full-page {
-    background-color: darkslategrey;
-
 }
 
 .checkboxes {

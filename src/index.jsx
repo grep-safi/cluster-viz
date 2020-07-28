@@ -3,9 +3,10 @@ import {equallySpacedTiling} from "./utils/tiling";
 
 let dt = {
     time: [1,2,3,4,5,6,7,8,9,10],
-    valueA: [2,3,1,7,8,8,5,4,9,11],
-    valueB: [5,4,4,4,8,13,15,17,18],
+    valueA: [2,3,1,7,8,8,5,14,9,11],
+    valueB: [5,4,4,4,8,13,18,13,18],
     valueC: [13,14,16,12,7,9,3,2,1,1],
+    valueD: [3,14,6,12,17,9,13,2,11,14],
 };
 
 export default (hData, nodeFieldList) => {
@@ -138,11 +139,8 @@ export default (hData, nodeFieldList) => {
         const viewDepth = root.children[0].depth;
         const textPosition = (text) => {
             const widths = [width / 24, width / 6, width / 8, width / 4];
-            const shifts = [width / 24, 20, 20, 16];
-            const maxTextLengths = [10, 9, 8, 6];
-            const textWidthScale = scaleLinear().domain([0, maxTextLengths[viewDepth - 1]]).range([0, shifts[viewDepth - 1]]);
-            const textWidth = textWidthScale(text.length);
-            return widths[viewDepth - 1] - textWidth;
+            const characterSize = 3.2;
+            return widths[viewDepth - 1] - text.length * characterSize;
         }
 
         node.append("text")
@@ -174,7 +172,7 @@ export default (hData, nodeFieldList) => {
                 .range([0, width / 6]);
 
             const yAxis = scaleLinear()
-                .domain([0, max(dt.valueA)])
+                .domain([0, 20])
                 .range([height / 6, 0]);
 
             node
@@ -188,7 +186,6 @@ export default (hData, nodeFieldList) => {
                     let xVal = x(d.x0) + width / 6;
                     let yVal = y(d.y0) + height / 4;
 
-                    // console.log(`first: ${d.x0} ${d.y0} this sithe d:: parent: ${d.parent.x0} ${xVal} and ${yVal}`);
                     return `translate(${xVal},${yVal})`;
                 })
                 .call(axisBottom(xAxis));
@@ -206,7 +203,12 @@ export default (hData, nodeFieldList) => {
                     return `translate(${xVal},${yVal})`;
                 })
                 .append('path')
-                .datum(dt.valueA)
+                .datum((d, i) => {
+                    if (i === 0) return dt.valueA;
+                    if (i === 1) return dt.valueB;
+                    if (i === 2) return dt.valueC;
+                    if (i === 3) return dt.valueD;
+                })
                 .attr("d", line()
                     .x((d, i) => xAxis(i))
                     .y(d => yAxis(d)))
