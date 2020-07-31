@@ -1,8 +1,17 @@
-export function equallySpacedTiling(parent, width, height, paddingTop) {
-    let rows = 6;
-    let columns = 12;
+/**
+ * This tiling function divides up the members of the tree into equally spaced tiles
+ * @param parent
+ * @param width
+ * @param height
+ */
+export function equallySpacedTiling(parent, width, height) {
+    let rows;
+    let columns;
 
-    if (parent.children.length === 3) {
+    if (parent.children.length === 68) {
+        rows = 6;
+        columns = 12;
+    } else if (parent.children.length === 3) {
         rows = 1;
         columns = 3;
     } else if (parent.children.length === 16) {
@@ -24,8 +33,8 @@ export function equallySpacedTiling(parent, width, height, paddingTop) {
         child.x0 = columnIndex * columnWidth;
         child.x1 = (columnIndex + 1) * columnWidth;
 
-        child.y0 = (rows - rowIndex - 1) * rowWidth - paddingTop;
-        child.y1 = (rows - rowIndex) * rowWidth - paddingTop;
+        child.y0 = (rows - rowIndex - 1) * rowWidth;
+        child.y1 = (rows - rowIndex) * rowWidth;
 
         columnIndex += 1;
         if (columnIndex >= columns) {
