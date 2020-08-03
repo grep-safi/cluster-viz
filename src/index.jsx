@@ -195,7 +195,7 @@ export default (hData, nodeFieldList) => {
             .text(d => d);
 
         // If the depth is 4, draw the graph with the random data
-        if (viewDepth === 4) {
+        if (viewDepth === 5) {
             const xAxis = scaleLinear()
                 .domain([0, max(dt.time)])
                 .range([0, width / 6]);
