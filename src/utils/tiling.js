@@ -8,10 +8,13 @@ export function equallySpacedTiling(parent, width, height) {
     let rows;
     let columns;
 
+    // Cabinet view
     if (parent.children.length === 68) {
         rows = 6;
         columns = 12;
-    } else if (parent.children.length === 3) {
+    }
+    // Chassis view
+    else if (parent.children.length === 3) {
         rows = 1;
         columns = 3;
     } else if (parent.children.length === 16) {

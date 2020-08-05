@@ -92,6 +92,7 @@ function indexOfKey(arr, targetStr) {
     return -1;
 }
 
+// Handle cases where Reason doesn't exist on down nodes and reason exists on allocated nodes
 function handleReasonField(arr) {
     let index = indexOfKey(arr, 'Reason');
     if (index !== -1) {
