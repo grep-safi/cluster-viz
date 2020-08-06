@@ -9,6 +9,9 @@ const dt = {
     valueB: [5,4,4,4,8,13,18,13,18],
     valueC: [13,14,16,12,7,9,3,2,1,1],
     valueD: [3,14,6,12,17,9,13,2,11,14],
+    valueE: [10,14,1,2,17,1,3,2,11,4],
+    valueF: [4,14,6,12,17,9,13,2,1,14],
+    valueG: [11,14,6,1,17,12,1,2,1,4],
 };
 
 export default (hData, nodeFieldList) => {
@@ -267,20 +270,35 @@ export default (hData, nodeFieldList) => {
                 })
                 .call(axisLeft(yAxis));
 
-            console.log(`this here boy is runnin'`);
+            const optionsGroup = ["CPU Usage", "Memory Usage"];
 
             select("#div-graph")
-                .append("button")
-                .on("click", () => {
-                    update();
-                })
-                .text("Change Graphs");
+                .append("select")
+                .attr('id', 'select-btn')
+                .selectAll('myOptions')
+                .data(optionsGroup)
+                .enter()
+                .append("option")
+                .text(d => d)
+                .attr('value', d => d);
+
+            select('#select-btn')
+                .on("change", () => update());
 
             // A function that update the chart
             function update() {
                 // Give these new data to update line
+                const multiArray = [];
+                for (let j = 0; j < 4; j++) {
+                    const arr = [];
+                    multiArray.push(arr);
+                    for (let i = 0; i < 10; i++) {
+                        arr.push(Math.round(Math.random() * 17) + 1);
+                    }
+                }
+
                 nodeLine
-                    .datum(dt.valueA)
+                    .datum((d, i) => multiArray[i])
                     .transition()
                     .duration(1000)
                     .attr("d", line()
