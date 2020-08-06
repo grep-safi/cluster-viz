@@ -13,9 +13,9 @@ const ClusterViz = () => {
 
     const initialDisplay = {};
     nodeDisplayAttributes.forEach(e => {
-        // const display = ['NodeName', 'CPUAlloc', 'CPUTot', 'CPULoad', 'RealMemory', 'AllocMem', 'FreeMem',
-        // 'State', 'Partitions', 'Job ID', 'Account', 'User'];
-        const display = [];
+        const display = ['NodeName', 'CPUAlloc', 'CPUTot', 'CPULoad', 'RealMemory', 'AllocMem', 'FreeMem',
+        'State', 'Partitions', 'Job ID', 'Account', 'User', 'Display Graph'];
+        // const display = [];
 
         initialDisplay[e] = display.includes(e);
     });
@@ -171,6 +171,22 @@ const ClusterViz = () => {
                     <div id="data-viz" />
                 </div>
 
+                <div className="display-graph-button">
+                    <input
+                        type="checkbox"
+                        id={`graph-display`}
+                        name="Display Graph"
+                        checked={checkedItems["Display Graph"] || false}
+                        onChange={handleCheckboxChange}
+                    />
+
+                    <label
+                        htmlFor={`graph-display`}
+                        className="graph-checkbox"
+                    >
+                        Display Graph
+                    </label>
+                </div>
             </div>
         </>
     );

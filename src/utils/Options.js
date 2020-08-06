@@ -57,6 +57,7 @@ const nodeDisplayAttributes = [
     'Job ID',
     'Account',
     'User',
+    'Display Graph',
 ]
 
 export {nodeOptions, jobOptions, nodeDisplayAttributes};

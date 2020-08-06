@@ -20,6 +20,8 @@ export default (hData, nodeFieldList) => {
     const x = scaleLinear().rangeRound([0, width]);
     const y = scaleLinear().rangeRound([0, height]);
 
+    const showGraph = nodeFieldList["Display Graph"];
+
     // Remove all the preexisting nodes so we can redraw the page with new data
     select('#data-viz').selectAll('*').remove();
 
@@ -195,7 +197,7 @@ export default (hData, nodeFieldList) => {
             .text(d => d);
 
         // If the depth is 4, draw the graph with the random data
-        if (viewDepth === 5) {
+        if (viewDepth === 4 && showGraph) {
             const xAxis = scaleLinear()
                 .domain([0, max(dt.time)])
                 .range([0, width / 6]);
@@ -213,7 +215,7 @@ export default (hData, nodeFieldList) => {
                     y.domain([d.parent.y0, d.parent.y1]);
 
                     let xVal = x(d.x0) + width / 6;
-                    let yVal = y(d.y0) + height / 4;
+                    let yVal = y(d.y0) + height / 2.2;
 
                     return `translate(${xVal},${yVal})`;
                 })
@@ -227,7 +229,7 @@ export default (hData, nodeFieldList) => {
                     y.domain([d.parent.y0, d.parent.y1]);
 
                     let xVal = x(d.x0) + width / 6;
-                    let yVal = y(d.y0) + height / 4 - height / 6;
+                    let yVal = y(d.y0) + height / 2.2 - height / 6;
 
                     return `translate(${xVal},${yVal})`;
                 })
@@ -253,7 +255,7 @@ export default (hData, nodeFieldList) => {
                     y.domain([d.parent.y0, d.parent.y1]);
 
                     let xVal = x(d.x0) + width / 6;
-                    let yVal = y(d.y0) + height / 4 - height / 6;
+                    let yVal = y(d.y0) + height / 2.2 - height / 6;
 
                     return `translate(${xVal},${yVal})`;
                 })
