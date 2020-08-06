@@ -247,8 +247,8 @@ export default (hData, nodeFieldList) => {
                 .attr("d", line()
                     .x((d, i) => xAxis(i))
                     .y(d => yAxis(d)))
-                .attr("stroke", "gold")
-                .style("stroke-width", 4)
+                .attr("stroke", "crimson")
+                .style("stroke-width", 2)
                 .style("fill", "none");
 
             // console.log(`this is the nodeline: ${nodeLine[0]}`);
@@ -305,8 +305,8 @@ export default (hData, nodeFieldList) => {
                         .x((d, i) => xAxis(i))
                         .y(d => yAxis(d))
                     )
-                    .attr("stroke", "gold")
-                    .style("stroke-width", 4)
+                    .attr("stroke", "crimson")
+                    .style("stroke-width", 2)
                     .style("fill", "none");
             }
         }
