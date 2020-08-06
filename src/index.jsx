@@ -15,6 +15,7 @@ export default (hData, nodeFieldList) => {
     const width = 800;
     const height = 800;
 
+
     const transitionSpeed = 500;
 
     const x = scaleLinear().rangeRound([0, width]);
@@ -221,7 +222,7 @@ export default (hData, nodeFieldList) => {
                 })
                 .call(axisBottom(xAxis));
 
-            node
+            const nodeLine = node
                 .append('g')
                 .classed('rectGroup', false)
                 .attr('transform', d => {
@@ -247,6 +248,11 @@ export default (hData, nodeFieldList) => {
                 .style("stroke-width", 4)
                 .style("fill", "none");
 
+            // console.log(`this is the nodeline: ${nodeLine[0]}`);
+            // for (const prop in nodeLine) {
+            //     console.log(`property: ${prop} value: ${nodeLine[prop]}`)
+            // }
+
             node
                 .append('g')
                 .classed('rectGroup', false)
@@ -260,6 +266,31 @@ export default (hData, nodeFieldList) => {
                     return `translate(${xVal},${yVal})`;
                 })
                 .call(axisLeft(yAxis));
+
+            console.log(`this here boy is runnin'`);
+
+            select("#div-graph")
+                .append("button")
+                .on("click", () => {
+                    update();
+                })
+                .text("Change Graphs");
+
+            // A function that update the chart
+            function update() {
+                // Give these new data to update line
+                nodeLine
+                    .datum(dt.valueA)
+                    .transition()
+                    .duration(1000)
+                    .attr("d", line()
+                        .x((d, i) => xAxis(i))
+                        .y(d => yAxis(d))
+                    )
+                    .attr("stroke", "gold")
+                    .style("stroke-width", 4)
+                    .style("fill", "none");
+            }
         }
 
         // ----------

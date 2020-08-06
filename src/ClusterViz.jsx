@@ -146,7 +146,6 @@ const ClusterViz = () => {
 
             </div>
 
-
             <div className="apply-button-wrapper">
                 <button
                     name="apply changes"
@@ -158,6 +157,7 @@ const ClusterViz = () => {
             </div>
 
             <p id="currentPosition" />
+
 
             <div className="main-wrapper">
                 <div className="checkboxes">
@@ -187,6 +187,17 @@ const ClusterViz = () => {
                         Display Graph
                     </label>
                 </div>
+
+                <div id="div-graph" className="change-graph">
+                    {/*<button*/}
+                    {/*    // className="button button1"*/}
+                    {/*    id="graph-change-btn"*/}
+                    {/*>*/}
+                    {/*    Change Graph*/}
+                    {/*</button>*/}
+
+                </div>
+
             </div>
         </>
     );
