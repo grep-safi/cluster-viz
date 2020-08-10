@@ -5,13 +5,11 @@ import {equallySpacedTiling} from "./utils/tiling";
 // data output to draw our graphs with
 const dt = {
     time: [1,2,3,4,5,6,7,8,9,10],
+
     valueA: [2,3,1,7,8,8,5,14,9,11],
     valueB: [5,4,4,4,8,13,18,13,18],
     valueC: [13,14,16,12,7,9,3,2,1,1],
     valueD: [3,14,6,12,17,9,13,2,11,14],
-    valueE: [10,14,1,2,17,1,3,2,11,4],
-    valueF: [4,14,6,12,17,9,13,2,1,14],
-    valueG: [11,14,6,1,17,12,1,2,1,4],
 };
 
 export default (hData, nodeFieldList) => {
