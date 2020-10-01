@@ -3,7 +3,7 @@ const fs = require('fs');
 const outputFilename = 'formatted-squeue.json';
 const outputNidToUserFile = 'nid-to-user.json';
 
-fs.readFile('raw-data-files/squeue.txt', (err, data) => {
+fs.readFile('raw-data-files/oct12020squeue.txt', (err, data) => {
     if (err) throw err;
 
     const dataStr = data.toString().replace('  ', ' ');

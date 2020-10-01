@@ -2,7 +2,7 @@ const fs = require('fs')
 
 const outputFilename = 'formatted-scontrol.json';
 
-fs.readFile('raw-data-files/scontrol.txt', (err, data) => {
+fs.readFile('raw-data-files/oct12020scontrol.txt', (err, data) => {
     if (err) throw err;
 
     const dataStr = data.toString();
