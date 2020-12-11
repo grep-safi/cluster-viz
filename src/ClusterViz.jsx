@@ -39,8 +39,6 @@ const ClusterViz = () => {
     const nodeArr = [];
     const checkBoxes = [];
 
-    // TODO Add better identifier keys for React as a field in each element
-    // TODO Simplify the double for loops with a while loop and extract the React code into a function
     for (let i = 0; i < jobSearch.length; i++) {
         jobArr.push(
             <div>

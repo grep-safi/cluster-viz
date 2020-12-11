@@ -1,21 +1,27 @@
-import {line, axisBottom, axisLeft, format, hierarchy, interpolate, scaleLinear, scaleLog, select, treemap, max} from "d3/dist/d3";
+import {extent, line, axisBottom, axisLeft, scaleTime, format, hierarchy, interpolate, scaleLinear, scaleLog, select, treemap, max} from "d3/dist/d3";
 import {equallySpacedTiling} from "./utils/tiling";
+import data from "./data";
+const nid_data = require('../data/nid01180_ldms.json');
+const nid_data2 = require('../data/nid01180_ldms.json');
+const nid_data3 = require('../data/nid01180_ldms.json');
+const nid_data4 = require('../data/nid01180_ldms.json');
 
-// Random data variables before we get LDMS / Slurm
-// data output to draw our graphs with
-const dt = {
-    time: [1,2,3,4,5,6,7,8,9,10],
+let largest = nid_data[0]['Memory'];
 
-    valueA: [2,3,1,7,8,8,5,14,9,11],
-    valueB: [5,4,4,4,8,13,18,13,18],
-    valueC: [13,14,16,12,7,9,3,2,1,1],
-    valueD: [3,14,6,12,17,9,13,2,11,14],
-};
+for (let i = 0; i < nid_data.length; i += 1) {
+    nid_data[i]['Time'] = new Date(nid_data[i]['Time']);
+    nid_data2[i]['Time'] = new Date(nid_data2[i]['Time']);
+    nid_data3[i]['Time'] = new Date(nid_data3[i]['Time']);
+    nid_data4[i]['Time'] = new Date(nid_data4[i]['Time']);
+
+    largest = Math.max(...[nid_data[i]['Memory'], nid_data2[i]['Memory'], nid_data3[i]['Memory'], nid_data4[i]['Memory'], largest]);
+}
+
+const dataset = [nid_data, nid_data2, nid_data3, nid_data4];
 
 export default (hData, nodeFieldList) => {
     const width = 800;
     const height = 800;
-
 
     const transitionSpeed = 500;
 
@@ -124,7 +130,7 @@ export default (hData, nodeFieldList) => {
         const displayFields = d => {
             // If the depth isn't 4, then we aren't at the node level, so simply return empty string
             // If there is no nodeData, then we're probably at a service node which has no fields so return empty string
-            if (d.depth !== 4 || !d.data.nodeData) return [''];
+            if (d.depth !== 4 || !d.data.nodeData || showGraph) return [''];
 
             const jobAttributes = [
                 'JOBID',
@@ -181,7 +187,8 @@ export default (hData, nodeFieldList) => {
             .selectAll("tspan")
             .data(d => {
                 const additions = viewDepth < 4 ? ['Matching', 'Nodes:', formatNum(d.value)] : [];
-                return [d.data.name, ...additions, ...displayFields(d)];
+                return [d.data.name, ...additions, ...displayFields(d)]; // Uncomment to add the fields back in
+                // return [d.data.name, ...additions];
             })
             .join("tspan")
             .attr('x', (d, i) => {
@@ -200,13 +207,28 @@ export default (hData, nodeFieldList) => {
 
         // If the depth is 4, draw the graph with the random data
         if (viewDepth === 4 && showGraph) {
-            const xAxis = scaleLinear()
-                .domain([0, max(dt.time)])
-                .range([0, width / 6]);
+            const divisor = 2.5;
+            const offsetX = 60;
+            const offsetY = 350;
+
+            const xAxis = [
+                scaleTime()
+                    .domain([new Date(dataset[0][0]['Time']), new Date(dataset[0][dataset[0].length - 1]['Time'])])
+                    .range([0, width / divisor]),
+                scaleTime()
+                    .domain([new Date(dataset[0][0]['Time']), new Date(dataset[0][dataset[0].length - 1]['Time'])])
+                    .range([0, width / divisor]),
+                scaleTime()
+                    .domain([new Date(dataset[0][0]['Time']), new Date(dataset[0][dataset[0].length - 1]['Time'])])
+                    .range([0, width / divisor]),
+                scaleTime()
+                    .domain([new Date(dataset[0][0]['Time']), new Date(dataset[0][dataset[0].length - 1]['Time'])])
+                    .range([0, width / divisor])
+            ];
 
             const yAxis = scaleLinear()
-                .domain([0, 20])
-                .range([height / 6, 0]);
+                .domain([0, largest]) // input
+                .range([height / divisor, 0]); // output
 
             node
                 .append('g')
@@ -216,12 +238,12 @@ export default (hData, nodeFieldList) => {
                     x.domain([d.parent.x0, d.parent.x1]);
                     y.domain([d.parent.y0, d.parent.y1]);
 
-                    let xVal = x(d.x0) + width / 6;
-                    let yVal = y(d.y0) + height / 2.2;
+                    let xVal = x(d.x0) + offsetX;
+                    let yVal = y(d.y0) + offsetY;
 
                     return `translate(${xVal},${yVal})`;
                 })
-                .call(axisBottom(xAxis));
+                .call(axisBottom(xAxis[0]));
 
             const nodeLine = node
                 .append('g')
@@ -230,29 +252,26 @@ export default (hData, nodeFieldList) => {
                     x.domain([d.parent.x0, d.parent.x1]);
                     y.domain([d.parent.y0, d.parent.y1]);
 
-                    let xVal = x(d.x0) + width / 6;
-                    let yVal = y(d.y0) + height / 2.2 - height / 6;
+                    let xVal = x(d.x0) + offsetX;
+                    let yVal = y(d.y0) + offsetY - 330;
 
                     return `translate(${xVal},${yVal})`;
                 })
                 .append('path')
                 .datum((d, i) => {
-                    if (i === 0) return dt.valueA;
-                    if (i === 1) return dt.valueB;
-                    if (i === 2) return dt.valueC;
-                    if (i === 3) return dt.valueD;
+                    return dataset[i];
                 })
                 .attr("d", line()
-                    .x((d, i) => xAxis(i))
-                    .y(d => yAxis(d)))
-                .attr("stroke", "crimson")
+                    .x(d => xAxis[0](d['Time']))
+                    .y(d => yAxis(d['Memory'])))
+                .attr("stroke", (d, i) => {
+                    if (i === 0) return 'cyan';
+                    if (i === 1) return 'crimson';
+                    if (i === 2) return 'purple';
+                    if (i === 3) return 'green';
+                })
                 .style("stroke-width", 2)
                 .style("fill", "none");
-
-            // console.log(`this is the nodeline: ${nodeLine[0]}`);
-            // for (const prop in nodeLine) {
-            //     console.log(`property: ${prop} value: ${nodeLine[prop]}`)
-            // }
 
             node
                 .append('g')
@@ -261,8 +280,11 @@ export default (hData, nodeFieldList) => {
                     x.domain([d.parent.x0, d.parent.x1]);
                     y.domain([d.parent.y0, d.parent.y1]);
 
-                    let xVal = x(d.x0) + width / 6;
-                    let yVal = y(d.y0) + height / 2.2 - height / 6;
+                    // let xVal = x(d.x0) + width / divisor - offset;
+                    // let yVal = y(d.y0) + height / 4 - divisor / 6;
+
+                    let xVal = x(d.x0) + offsetX;
+                    let yVal = y(d.y0) + offsetY - 320;
 
                     return `translate(${xVal},${yVal})`;
                 })
@@ -300,8 +322,8 @@ export default (hData, nodeFieldList) => {
                     .transition()
                     .duration(1000)
                     .attr("d", line()
-                        .x((d, i) => xAxis(i))
-                        .y(d => yAxis(d))
+                        .x(d => xAxis[0](d.x))
+                        .y(d => yAxis(d.y))
                     )
                     .attr("stroke", "crimson")
                     .style("stroke-width", 2)
